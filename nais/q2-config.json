@@ -1,0 +1,9 @@
+{
+  "APP_NAME": "dokdistdpo",
+  "ENVIRONMENT": "q2",
+  "MIN_REPLICAS": "1",
+  "MAX_REPLICAS": "2",
+  "INGRESSES": [
+    "https://dokdistdpo.dev.intern.nav.no"
+  ]
+}
