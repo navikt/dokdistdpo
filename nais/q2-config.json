@@ -1,5 +1,11 @@
 {
   "APP_NAME": "dokdistdpo",
+  "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL": "https://dokdistadmin.dev.intern.nav.no/rest/v1/administrerforsendelse",
+  "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_SCOPE": "api://dev-fss.teamdokumenthandtering.dokdistadmin/.default",
+  "DOKDISTDPO_SERVICEREGISTRY_URL": "https://qa-meldingsutveksling.difi.no/serviceregistry/",
+  "NAV_VIRKSOMHETSSERTIFIKAT_VAULT": "/secret/virksomhetssertifikat/preprod/shared",
+  "NAV_VIRKSOMHETSSERTIFIKAT_CREDENTIALS": "/secrets/virksomhetssertifikat/credentials_2024-03.json",
+  "NAV_VIRKSOMHETSSERTIFIKAT_KEY": "/secrets/virksomhetssertifikat/1956923288254923191157769-2024-03-19.p12.b64",
   "ENVIRONMENT": "q2",
   "MIN_REPLICAS": "1",
   "MAX_REPLICAS": "2",
