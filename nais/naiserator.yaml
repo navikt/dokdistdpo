@@ -59,8 +59,6 @@ spec:
   azure:
     application:
       enabled: true
-  envFrom:
-    - secret: dokdistdpo
   vault:
     enabled: true
     paths:
