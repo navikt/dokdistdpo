@@ -14,8 +14,7 @@ public record KeyStoreProperties(
 		@NotBlank String type,
 		@NotBlank String alias,
 		@NotBlank String password,
-		@NotBlank Resource path,
-		Boolean lockProvider) {
+		@NotBlank Resource path) {
 
 	public KeyStoreProperties {
 		type = KeyStore.getDefaultType();

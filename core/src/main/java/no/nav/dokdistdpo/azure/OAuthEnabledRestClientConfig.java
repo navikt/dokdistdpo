@@ -1,18 +1,21 @@
 package no.nav.dokdistdpo.azure;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
+import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.ClientCredentialsOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.endpoint.RestClientClientCredentialsTokenResponseClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -24,28 +27,29 @@ import java.net.ProxySelector;
 import java.util.List;
 
 import static org.springframework.security.oauth2.core.AuthorizationGrantType.CLIENT_CREDENTIALS;
+import static org.springframework.security.oauth2.core.AuthorizationGrantType.JWT_BEARER;
 import static org.springframework.security.oauth2.core.ClientAuthenticationMethod.CLIENT_SECRET_BASIC;
+import static org.springframework.security.oauth2.core.ClientAuthenticationMethod.NONE;
 
 @Configuration
 public class OAuthEnabledRestClientConfig {
 
 	public static final String CLIENT_REGISTRATION_DOKDISTADMIN = "azure-dokdistadmin";
-	public static final String CLIENT_REGISTRATION_PDL = "azure-pdl";
-	public static final String CLIENT_REGISTRATION_DOKARKIV = "azure-dokarkiv";
-	public static final String CLIENT_REGISTRATION_SAF = "azure-saf";
-
+	public static final String CLIENT_REGISTRATION_MASKINPORTEN = "maskinporten";
 
 	@Bean
-	public RestClient restClient(@Qualifier("authorizedClientManager") OAuth2AuthorizedClientManager authorizedClientManager) {
+	public RestClient restClient(OAuth2AuthorizedClientManager authorizedClientManager) {
 		var oauth2Interceptor =
 				new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+
+		oauth2Interceptor.setClientRegistrationIdResolver(clientRegistrationIdResolver());
 
 		return RestClient.builder()
 				.requestInterceptor(oauth2Interceptor)
 				.build();
 	}
 
-	@Bean("authorizedClientManager")
+	@Bean
 	public OAuth2AuthorizedClientManager authorizedClientManager(
 			ClientRegistrationRepository clientRegistrationRepository,
 			OAuth2AuthorizedClientService authorizedClientService) {
@@ -83,7 +87,7 @@ public class OAuthEnabledRestClientConfig {
 	}
 
 	@Bean
-	List<ClientRegistration> clientRegistration(AzureProperties azureProperties, DokdistdpoProperties properties) {
+	List<ClientRegistration> clientRegistration(AzureProperties azureProperties, DokdistdpoProperties properties, MaskinportenProperties maskinportenProperties) {
 		return List.of(ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN)
 						.tokenUri(azureProperties.openidConfigTokenEndpoint())
 						.clientId(azureProperties.appClientId())
@@ -91,7 +95,23 @@ public class OAuthEnabledRestClientConfig {
 						.clientAuthenticationMethod(CLIENT_SECRET_BASIC)
 						.authorizationGrantType(CLIENT_CREDENTIALS)
 						.scope(properties.endpoints().dokdistadmin().scope())
+						.build(),
+				ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN)
+						.tokenUri(maskinportenProperties.tokenEndpoint())
+						.clientId(maskinportenProperties.clientId())
+						.issuerUri(maskinportenProperties.issuer())
+						.clientAuthenticationMethod(NONE)
+						.authorizationGrantType(JWT_BEARER)
+						.scope(maskinportenProperties.scopes())
 						.build()
 		);
+	}
+
+	private OAuth2ClientHttpRequestInterceptor.ClientRegistrationIdResolver clientRegistrationIdResolver() {
+		return (request) -> {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			return (authentication instanceof OAuth2AuthenticationToken principal) ?
+					principal.getAuthorizedClientRegistrationId() : null;
+		};
 	}
 }

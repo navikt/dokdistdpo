@@ -9,14 +9,12 @@ public record HentForsendelseResponse(
 		String bestillingsId,
 		String konversasjonId,
 		String forsendelseStatus,
-		String modus,
 		String tema,
 		String forsendelseTittel,
 		String forsendelseMetadata,
 		String forsendelseMetadataType,
 		Mottaker mottaker,
 		ArkivInformasjon arkivInformasjon,
-		Postadresse postadresse,
 		List<Dokument> dokumenter) {
 
 	@Builder
@@ -27,16 +25,6 @@ public record HentForsendelseResponse(
 
 	@Builder
 	public record ArkivInformasjon(String arkivId) {
-	}
-
-	@Builder
-	public record Postadresse(
-			String adresselinje1,
-			String adresselinje2,
-			String adresselinje3,
-			String postnummer,
-			String poststed,
-			String landkode) {
 	}
 
 	@Builder

@@ -1,6 +1,6 @@
 {
   "APP_NAME": "dokdistdpo",
-  "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL": "https://dokdistadmin.intern.nav.no/rest/v1/administrerforsendelse",
+  "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL": "https://dokdistadmin.teamdokumenthandtering.svc.nais.local/rest/v1/administrerforsendelse",
   "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_SCOPE": "api://prod-fss.teamdokumenthandtering.dokdistadmin/.default",
   "DOKDISTDPO_SERVICEREGISTRY_URL": "https://meldingsutveksling.difi.no/serviceregistry/",
   "NAV_VIRKSOMHETSSERTIFIKAT_VAULT": "/secret/virksomhetssertifikat/prod/sdp",
