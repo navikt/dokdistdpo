@@ -71,6 +71,8 @@ spec:
   azure:
     application:
       enabled: true
+  envFrom:
+    - secret: dokdistdpo-q2
   vault:
     enabled: true
     paths:
