@@ -1,5 +1,6 @@
 package no.nav.dokdistdpo.certificate;
 
+import lombok.Getter;
 import no.nav.dokdistdpo.exception.functional.KeystoreProviderException;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.security.cert.X509Certificate;
 
 import static java.lang.String.format;
 
+@Getter
 @Component
 public class AppCertificate {
 
@@ -61,5 +63,9 @@ public class AppCertificate {
 		} catch (KeyStoreException e) {
 			throw new IllegalStateException(ERR_GENERAL, e);
 		}
+	}
+
+	public boolean shouldLockProvider() {
+		return properties.lockProvider();
 	}
 }
