@@ -73,6 +73,7 @@ spec:
       enabled: true
   envFrom:
     - secret: dokdistdpo-q2
+      mountPath: /var/run/secrets/nais.io/dokdistdpo-q2
   vault:
     enabled: true
     paths:
