@@ -71,9 +71,8 @@ spec:
   azure:
     application:
       enabled: true
-  filesFrom:
+  envFrom:
     - secret: dokdistdpo-q2
-      mountPath: /var/run/secrets/nais.io/dokdistdpo
   vault:
     enabled: true
     paths:
