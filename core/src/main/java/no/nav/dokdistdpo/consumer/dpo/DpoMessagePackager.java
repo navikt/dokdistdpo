@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.arkivverket.standarder.noark5.arkivmelding.Arkivmelding;
 import no.nav.dokdistdpo.certificate.AppCertificate;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.StandardBusinessDocumentMapper;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.ArkivmeldingStandardBusinessDocumentMapper;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -30,13 +30,15 @@ public class DpoMessagePackager {
 
 	private final ObjectMapper objectMapper;
 	private final DpoContentPackager EFormidlingContentPackager;
-	private final StandardBusinessDocumentMapper standardBusinessDocumentMapper;
+	private final AvtaltStandardBusinessDocumentMapper avtaltStandardBusinessDocumentMapper;
+	private final ArkivmeldingStandardBusinessDocumentMapper arkivmeldingStandardBusinessDocumentMapper;
 
-	public DpoMessagePackager(@Qualifier("dpoObjectMapper") ObjectMapper dpoObjectMapper,
+	public DpoMessagePackager(ObjectMapper dpoObjectMapper,
 							  DpoContentPackager EFormidlingContentPackager) {
 		this.objectMapper = dpoObjectMapper;
-		this.standardBusinessDocumentMapper = new StandardBusinessDocumentMapper();
 		this.EFormidlingContentPackager = EFormidlingContentPackager;
+		this.avtaltStandardBusinessDocumentMapper = new AvtaltStandardBusinessDocumentMapper();
+		this.arkivmeldingStandardBusinessDocumentMapper = new ArkivmeldingStandardBusinessDocumentMapper();
 
 	}
 
@@ -54,7 +56,7 @@ public class DpoMessagePackager {
 									  AppCertificate appCertificate,
 									  X509Certificate mottakerSertifikat) {
 
-		var standardBusinessDocument = standardBusinessDocumentMapper.mapDpoMeldingEnvelope(navDokumentpakke, dpoMelding);
+		var standardBusinessDocument =  getStandardBusinessDocument(navDokumentpakke, dpoMelding);
 
 		InputStream content = EFormidlingContentPackager.packageContent(navDokumentpakke, appCertificate, mottakerSertifikat);
 		final ByteArrayOutputStream zipFile = new ByteArrayOutputStream();
@@ -83,5 +85,12 @@ public class DpoMessagePackager {
 		} catch (IOException e) {
 			throw new DokumentpakkingException("Klarte ikke lage sbd.zip", e);
 		}
+	}
+
+	private StandardBusinessDocument getStandardBusinessDocument(NavDokumentpakke navDokumentpakke, String dpoMelding) {
+		return switch (navDokumentpakke.meldingType()) {
+			case DPO_ARKIVMELDING ->  arkivmeldingStandardBusinessDocumentMapper.mapArkivmeldingEnvelope(navDokumentpakke, dpoMelding);
+			case DPO_AVTALEMELDING -> avtaltStandardBusinessDocumentMapper.mapAvtaltMeldingEnvelope(navDokumentpakke, dpoMelding);
+		};
 	}
 }

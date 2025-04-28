@@ -10,9 +10,12 @@ import no.nav.dokdistdpo.exception.technical.DokdistadminTechnicalException;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import java.io.IOException;
 
 import static java.lang.String.format;
 import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGISTRATION_DOKDISTADMIN;
@@ -43,13 +46,7 @@ public class DokdistAdminConsumer {
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) -> {
-					ProblemDetail problemDetail = getProblemDetail(res.getBody());
-					if (res.getStatusCode().is4xxClientError()) {
-						throw new DokdistadminFunctionalException(format("hentForsendelse feilet funksjonelt med forsendelseId=%s. Feilmelding=%s",
-								forsendelseId, res.getStatusText()), problemDetail);
-					}
-					throw new DokdistadminTechnicalException(format("hentForsendelse feilet teknisk med forsendelseId=%s, feilmelding=%s",
-							forsendelseId, res.getStatusText()), problemDetail);
+					dokdistadminHandleError(res, "hentForsendelse", "forsendelseId", forsendelseId);
 				})
 				.body(HentForsendelseResponse.class);
 	}
@@ -60,15 +57,8 @@ public class DokdistAdminConsumer {
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.body(opprettForsendelseRequest)
 				.retrieve()
-				.onStatus(HttpStatusCode::isError, (req, res) -> {
-					ProblemDetail problemDetail = getProblemDetail(res.getBody());
-					if (res.getStatusCode().is4xxClientError()) {
-						throw new DokdistadminFunctionalException(format("opprettForsendelse feilet funksjonelt med bestillingsId=%s. Feilmelding=%s",
-								opprettForsendelseRequest.bestillingsId(), res.getStatusText()), problemDetail);
-					}
-					throw new DokdistdpoTechnicalException(format("opprettForsendelse feilet teknisk med bestillingsId=%s, feilmelding=%s",
-							opprettForsendelseRequest.bestillingsId(), res.getStatusText()));
-				})
+				.onStatus(HttpStatusCode::isError, (req, res) ->
+						dokdistadminHandleError(res, "opprettForsendelse", "bestillingsId", opprettForsendelseRequest.bestillingsId()))
 				.body(Long.class);
 	}
 
@@ -82,16 +72,8 @@ public class DokdistAdminConsumer {
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.body(feilregistrerForsendelse)
 				.retrieve()
-				.onStatus(HttpStatusCode::isError, (req, res) -> {
-					ProblemDetail problemDetail = getProblemDetail(res.getBody());
-					if (res.getStatusCode().is4xxClientError()) {
-						throw new DokdistadminFunctionalException(format("feilregistrerForsendelse feilet funksjonelt med forsendelseId=%s. Feilmelding=%s",
-								feilregistrerForsendelse.forsendelseId(), problemDetail.getDetail()), problemDetail);
-					}
-					throw new DokdistdpoTechnicalException(format("feilregistrerForsendelse feilet teknisk med bestillingsId=%s, feilmelding=%s",
-							feilregistrerForsendelse.forsendelseId(), res.getStatusText()));
-
-				})
+				.onStatus(HttpStatusCode::isError, (req, res) ->
+						dokdistadminHandleError(res,"feilregistrerForsendelse", "forsendelseId", feilregistrerForsendelse.forsendelseId().toString()))
 				.toBodilessEntity();
 
 		log.info("feilregistrerForsendelse har feilregistrert forsendelse med forsendelseId={}", feilregistrerForsendelse.forsendelseId());
@@ -105,16 +87,21 @@ public class DokdistAdminConsumer {
 				.uri("/oppdaterforsendelse")
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
-				.onStatus(HttpStatusCode::isError, (req, res) -> {
-					ProblemDetail problemDetail = getProblemDetail(res.getBody());
-					if (res.getStatusCode().is4xxClientError()) {
-						throw new DokdistadminFunctionalException(format("oppdaterForsendelse feilet funksjonelt med forsendelseId=%s. Feilmelding=%s",
-								oppdaterForsendelse.forsendelseId(), res.getStatusText()), problemDetail);
-					}
-					throw new DokdistdpoTechnicalException(format("oppdaterForsendelse feilet teknisk med forsendelseId=%s, feilmelding=%s",
-							oppdaterForsendelse.forsendelseId(), res.getStatusText()));
-				}).toBodilessEntity();
+				.onStatus(HttpStatusCode::isError, (req, res) ->
+						dokdistadminHandleError(res, "oppdaterForsendelse", "forsendelseId", oppdaterForsendelse.forsendelseId()))
+				.toBodilessEntity();
 
 		log.info("oppdaterForsendelse har oppdatert forsendelse med forsendelseId={} og forsendelseStatus={}", oppdaterForsendelse.forsendelseId(), oppdaterForsendelse.forsendelseStatus());
+	}
+
+
+	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste, String feltnavn, String feltVerdi) throws IOException {
+		ProblemDetail problemDetail = getProblemDetail(response.getBody());
+		if (response.getStatusCode().is4xxClientError()) {
+			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt med %s=%s. Feilmelding=%s",
+					tjeneste, feltnavn, feltVerdi, response.getStatusText()), problemDetail);
+		}
+		throw new DokdistadminTechnicalException(format("%s feilet teknisk med forsendelseId=%s, feilmelding=%s",
+				tjeneste, feltVerdi, response.getStatusText()), problemDetail);
 	}
 }

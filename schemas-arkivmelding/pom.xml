@@ -26,7 +26,7 @@
 				<version>${maven-jaxb2-plugin.version}</version>
 				<executions>
 					<execution>
-						<id>generate-avtaltmelding-v1</id>
+						<id>generate-arkivmelding</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
@@ -41,6 +41,51 @@
 								<include>bindings.xml</include>
 							</bindingIncludes>
 							<generateDirectory>${project.build.directory}/generated-sources/arkivmelding</generateDirectory>
+							<strict>true</strict>
+							<extension>true</extension>
+							<verbose>true</verbose>
+							<removeOldOutput>true</removeOldOutput>
+							<args>
+								<arg>-XfluentAPI</arg>
+								<arg>-Xannotate</arg>
+								<arg>-Xsimplify</arg>
+							</args>
+							<plugins>
+								<plugin>
+									<groupId>org.patrodyne.jvnet</groupId>
+									<artifactId>hisrc-hyperjaxb-annox-plugin</artifactId>
+									<version>${hisrc-basicjaxb.version}</version>
+								</plugin>
+								<plugin>
+									<groupId>org.patrodyne.jvnet</groupId>
+									<artifactId>hisrc-basicjaxb-plugins</artifactId>
+									<version>${hisrc-basicjaxb.version}</version>
+								</plugin>
+								<plugin>
+									<groupId>org.patrodyne.jvnet</groupId>
+									<artifactId>hisrc-basicjaxb-tools</artifactId>
+									<version>${hisrc-basicjaxb.version}</version>
+								</plugin>
+							</plugins>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-avtaltmelding</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>${basedir}/src/main/resources/avtaltmelding</schemaDirectory>
+							<schemaIncludes>
+								<include>avtaltmelding.xsd</include>
+								<include>nav_virksomhet_metadata_1.0.xsd</include>
+							</schemaIncludes>
+							<bindingDirectory>${basedir}/src/main/resources/avtaltmelding</bindingDirectory>
+							<bindingIncludes>
+								<include>bindings.xml</include>
+							</bindingIncludes>
+							<generateDirectory>${project.build.directory}/generated-sources/avtaltmelding</generateDirectory>
 							<strict>true</strict>
 							<extension>true</extension>
 							<verbose>true</verbose>

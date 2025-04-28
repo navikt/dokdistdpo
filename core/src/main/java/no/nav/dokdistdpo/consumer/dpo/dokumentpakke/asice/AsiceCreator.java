@@ -67,8 +67,7 @@ public class AsiceCreator {
 
 	private static class DefaultSignatureHelper extends SignatureHelper {
 		DefaultSignatureHelper(AppCertificate appCertificate) {
-			super(appCertificate.shouldLockProvider() ? appCertificate.getKeyStore().getProvider() : null);
-			loadCertificate(appCertificate.getKeyStore(),
+			super(appCertificate.getKeyStore(),
 					appCertificate.getProperties().alias(),
 					appCertificate.getProperties().password());
 		}

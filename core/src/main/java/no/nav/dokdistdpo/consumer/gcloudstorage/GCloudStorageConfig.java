@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 
-import java.security.GeneralSecurityException;
 import java.util.Optional;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -53,15 +52,5 @@ public class GCloudStorageConfig {
 				.build().getService();
 
 		return new GCloudEncryptedStorage(storage, dokdistmellomlagerProperties.bucket(), aead);
-	}
-
-	@Bean
-	public Aead aead(DokdistmellomlagerProperties dokdistmellomlagerProperties) throws GeneralSecurityException {
-		var kekUri = dokdistmellomlagerProperties.gcpKekUri();
-
-		AeadConfig.register();
-		GcpKmsClient.register(Optional.of(kekUri), Optional.empty());
-
-		return new GcpKmsClient().getAead(kekUri);
 	}
 }
