@@ -17,6 +17,14 @@ spec:
       value: {{ NAV_VIRKSOMHETSSERTIFIKAT_CREDENTIALS }}
     - name: NAV_VIRKSOMHETSSERTIFIKAT_KEY
       value: {{ NAV_VIRKSOMHETSSERTIFIKAT_KEY }}
+    - name: DOKDISTMELLOMLAGER_PROJECTID
+      value: {{ DOKDISTMELLOMLAGER_PROJECTID }}
+    - name: DOKDISTMELLOMLAGER_BUCKET
+      value: {{ DOKDISTMELLOMLAGER_BUCKET }}
+    - name: DOKDISTMELLOMLAGER_KEYRING
+      value: {{ DOKDISTMELLOMLAGER_KEYRING }}
+    - name: DOKDISTMELLOMLAGER_KEYID
+      value: {{ DOKDISTMELLOMLAGER_KEYID }}
     - name: OTEL_RESOURCE_ATTRIBUTES
       value: "deployment.environment.name={{ ENVIRONMENT }}"
   image: {{ image }}
@@ -63,6 +71,8 @@ spec:
   azure:
     application:
       enabled: true
+  envFrom:
+    - secret: dokdistdpo-q2
   vault:
     enabled: true
     paths:

@@ -15,19 +15,19 @@ import java.security.cert.X509Certificate;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-
 public record MottakerInfo(String orgnummer,
 						   String pemCertificate,
 						   X509Certificate x509Certificate,
 						   String serviceCode,
 						   String serviceEditionCode) {
 
-	public MottakerInfo(String orgnummer, String pemCertificate, String serviceCode, String serviceEditionCode) {
-		this(orgnummer,
-				pemCertificate,
+	public MottakerInfo(String orgnummer,
+						String pemCertificate,
+						String serviceCode,
+						String serviceEditionCode) {
+		this(orgnummer, pemCertificate,
 				CertificateUtils.convertToX509Certificate(pemCertificate),
-				serviceCode,
-				serviceEditionCode);
+				serviceCode, serviceEditionCode);
 	}
 
 	static class CertificateUtils {
@@ -37,7 +37,7 @@ public record MottakerInfo(String orgnummer,
 				PEMParser pemParser = new PEMParser(new BufferedReader(inputStreamReader));
 				final Object certificate = pemParser.readObject();
 				if (!(certificate instanceof X509Certificate)) {
-					throw new CertificateConversionException("PEM data inneholder ikke et X.509 sertifickat");
+					throw new CertificateConversionException("PEM data inneholder ikke et X.509 sertifikat");
 				}
 				return new JcaX509CertificateConverter()
 						.setProvider("BC")

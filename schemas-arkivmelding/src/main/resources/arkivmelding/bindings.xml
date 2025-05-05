@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings version="3.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			   xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+			   xmlns:annox="http://jvnet.org/basicjaxb/xjc/annox">
+
+
+	<jaxb:globalBindings/>
+
+	<jaxb:bindings schemaLocation="arkivmelding.xsd" node="/xs:schema">
+		<jaxb:bindings node="xs:complexType[@name='arkivmelding']">
+			<annox:annotateClass>@jakarta.xml.bind.annotation.XmlRootElement</annox:annotateClass>
+			<annox:annotatePackage>
+				@jakarta.xml.bind.annotation.XmlSchema(
+				xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(prefix = "", namespaceURI = "http://www.arkivverket.no/standarder/noark5/arkivmelding")
+				},
+				elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
+			</annox:annotatePackage>
+		</jaxb:bindings>
+		<jaxb:schemaBindings>
+			<jaxb:package name="no.arkivverket.standarder.noark5.arkivmelding"/>
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+</jaxb:bindings>

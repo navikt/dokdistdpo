@@ -17,16 +17,15 @@ public class DpoMottakerInfoService {
 		this.serviceRegistryConsumer = serviceRegistryConsumer;
 	}
 
-	public MottakerInfo hentMottakerInfo(String mottakerId, String meldingType) {
-		final IdentifierResource identifierResource = serviceRegistryConsumer.getIdentifierResource(mottakerId, meldingType);
-		final Optional<IdentifierResource.ServiceRecord> anyServiceRecord = identifierResource.findServiceRecord(meldingType, DPO);
+	public MottakerInfo hentMottakerInfo(String mottakerId, String processIdentifier) {
+		final IdentifierResource identifierResource = serviceRegistryConsumer.getIdentifierResource(mottakerId, processIdentifier);
+		final Optional<IdentifierResource.ServiceRecord> anyServiceRecord = identifierResource.findServiceRecord(processIdentifier, DPO);
 
 		IdentifierResource.ServiceRecord serviceRecord = anyServiceRecord
-				.orElseThrow(() -> new MottakerInfoIkkeFunnetException(format("Fant ikke mottakerinfo for organisasjon=%s og process=%s", mottakerId,  meldingType)));
+				.orElseThrow(() -> new MottakerInfoIkkeFunnetException(format("Fant ikke mottakerinfo for organisasjon=%s og process=%s", mottakerId,  processIdentifier)));
 
 		final IdentifierResource.Service service= serviceRecord.service();
 
 		return new MottakerInfo(serviceRecord.organisationNumber(), serviceRecord.pemCertificate(), service.serviceCode(), service.serviceEditionCode());
-
 	}
 }

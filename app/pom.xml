@@ -16,6 +16,10 @@
 			<groupId>no.nav.dokdistdpo</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>no.nav.dokdistdpo</groupId>
+			<artifactId>schemas-arkivmelding</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
