@@ -152,7 +152,7 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="safJournalpost">
+	<xs:complexType name="journalpost">
 		<xs:complexContent>
 			<xs:extension base="basisregistrering">
 				<xs:sequence>
