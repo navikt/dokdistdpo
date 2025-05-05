@@ -15,9 +15,3 @@ then
     echo "Setting virksomhetssertifikat_path"
     export virksomhetssertifikat_path="file://$NAV_VIRKSOMHETSSERTIFIKAT_KEY"
 fi
-
-if test -f /var/run/secrets/nais.io/dokdistdpo/GOOGLE_APPLICATION_CREDENTIALS
-then
-    echo "Setting GOOGLE_APPLICATION_CREDENTIALS"
-    export GOOGLE_APPLICATION_CREDENTIALS=/var/run/secrets/nais.io/dokdistdpo/GOOGLE_APPLICATION_CREDENTIALS
-fi

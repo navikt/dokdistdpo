@@ -117,7 +117,7 @@
 			<xs:element name="korrespondansepart" type="korrespondansepart" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="journalpost">
+	<xs:complexType name="safJournalpost">
 		<xs:complexContent>
 			<xs:extension base="registrering">
 				<xs:sequence>
