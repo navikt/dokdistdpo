@@ -35,6 +35,9 @@ import static org.springframework.security.oauth2.core.ClientAuthenticationMetho
 public class OAuthEnabledRestClientConfig {
 
 	public static final String CLIENT_REGISTRATION_DOKDISTADMIN = "azure-dokdistadmin";
+	public static final String CLIENT_REGISTRATION_PDL = "azure-pdl";
+	public static final String CLIENT_REGISTRATION_SAF = "azure-saf";
+	public static final String CLIENT_REGISTRATION_EREG = "azure-ereg";
 	public static final String CLIENT_REGISTRATION_MASKINPORTEN = "maskinporten";
 
 	@Bean
@@ -95,6 +98,30 @@ public class OAuthEnabledRestClientConfig {
 						.clientAuthenticationMethod(CLIENT_SECRET_BASIC)
 						.authorizationGrantType(CLIENT_CREDENTIALS)
 						.scope(properties.endpoints().dokdistadmin().scope())
+						.build(),
+				ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_SAF)
+						.tokenUri(azureProperties.openidConfigTokenEndpoint())
+						.clientId(azureProperties.appClientId())
+						.clientSecret(azureProperties.appClientSecret())
+						.clientAuthenticationMethod(CLIENT_SECRET_BASIC)
+						.authorizationGrantType(CLIENT_CREDENTIALS)
+						.scope(properties.endpoints().saf().scope())
+						.build(),
+				ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_PDL)
+						.tokenUri(azureProperties.openidConfigTokenEndpoint())
+						.clientId(azureProperties.appClientId())
+						.clientSecret(azureProperties.appClientSecret())
+						.clientAuthenticationMethod(CLIENT_SECRET_BASIC)
+						.authorizationGrantType(CLIENT_CREDENTIALS)
+						.scope(properties.endpoints().pdl().scope())
+						.build(),
+				ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_EREG)
+						.tokenUri(azureProperties.openidConfigTokenEndpoint())
+						.clientId(azureProperties.appClientId())
+						.clientSecret(azureProperties.appClientSecret())
+						.clientAuthenticationMethod(CLIENT_SECRET_BASIC)
+						.authorizationGrantType(CLIENT_CREDENTIALS)
+						.scope(properties.endpoints().ereg().scope())
 						.build(),
 				ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN)
 						.tokenUri(maskinportenProperties.tokenEndpoint())

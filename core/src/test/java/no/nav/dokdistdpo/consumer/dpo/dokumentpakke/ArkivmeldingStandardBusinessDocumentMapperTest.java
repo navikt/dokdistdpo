@@ -1,6 +1,9 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
 
 import no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.arkivmelding.ArkivMelding;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.arkivmelding.ArkivmeldingStandardBusinessDocumentMapper;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltStandardBusinessDocumentMapper;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.Partner;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.PartnerIdentification;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.Scope;
@@ -15,9 +18,9 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_ARKIVMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.ARKIVMELDING_TYPE_VERSION;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.SCOPE_MESSAGECHANELL_IDENTIFIER;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.arkivmelding.ArkivmeldingStandardBusinessDocumentMapper.ARKIVMELDING_TYPE_VERSION;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.arkivmelding.ArkivmeldingStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.arkivmelding.ArkivmeldingStandardBusinessDocumentMapper.SCOPE_MESSAGECHANELL_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.ARKIVMELDING_XML;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.BESTILLINGS_ID;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.CONVERSATION_ID;
@@ -66,7 +69,7 @@ class ArkivmeldingStandardBusinessDocumentMapperTest {
 				.flatExtracting(Scope::getInstanceIdentifier, Scope::getIdentifier)
 				.contains(MESSAGE_CHANNEL_INSTANCE_IDENTIFIER.toString(), SCOPE_MESSAGECHANELL_IDENTIFIER);
 
-		assertThat(sbd.getAny()).isInstanceOf(String.class);
+		assertThat(sbd.getAny()).isInstanceOf(ArkivMelding.class);
 	}
 
 }

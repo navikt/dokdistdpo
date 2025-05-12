@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
+package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.arkivmelding;
 
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.BusinessScope;
@@ -14,18 +14,21 @@ import java.util.Set;
 
 import static java.time.Duration.ofDays;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_DOCUMENT_IDENTIFICATOR;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.ARKIVMELDING_TYPE_VERSION;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltStandardBusinessDocumentMapper.SIKKERHETSNIVAA;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVERSATION_ID;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.MESSAGE_CHANNEL;
 
 public class ArkivmeldingStandardBusinessDocumentMapper {
 
 	public static final String HEADER_VERSION = "1.0";
-	static final String SCOPE_MESSAGECHANELL_IDENTIFIER = "dokdistdpo";
-	static final String DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING = "arkivmelding";
+	public static final String ARKIVMELDING_TYPE_VERSION = "2.0";
+	public static final String SCOPE_MESSAGECHANELL_IDENTIFIER = "dokdistdpo";
+	public static final String DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING = "arkivmelding";
 	public static final Duration EXPECTED_RESPONSE_WITHIN_HOURS = ofDays(10);
 
 	public StandardBusinessDocument mapArkivmeldingEnvelope(NavDokumentpakke navDokumentpakke,
@@ -46,7 +49,7 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 
 		return StandardBusinessDocument.builder()
 				.standardBusinessDocumentHeader(sbdh)
-				.any(dpoMelding)
+				.any(createAvtaltMelding(dpoMelding))
 				.build();
 	}
 
@@ -82,5 +85,14 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 				.instanceIdentifier(MESSAGE_CHANNEL_INSTANCE_IDENTIFIER.toString())
 				.identifier(SCOPE_MESSAGECHANELL_IDENTIFIER)
 				.build();
+	}
+
+	private ArkivMelding createAvtaltMelding(String arkivmelding) {
+		final ArkivMelding arkivMelding = new ArkivMelding();
+		arkivMelding.setIdentifier(SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER);
+		arkivMelding.setSikkerhetsnivaa(SIKKERHETSNIVAA);
+		arkivMelding.setHoveddokument(ARKIVMELDING_XML);
+		arkivMelding.setContent(arkivmelding);
+		return arkivMelding;
 	}
 }

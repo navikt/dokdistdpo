@@ -20,6 +20,10 @@
 			<groupId>no.nav.dokdistdpo</groupId>
 			<artifactId>schemas-arkivmelding</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>no.nav.dokdistdpo</groupId>
+			<artifactId>qdist015</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

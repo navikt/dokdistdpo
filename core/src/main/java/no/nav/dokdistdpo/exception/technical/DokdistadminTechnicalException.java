@@ -10,4 +10,5 @@ public class DokdistadminTechnicalException extends DokdistdpoTechnicalException
 		super(message);
 		this.problemDetail = problemDetail;
 	}
+
 }

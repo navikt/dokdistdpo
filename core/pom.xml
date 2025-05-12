@@ -29,12 +29,25 @@
 			<artifactId>spring-retry</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-jms-starter</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>no.ks.fiks</groupId>
 			<artifactId>commons-asic</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.dokdistdpo</groupId>
 			<artifactId>schemas-arkivmelding</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>com.ibm.mq.jakarta.client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.messaginghub</groupId>
+			<artifactId>pooled-jms</artifactId>
 		</dependency>
 
 		<dependency>
@@ -52,6 +65,10 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk18on</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcutil-jdk18on</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.validation</groupId>

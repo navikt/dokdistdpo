@@ -23,7 +23,7 @@
 			<annox:annotate target="field">@jakarta.xml.bind.annotation.XmlAnyElement(lax = true)</annox:annotate>
 		</jaxb:bindings>
 		<jaxb:schemaBindings>
-			<jaxb:package name="no.arkivverket.standarder.noark5.arkivmelding.v2"/>
+			<jaxb:package name="no.arkivverket.standarder.noark5.arkivmelding.avtalt"/>
 		</jaxb:schemaBindings>
 	</jaxb:bindings>
 	<jaxb:bindings schemaLocation="nav_virksomhet_metadata_1.0.xsd" node="/xs:schema">
@@ -43,7 +43,7 @@
 	</jaxb:bindings>
 	<jaxb:bindings schemaLocation="metadatakatalog.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
-			<jaxb:package name="no.arkivverket.standarder.noark5.arkivmelding.avtaltmelding"/>
+			<jaxb:package name="no.arkivverket.standarder.noark5.arkivmelding.avtalt"/>
 		</jaxb:schemaBindings>
 	</jaxb:bindings>
 

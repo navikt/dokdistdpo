@@ -1,7 +1,6 @@
-package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
+package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding;
 
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.BusinessScope;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.CorrelationInformation;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.DocumentIdentification;
@@ -25,11 +24,9 @@ import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.MESSAG
 public class AvtaltStandardBusinessDocumentMapper {
 
 	public static final String HEADER_VERSION = "1.0";
-	static final String TYPE_VERSION = "1.0";
-	static final String ARKIVMELDING_TYPE_VERSION = "2.0";
-	static final String SCOPE_MESSAGECHANELL_IDENTIFIER = "dokdistdpo";
-	static final String DOKUMENTIDENTIFICATION_TYPE_AVTALTMELDING = "avtalt";
-	static final String DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING = "arkivmelding";
+	public static final String TYPE_VERSION = "2.0";
+	public static final String SCOPE_MESSAGECHANELL_IDENTIFIER = "dokdistdpo";
+	public static final String DOKUMENTIDENTIFICATION_TYPE_AVTALTMELDING = "avtalt";
 	public static final int SIKKERHETSNIVAA = 4;
 	public static final Duration EXPECTED_RESPONSE_WITHIN_HOURS = ofDays(10);
 

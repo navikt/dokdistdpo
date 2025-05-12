@@ -1,5 +1,16 @@
 #!/usr/bin/env sh
 
+if test -f /secrets/serviceuser/srvdokdistdpo/username;
+then
+    echo "Setting dokdistdpo_serviceuser_username"
+    export dokdistdpo_serviceuser_username=$(cat /secrets/serviceuser/srvdokdistdpo/username)
+fi
+if test -f /secrets/serviceuser/srvdokdistdpo/password;
+then
+    echo "Setting serviceuser_password"
+    export  dokdistdpo_serviceuser_password=$(cat /secrets/serviceuser/srvdokdistdpo/password)
+fi
+
 if test -f "$NAV_VIRKSOMHETSSERTIFIKAT_CREDENTIALS"
 then
     echo "Setting virksomhetssertifikat_alias"

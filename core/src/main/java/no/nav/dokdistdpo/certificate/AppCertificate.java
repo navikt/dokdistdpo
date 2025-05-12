@@ -64,8 +64,4 @@ public class AppCertificate {
 			throw new IllegalStateException(ERR_GENERAL, e);
 		}
 	}
-
-	public boolean shouldLockProvider() {
-		return properties.lockProvider();
-	}
 }

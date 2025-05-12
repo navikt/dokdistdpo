@@ -17,6 +17,8 @@
 				elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 			</annox:annotatePackage>
 		</jaxb:bindings>
+	</jaxb:bindings>
+	<jaxb:bindings schemaLocation="metadatakatalog.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
 			<jaxb:package name="no.arkivverket.standarder.noark5.arkivmelding"/>
 		</jaxb:schemaBindings>

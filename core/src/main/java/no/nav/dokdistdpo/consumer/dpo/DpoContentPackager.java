@@ -41,6 +41,5 @@ public class DpoContentPackager {
 		} catch (IOException e) {
 			throw new DokumentpakkingException("Klarte ikke lage asic eller kryptere dokumentpakke", e);
 		}
-
 	}
 }
