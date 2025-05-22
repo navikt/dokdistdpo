@@ -2,7 +2,6 @@ package no.nav.dokdistdpo.config.cxf;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
-import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.message.Message;
@@ -37,10 +36,6 @@ public abstract class AbstractCxfEndpointConfig {
 
 	protected void setServiceName(QName serviceName) {
 		factoryBean.setServiceName(serviceName);
-	}
-
-	protected void addFeature(Feature feature) {
-		factoryBean.getFeatures().add(feature);
 	}
 
 	protected void addOutInterceptor(Interceptor<? extends Message> interceptor) {

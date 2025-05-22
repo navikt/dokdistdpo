@@ -37,7 +37,7 @@ public class DpoMessagePackager {
 
 	/**
 	 * @param appCertificate     Navs virksomhetsertifikat
-	 * @param mottakerSertifikat
+	 * @param mottakerSertifikat dpo mottakersertifikat
 	 * @return
 	 */
 	public InputStream packageMessage(AltinnDpoRequest altinnDpoRequest,

@@ -11,7 +11,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class MdcHeaderProcessor implements Processor {
 	@Override
-	public void process(Exchange exchange) throws Exception {
+	public void process(Exchange exchange) {
 		setOrGenerateCallIdToMdc(exchange);
 	}
 

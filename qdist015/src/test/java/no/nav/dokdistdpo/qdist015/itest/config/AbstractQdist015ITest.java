@@ -48,7 +48,6 @@ public abstract class AbstractQdist015ITest {
 	public static final String VEDLEGG1_TEST_CONTENT = "VEDLEGG1_TEST_CONTENT";
 	public static final String VEDLEGG2_TEST_CONTENT = "VEDLEGG2_TEST_CONTENT";
 	public static final String TRYGDERETTEN_ORGNUMMER = "974761084";
-	;
 
 	protected static String callId;
 

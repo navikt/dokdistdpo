@@ -48,13 +48,13 @@ public final class DokdistdpoUtils {
 
 	public static void assertNotEmpty(String field, String value) {
 		if (isBlank(value)) {
-			throw new DokdistdpoIllegalArgumentException(format("Feltet %s kan ikke være null or tomt, %s=%s", field, value));
+			throw new DokdistdpoIllegalArgumentException(format("Feltet %s kan ikke være null or tomt", field));
 		}
 	}
 
 	public static void assertNotNull(String field, Object value) {
 		if (isNull(value)) {
-			throw new DokdistdpoIllegalArgumentException(format("Feltet %s kan ikke være null, %s=%s", field, value));
+			throw new DokdistdpoIllegalArgumentException(format("Feltet %s kan ikke være null.", field));
 		}
 	}
 

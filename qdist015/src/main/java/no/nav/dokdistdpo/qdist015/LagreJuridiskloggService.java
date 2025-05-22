@@ -44,7 +44,7 @@ public class LagreJuridiskloggService {
 	private byte[] sbdToByteArray(StandardBusinessDocument sbd) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			oos.writeObject(oos);
+			oos.writeObject(sbd);
 			return baos.toByteArray();
 		} catch (IOException e) {
 			throw new LagreJuridiskLoggFunctionalException(e.getMessage(), e);
