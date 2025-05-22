@@ -15,3 +15,14 @@ then
     echo "Setting virksomhetssertifikat_path"
     export virksomhetssertifikat_path="file://$NAV_VIRKSOMHETSSERTIFIKAT_KEY"
 fi
+
+if test -f /secrets/serviceuser/srvdokdistdpo/username;
+then
+    echo "Setting dokdistdpo_serviceuser_username"
+    export  dokdistdpo_serviceuser_username=$(cat /secrets/serviceuser/srvdokdistdpo/username)
+fi
+if test -f /secrets/serviceuser/srvdokdistdpo/password;
+then
+    echo "Setting dokdistdpo_serviceuser_password"
+    export  dokdistdpo_serviceuser_password=$(cat /secrets/serviceuser/srvdokdistdpo/password)
+fi

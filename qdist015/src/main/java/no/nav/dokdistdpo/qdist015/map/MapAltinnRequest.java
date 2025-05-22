@@ -23,6 +23,7 @@ public class MapAltinnRequest {
 
 	public static AltinnDpoRequest.Forsendelse mapForsendelse(String konversjonsId, HentForsendelseResponse hentForsendelseResponse) {
 		return AltinnDpoRequest.Forsendelse.builder()
+				.organisasjonsnavn(hentForsendelseResponse.mottaker().mottakerNavn())
 				.mottakerId(hentForsendelseResponse.mottaker().mottakerId())
 				.bestillingsId(hentForsendelseResponse.bestillingsId())
 				.forsendelseMetadata(hentForsendelseResponse.forsendelseMetadata())

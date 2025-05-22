@@ -17,6 +17,7 @@ public record AltinnDpoRequest(
 			String journalpostId,
 			String konversjonsId,
 			String mottakerId,
+			String organisasjonsnavn,
 			String bestillingsId,
 			String forsendelseMetadata,
 			String meldingType) {

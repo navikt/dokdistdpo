@@ -38,8 +38,8 @@ public class AltinnEformidling implements Eformidling {
 	@Override
 	public void send(AltinnDpoRequest altinnDpoRequest) {
 
-		log.info("Hentet mottakerInfo={} for Trygderetten. conversationId={}, bestillingsId={}",
-				altinnDpoRequest.registryMottakerInfo(), altinnDpoRequest.forsendelse().konversjonsId(), altinnDpoRequest.forsendelse().bestillingsId());
+		log.info("Hentet mottakerInfo={} for {}. conversationId={}, bestillingsId={}", altinnDpoRequest.registryMottakerInfo(),
+				altinnDpoRequest.forsendelse().organisasjonsnavn(), altinnDpoRequest.forsendelse().konversjonsId(), altinnDpoRequest.forsendelse().bestillingsId());
 
 		final InputStream sbdZip = dpoMessagePackager.packageMessage(altinnDpoRequest,
 				appCertificate, altinnDpoRequest.registryMottakerInfo().x509Certificate());
