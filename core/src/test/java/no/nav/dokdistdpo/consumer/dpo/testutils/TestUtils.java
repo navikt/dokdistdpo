@@ -3,6 +3,7 @@ package no.nav.dokdistdpo.consumer.dpo.testutils;
 import lombok.Data;
 import lombok.SneakyThrows;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType;
+import no.nav.dokdistdpo.consumer.dpo.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import org.apache.commons.io.IOUtils;
@@ -20,13 +21,14 @@ import java.util.zip.ZipInputStream;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
+import static no.nav.dokdistdpo.consumer.dpo.NavDokument.fromDpoMelding;
 import static org.apache.commons.io.IOUtils.toByteArray;
 
 public final class TestUtils {
 
 	public static final String AVTALTMELDING_CONTENTS = "avtalt";
 	public static final String MOTTAKER_ID = "974761084";
-	public static final UUID CONVERSATION_ID = UUID.fromString("5cc73a11-7991-449f-8a65-978f61b8d171");
+	public static final UUID CONVERSATION_ID = UUID.fromString("d3289375-f92e-42d2-882c-dbcff47faa8c");
 	public static final UUID BESTILLINGS_ID = UUID.fromString("d710340a-ddec-4bfa-bdfc-745016bbeb33");
 
 	public static final String ARKIVMELDING_XML = TestUtils.classpathToString("avtaltmelding/arkivmelding.xml");
@@ -35,14 +37,25 @@ public final class TestUtils {
 	private TestUtils() {
 	}
 
-	public static NavDokumentpakke createNavDokumentpakke(ForsendelseMetadataType forsendelseMetadata) {
-		return NavDokumentpakke.builder()
+	public static AltinnDpoRequest createAltinnDpoRequest(ForsendelseMetadataType forsendelseMetadata) {
+		NavDokumentpakke navDokumentpakke = NavDokumentpakke.builder()
+				.navDokument(fromDpoMelding(forsendelseMetadata.name(), new ByteArrayInputStream(AVTALTMELDING_CONTENTS.getBytes())))
+				.navDokumenter(singletonList(NavDokument.fromVedlegg("test1.pdf", new ByteArrayInputStream("test1pdf".getBytes()))))
+				.build();
+
+		return AltinnDpoRequest.builder()
+				.forsendelse(createForsendelse(forsendelseMetadata))
+				.navDokumentpakke(navDokumentpakke)
+				.build();
+	}
+
+	public static AltinnDpoRequest.Forsendelse createForsendelse(ForsendelseMetadataType forsendelseMetadata) {
+		return AltinnDpoRequest.Forsendelse.builder()
 				.mottakerId(MOTTAKER_ID)
 				.bestillingsId(BESTILLINGS_ID.toString())
-				.conversationId(CONVERSATION_ID.toString())
-				.arkivmelding(NavDokument.fromAvtaltmelding(new ByteArrayInputStream(AVTALTMELDING_CONTENTS.getBytes())))
-				.meldingType(forsendelseMetadata)
-				.navDokumenter(singletonList(NavDokument.fromVedlegg("test1.pdf", new ByteArrayInputStream("test1pdf".getBytes()))))
+				.konversjonsId(CONVERSATION_ID.toString())
+				.forsendelseMetadata(ARKIVMELDING_XML)
+				.meldingType(forsendelseMetadata.name())
 				.build();
 	}
 

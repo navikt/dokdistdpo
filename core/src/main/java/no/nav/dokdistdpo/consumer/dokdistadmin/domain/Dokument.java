@@ -7,5 +7,6 @@ public record Dokument(
 		String tilknyttetSom,
 		String dokumentObjektReferanse,
 		String arkivDokumentInfoId,
-		String dokumenttypeId) {
+		String dokumenttypeId,
+		Integer rekkefolge) {
 }

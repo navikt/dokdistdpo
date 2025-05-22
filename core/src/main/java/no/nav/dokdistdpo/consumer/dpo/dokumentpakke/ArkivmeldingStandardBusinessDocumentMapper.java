@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
 
-import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
+import no.nav.dokdistdpo.consumer.dpo.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.Arkivmelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.BusinessScope;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.CorrelationInformation;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.DocumentIdentification;
@@ -14,10 +15,13 @@ import java.util.Set;
 
 import static java.time.Duration.ofDays;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_DOCUMENT_IDENTIFICATOR;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.ARKIVMELDING_TYPE_VERSION;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltmeldingStandardBusinessDocumentMapper.SIKKERHETSNIVAA;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltmeldingStandardBusinessDocumentMapper.TYPE_VERSION;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVERSATION_ID;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.MESSAGE_CHANNEL;
 
@@ -28,32 +32,30 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 	static final String DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING = "arkivmelding";
 	public static final Duration EXPECTED_RESPONSE_WITHIN_HOURS = ofDays(10);
 
-	public StandardBusinessDocument mapArkivmeldingEnvelope(NavDokumentpakke navDokumentpakke,
-															String dpoMelding) {
-
+	public StandardBusinessDocument mapArkivmeldingEnvelope(AltinnDpoRequest.Forsendelse forsendelse) {
 		BusinessScope businessScope = BusinessScope.builder()
-				.scope(Set.of(createConversationIdScope(navDokumentpakke.conversationId()),
+				.scope(Set.of(createConversationIdScope(forsendelse.konversjonsId()),
 						createMessageChannelScope()))
 				.build();
 		StandardBusinessDocumentHeader sbdh = StandardBusinessDocumentHeader.builder()
 				.headerVersion(HEADER_VERSION)
-				.documentIdentification(createDocumentIdentification(navDokumentpakke.bestillingsId()))
+				.documentIdentification(createDocumentIdentification(forsendelse.bestillingsId()))
 				.businessScope(businessScope)
 				.build();
 
-		sbdh.addReceiver(sbdh.createPartner(navDokumentpakke.mottakerId()));
+		sbdh.addReceiver(sbdh.createPartner(forsendelse.mottakerId()));
 		sbdh.addSender(sbdh.createPartner(NAV_ORGNUMMER));
 
 		return StandardBusinessDocument.builder()
 				.standardBusinessDocumentHeader(sbdh)
-				.any(dpoMelding)
+				.any(createArkivmelding(forsendelse.forsendelseMetadata()))
 				.build();
 	}
 
 	private DocumentIdentification createDocumentIdentification(String bestillingsId) {
 		return DocumentIdentification.builder()
 				.standard(ARKIVMELDING_DOCUMENT_IDENTIFICATOR)
-				.typeVersion(ARKIVMELDING_TYPE_VERSION)
+				.typeVersion(TYPE_VERSION)
 				.instanceIdentifier(bestillingsId)
 				.type(DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING)
 				.multipleType(true)
@@ -82,5 +84,14 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 				.instanceIdentifier(MESSAGE_CHANNEL_INSTANCE_IDENTIFIER.toString())
 				.identifier(SCOPE_MESSAGECHANELL_IDENTIFIER)
 				.build();
+	}
+
+	private Arkivmelding createArkivmelding(String dpoMelding) {
+		final Arkivmelding arkivmelding = new Arkivmelding();
+		arkivmelding.setIdentifier(SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER);
+		arkivmelding.setSikkerhetsnivaa(SIKKERHETSNIVAA);
+		arkivmelding.setHoveddokument(AVTALTMELDING_XML);
+		arkivmelding.setContent(dpoMelding);
+		return arkivmelding;
 	}
 }

@@ -1,6 +1,10 @@
 package no.nav.dokdistdpo.consumer.dokdistadmin.domain;
 
+import lombok.Builder;
+
+@Builder
 public record OppdaterForsendelseRequest(
-		String forsendelseId,
-		String forsendelseStatus) {
+		Long forsendelseId,
+		String forsendelseStatus,
+		String konversasjonId) {
 }

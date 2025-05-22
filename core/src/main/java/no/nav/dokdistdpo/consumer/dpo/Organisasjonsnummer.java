@@ -1,5 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo;
 
+import no.nav.dokdistdpo.exception.functional.DokdistdpoIllegalArgumentException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +21,7 @@ public final class Organisasjonsnummer {
 	public static String fromIso6523(final String iso6523Orgnr) {
 		Matcher matcher = ISO6523_PATTERN.matcher(iso6523Orgnr);
 		if (!matcher.matches()) {
-			throw new IllegalArgumentException("Invalid organization number. " +
+			throw new DokdistdpoIllegalArgumentException("Invalid organization number. " +
 					"Expected format is ISO 6523, got following organization number: " + iso6523Orgnr);
 		}
 		return matcher.group(2);

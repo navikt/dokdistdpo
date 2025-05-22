@@ -23,9 +23,4 @@ public record OpprettForsendelseRequest(
 
 ) {
 
-	@Builder
-	public record ArkivInformasjon(String arkivId,
-								   String arkivSystem) {
-	}
-
 }

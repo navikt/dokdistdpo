@@ -3,11 +3,13 @@ package no.nav.dokdistdpo.consumer.dokdistadmin;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.FeilregistrerForsendelseRequest;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OpprettForsendelseRequest;
 import no.nav.dokdistdpo.exception.functional.DokdistadminFunctionalException;
 import no.nav.dokdistdpo.exception.technical.DokdistadminTechnicalException;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.client.ClientHttpResponse;
@@ -18,8 +20,11 @@ import org.springframework.web.client.RestClient;
 import java.io.IOException;
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGISTRATION_DOKDISTADMIN;
 import static no.nav.dokdistdpo.utils.DokdistdpoUtils.getProblemDetail;
+import static no.nav.dokdistdpo.utils.MdcConstant.CALL_ID;
+import static no.nav.dokdistdpo.utils.NavHeaders.NAV_CALLID;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
@@ -41,8 +46,10 @@ public class DokdistAdminConsumer {
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public HentForsendelseResponse hentForsendelse(String forsendelseId) {
 		return restClient.get()
-				.uri(uriBuilder -> uriBuilder.path("/{forsendelseId}")
+				.uri(uriBuilder -> uriBuilder
+						.path("/{forsendelseId}")
 						.build(forsendelseId))
+				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) -> {
@@ -54,6 +61,7 @@ public class DokdistAdminConsumer {
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public Long opprettForsendelse(OpprettForsendelseRequest opprettForsendelseRequest) {
 		return restClient.post()
+				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.body(opprettForsendelseRequest)
 				.retrieve()
@@ -69,11 +77,12 @@ public class DokdistAdminConsumer {
 
 		restClient.put()
 				.uri("/feilregistrerforsendelse")
+				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.body(feilregistrerForsendelse)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) ->
-						dokdistadminHandleError(res,"feilregistrerForsendelse", "forsendelseId", feilregistrerForsendelse.forsendelseId().toString()))
+						dokdistadminHandleError(res, "feilregistrerForsendelse", "forsendelseId", feilregistrerForsendelse.forsendelseId().toString()))
 				.toBodilessEntity();
 
 		log.info("feilregistrerForsendelse har feilregistrert forsendelse med forsendelseId={}", feilregistrerForsendelse.forsendelseId());
@@ -85,10 +94,11 @@ public class DokdistAdminConsumer {
 
 		restClient.put()
 				.uri("/oppdaterforsendelse")
+				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) ->
-						dokdistadminHandleError(res, "oppdaterForsendelse", "forsendelseId", oppdaterForsendelse.forsendelseId()))
+						dokdistadminHandleError(res, "oppdaterForsendelse", "forsendelseId", valueOf(oppdaterForsendelse.forsendelseId())))
 				.toBodilessEntity();
 
 		log.info("oppdaterForsendelse har oppdatert forsendelse med forsendelseId={} og forsendelseStatus={}", oppdaterForsendelse.forsendelseId(), oppdaterForsendelse.forsendelseStatus());

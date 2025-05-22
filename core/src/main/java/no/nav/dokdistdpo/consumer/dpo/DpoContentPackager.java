@@ -23,12 +23,11 @@ public class DpoContentPackager {
 		this.cmsUtil = new CmsUtil();
 	}
 
-	InputStream packageContent(NavDokumentpakke navDokumentpakke,
+	InputStream packageContent(AltinnDpoRequest altinnDpoRequest,
 							   AppCertificate appCertificate,
 							   X509Certificate mottakerSertifikat) {
 
-		try (final ByteArrayOutputStream asiceStreamed = asiceCreator.createAsiceStreamed(navDokumentpakke,
-				navDokumentpakke.navDokumenter().stream(), appCertificate)) {
+		try (final ByteArrayOutputStream asiceStreamed = asiceCreator.createAsiceStreamed(altinnDpoRequest, appCertificate)) {
 			final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 			cmsUtil.createCMSStreamed(
