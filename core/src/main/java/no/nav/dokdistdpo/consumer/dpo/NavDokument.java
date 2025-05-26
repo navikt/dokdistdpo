@@ -1,21 +1,25 @@
 package no.nav.dokdistdpo.consumer.dpo;
 
 import lombok.Builder;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType;
 
 import java.io.InputStream;
+
+import static java.lang.Enum.valueOf;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_XML;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_XML;
 
 @Builder
 public record NavDokument(String filnavn,
 						  String mimeType,
 						  InputStream innhold) {
 
-	private static final String ARKIVMELDING_XML_FILENAME = "arkivmelding.xml";
 	public static final String MIMETYPE_XML = "application/xml";
 	public static final String MIMETYPE_PDF = "application/pdf";
 
-	public static NavDokument fromAvtaltmelding(final InputStream contents) {
+	public static NavDokument fromDpoMelding(String forsendelseMetadataType, final InputStream contents) {
 		return NavDokument.builder()
-				.filnavn(ARKIVMELDING_XML_FILENAME)
+				.filnavn(getFilnavn(forsendelseMetadataType))
 				.mimeType(MIMETYPE_XML)
 				.innhold(contents)
 				.build();
@@ -27,5 +31,13 @@ public record NavDokument(String filnavn,
 				.mimeType(MIMETYPE_PDF)
 				.innhold(contents)
 				.build();
+	}
+
+	private static String getFilnavn(String metadataType) {
+		ForsendelseMetadataType forsendelseMetadataType = valueOf(ForsendelseMetadataType.class, metadataType);
+		return switch (forsendelseMetadataType) {
+			case DPO_ARKIVMELDING -> ARKIVMELDING_XML;
+			case DPO_AVTALEMELDING -> AVTALTMELDING_XML;
+		};
 	}
 }

@@ -7,10 +7,6 @@ import java.util.List;
 
 @Builder
 public record NavDokumentpakke(
-		String mottakerId,
-		String conversationId,
-		String bestillingsId,
-		ForsendelseMetadataType meldingType,
-		NavDokument arkivmelding,
+		NavDokument navDokument,
 		List<NavDokument> navDokumenter) {
 }

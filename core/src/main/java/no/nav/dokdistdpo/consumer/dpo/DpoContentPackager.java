@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo;
 
 import no.nav.dokdistdpo.certificate.AppCertificate;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.asice.AsiceCreator;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.asice.CmsUtil;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
@@ -23,12 +24,11 @@ public class DpoContentPackager {
 		this.cmsUtil = new CmsUtil();
 	}
 
-	InputStream packageContent(NavDokumentpakke navDokumentpakke,
+	InputStream packageContent(AltinnDpoRequest altinnDpoRequest,
 							   AppCertificate appCertificate,
 							   X509Certificate mottakerSertifikat) {
 
-		try (final ByteArrayOutputStream asiceStreamed = asiceCreator.createAsiceStreamed(navDokumentpakke,
-				navDokumentpakke.navDokumenter().stream(), appCertificate)) {
+		try (final ByteArrayOutputStream asiceStreamed = asiceCreator.createAsiceStreamed(altinnDpoRequest, appCertificate)) {
 			final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 			cmsUtil.createCMSStreamed(

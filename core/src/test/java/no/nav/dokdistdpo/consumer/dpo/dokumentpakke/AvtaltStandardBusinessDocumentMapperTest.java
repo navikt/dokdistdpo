@@ -19,11 +19,10 @@ import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORI
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_AVTALTMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.SCOPE_MESSAGECHANELL_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.TYPE_VERSION;
-import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.ARKIVMELDING_XML;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.BESTILLINGS_ID;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.CONVERSATION_ID;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.MOTTAKER_ID;
-import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.createNavDokumentpakke;
+import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.createForsendelse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AvtaltStandardBusinessDocumentMapperTest {
@@ -33,7 +32,7 @@ class AvtaltStandardBusinessDocumentMapperTest {
 	@Test
 	void shouldMapDpoAvtaltmelding() {
 
-		StandardBusinessDocument sbd = mapper.mapAvtaltMeldingEnvelope(createNavDokumentpakke(DPO_AVTALEMELDING), ARKIVMELDING_XML);
+		StandardBusinessDocument sbd = mapper.mapAvtaltMeldingEnvelope(createForsendelse(DPO_AVTALEMELDING));
 
 		StandardBusinessDocumentHeader sbdh = sbd.getStandardBusinessDocumentHeader();
 

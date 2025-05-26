@@ -16,6 +16,8 @@ public final class DokdistdpoConstant {
 
 	public static final UUID MESSAGE_CHANNEL_INSTANCE_IDENTIFIER = UUID.randomUUID();
 
+	public static final String ARKIVMELDING_XML = "arkivmelding.xml";
+
 	public static final String ARKIVMELDING_DOCUMENT_IDENTIFICATOR = "urn:no:difi:arkivmelding:xsd::arkivmelding";
 	public static final String SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER = "urn:no:difi:profile:arkivmelding:administrasjon:ver1.0";
 

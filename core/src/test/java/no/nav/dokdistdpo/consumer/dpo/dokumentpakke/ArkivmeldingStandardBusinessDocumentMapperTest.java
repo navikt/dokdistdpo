@@ -16,14 +16,13 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_ARKIVMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.ArkivmeldingStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.SCOPE_MESSAGECHANELL_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.TYPE_VERSION;
-import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.ARKIVMELDING_XML;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.BESTILLINGS_ID;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.CONVERSATION_ID;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.MOTTAKER_ID;
-import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.createNavDokumentpakke;
+import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.createForsendelse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ArkivmeldingStandardBusinessDocumentMapperTest {
@@ -34,7 +33,7 @@ class ArkivmeldingStandardBusinessDocumentMapperTest {
 	@Test
 	void shouldMapDpoArkivmelding() {
 
-		StandardBusinessDocument sbd = mapper.mapArkivmeldingEnvelope(createNavDokumentpakke(DPO_ARKIVMELDING), ARKIVMELDING_XML);
+		StandardBusinessDocument sbd = mapper.mapArkivmeldingEnvelope(createForsendelse(DPO_ARKIVMELDING));
 
 		StandardBusinessDocumentHeader sbdh = sbd.getStandardBusinessDocumentHeader();
 

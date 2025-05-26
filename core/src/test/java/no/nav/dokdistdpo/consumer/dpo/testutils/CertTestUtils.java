@@ -79,12 +79,12 @@ public final class CertTestUtils {
 
 	public static KeyStoreProperties itestVirksomhetssertifikatProperties() {
 		return new KeyStoreProperties(PKCS_12, SELF_SIGNED_PKCS12_ALIAS, SELF_SIGNED_PKCS12_PASSWORD,
-				new ClassPathResource(SELF_SIGNED_PKCS12), false);
+				new ClassPathResource(SELF_SIGNED_PKCS12));
 	}
 
 	public static KeyStoreProperties itestVirksomhetssertifikatBase64Properties() {
 		return new KeyStoreProperties(PKCS_12, SELF_SIGNED_PKCS12_ALIAS, SELF_SIGNED_PKCS12_PASSWORD,
-				new ClassPathResource(SELF_SIGNED_PKCS12_BASE64), false);
+				new ClassPathResource(SELF_SIGNED_PKCS12_BASE64));
 	}
 
 	public static PrivateKey itestPrivateKey() throws Exception {

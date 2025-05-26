@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.config.properties;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +14,11 @@ public record DokdistdpoProperties(
 		@Valid
 		Endpoints endpoints,
 		@Valid
-		ServiceRegistryConfig serviceRegistry) {
+		ServiceRegistryConfig serviceRegistry,
+		@Valid
+		AltinnBrokerServiceProperties altinn,
+		@Valid
+		DpoUserProperties dpo) {
 
 	public record Serviceuser(String username, String password) {}
 
@@ -26,5 +31,28 @@ public record DokdistdpoProperties(
 
 	public record AzureEndpoint(@NotBlank String url,
 								@NotBlank String scope) {
+	}
+
+	public record AltinnBrokerServiceProperties(
+			AltinnBrokerProperties brokerserviceexternal,
+			AltinnBrokerProperties brokerserviceexternalstreamed
+	) {
+	}
+
+	public record AltinnBrokerProperties(
+			@NotBlank
+			String endpointurl,
+			@Min(1)
+			int readtimeoutms,
+			@Min(1)
+			int connecttimeoutms
+	) {
+	}
+
+	public record DpoUserProperties(
+			@NotBlank
+			String username,
+			@NotBlank
+			String password) {
 	}
 }
