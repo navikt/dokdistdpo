@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
 
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.Arkivmelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.BusinessScope;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.CorrelationInformation;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.DocumentIdentification;
@@ -14,10 +15,12 @@ import java.util.Set;
 
 import static java.time.Duration.ofDays;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_DOCUMENT_IDENTIFICATOR;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.ARKIVMELDING_TYPE_VERSION;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.SIKKERHETSNIVAA;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.TYPE_VERSION;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVERSATION_ID;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.MESSAGE_CHANNEL;
 
@@ -46,14 +49,14 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 
 		return StandardBusinessDocument.builder()
 				.standardBusinessDocumentHeader(sbdh)
-				.any(dpoMelding)
+				.any(createArkivmelding(dpoMelding))
 				.build();
 	}
 
 	private DocumentIdentification createDocumentIdentification(String bestillingsId) {
 		return DocumentIdentification.builder()
 				.standard(ARKIVMELDING_DOCUMENT_IDENTIFICATOR)
-				.typeVersion(ARKIVMELDING_TYPE_VERSION)
+				.typeVersion(TYPE_VERSION)
 				.instanceIdentifier(bestillingsId)
 				.type(DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING)
 				.multipleType(true)
@@ -82,5 +85,14 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 				.instanceIdentifier(MESSAGE_CHANNEL_INSTANCE_IDENTIFIER.toString())
 				.identifier(SCOPE_MESSAGECHANELL_IDENTIFIER)
 				.build();
+	}
+
+	private Arkivmelding createArkivmelding(String dpoMelding) {
+		final Arkivmelding arkivmelding = new Arkivmelding();
+		arkivmelding.setIdentifier(SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER);
+		arkivmelding.setSikkerhetsnivaa(SIKKERHETSNIVAA);
+		arkivmelding.setHoveddokument(AVTALTMELDING_XML);
+		arkivmelding.setContent(dpoMelding);
+		return arkivmelding;
 	}
 }

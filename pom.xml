@@ -17,13 +17,15 @@
 	<modules>
 		<module>app</module>
 		<module>core</module>
-		<module>schemas-arkivmelding</module>
+		<module>altinn-schemas</module>
 	</modules>
 
 	<properties>
 		<java.version>21</java.version>
 		<nimbus-jose-jwt.version>10.0.2</nimbus-jose-jwt.version>
 		<lombok.version>1.18.36</lombok.version>
+		<cxf.version>4.1.1</cxf.version>
+		<jaxws-ri.version>4.0.3</jaxws-ri.version>
 		<commons-lang3.version>3.17.0</commons-lang3.version>
 		<commons-io.version>2.19.0</commons-io.version>
 		<bouncycastle.version>1.80</bouncycastle.version>
@@ -53,7 +55,7 @@
 			</dependency>
 			<dependency>
 				<groupId>no.nav.dokdistdpo</groupId>
-				<artifactId>schemas-arkivmelding</artifactId>
+				<artifactId>altinn-schemas</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
@@ -72,6 +74,12 @@
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>${lombok.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.ws</groupId>
+				<artifactId>jaxws-ri</artifactId>
+				<version>${jaxws-ri.version}</version>
+				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>

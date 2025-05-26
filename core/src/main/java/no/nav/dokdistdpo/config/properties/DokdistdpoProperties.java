@@ -9,9 +9,13 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("dokdistdpo")
 public record DokdistdpoProperties(
 		@Valid
+		Serviceuser serviceuser,
+		@Valid
 		Endpoints endpoints,
 		@Valid
 		ServiceRegistryConfig serviceRegistry) {
+
+	public record Serviceuser(String username, String password) {}
 
 	public record ServiceRegistryConfig(
 			@NotBlank String url) {
