@@ -2,10 +2,10 @@ package no.nav.dokdistdpo.consumer.dpo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.arkivverket.standarder.noark5.arkivmelding.Arkivmelding;
 import no.nav.dokdistdpo.certificate.AppCertificate;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.ArkivmeldingStandardBusinessDocumentMapper;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.Arkivmelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;

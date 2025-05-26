@@ -72,9 +72,11 @@ spec:
     application:
       enabled: true
   envFrom:
-    - secret: dokdistdpo-q2
+    - secret: {{ DOKDISTDPO_SECRET }}
   vault:
     enabled: true
     paths:
       - kvPath: {{ NAV_VIRKSOMHETSSERTIFIKAT_VAULT }}
         mountPath: "/secrets/virksomhetssertifikat"
+      - kvPath: {{ SRVDOKDISTDPO }}
+        mountPath: "/secret´s/serviceuser/srvdokdistdpo"
