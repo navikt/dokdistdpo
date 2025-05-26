@@ -35,18 +35,11 @@ public class BrokerServiceExternalConfig extends AbstractCxfEndpointConfig {
 		addOutInterceptor(new CookiesOutInterceptor());
 		addOutInterceptor(new HeaderOutInterceptor());
 
-		IBrokerServiceExternal iBrokerServiceExternal = createPort(IBrokerServiceExternal.class);
+		IBrokerServiceExternal iBrokerServiceExternal = createPort(IBrokerServiceExternal.class, false);
 		Client client = ClientProxy.getClient(iBrokerServiceExternal);
-		setRequestContext(client, dokdistdpoProperties.dpo());
+		setRequestContext(client);
 
 		return iBrokerServiceExternal;
 	}
 
-	private void setRequestContext(final Client client, DokdistdpoProperties.DpoUserProperties dpoUserProperties) {
-		client.getRequestContext().put("ws-security.must-understand", TRUE);
-		client.getRequestContext().put("ws-security.username", dpoUserProperties.username());
-		client.getRequestContext().put("ws-security.callback-handler", new ClientCallBackHandler(dpoUserProperties.password()));
-		client.getRequestContext().put("org.apache.cxf.message.Message.MAINTAIN_SESSION", TRUE);
-		client.getRequestContext().put("jakarta.xml.ws.session.maintain", TRUE);
-	}
 }

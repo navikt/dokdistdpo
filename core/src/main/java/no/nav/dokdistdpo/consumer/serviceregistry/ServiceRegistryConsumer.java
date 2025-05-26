@@ -36,7 +36,7 @@ public class ServiceRegistryConsumer {
 	public IdentifierResource getIdentifierResource(final String orgnummer, final String processIdentifier) {
 		return restClient.get()
 				.uri(uriBuilder -> uriBuilder
-						.path("identifier/{orgnummer}/process/{processIdentifier}")
+						.path("/identifier/{orgnummer}/process/{processIdentifier}")
 						.build(orgnummer, processIdentifier))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN))
 				.retrieve()

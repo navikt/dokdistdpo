@@ -19,7 +19,7 @@ public class CookiesOutInterceptor extends AbstractPhaseInterceptor {
 
 	@Override
 	public void handleMessage(Message message) throws Fault {
-		Map<String, List> headers = (Map<String, List>) message.get(PROTOCOL_HEADERS);
+		Map<String, List<Object>> headers = (Map<String, List<Object>>) message.get(PROTOCOL_HEADERS);
 		if (CookieStore.getCookie() != null) {
 			headers.put("Cookie", List.of(CookieStore.getCookie()));
 		}

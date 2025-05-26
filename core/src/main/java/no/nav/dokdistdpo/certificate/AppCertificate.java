@@ -81,7 +81,7 @@ public class AppCertificate {
 		try (InputStreamReader inputStreamReader = new InputStreamReader(new ByteArrayInputStream(pemCertificate.getBytes()))) {
 			PEMParser pemParser = new PEMParser(new BufferedReader(inputStreamReader));
 			final Object certificate = pemParser.readObject();
-			if (!(certificate instanceof X509Certificate)) {
+			if (!(certificate instanceof X509CertificateHolder)) {
 				throw new CertificateConversionException("PEM data inneholder ikke et X.509 sertifikat");
 			}
 			return new JcaX509CertificateConverter()

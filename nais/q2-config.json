@@ -3,7 +3,7 @@
   "DOKDISTDPO_SECRET": "dokdistdpo-q2",
   "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL": "https://dokdistadmin.dev.intern.nav.no/rest/v1/administrerforsendelse",
   "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_SCOPE": "api://dev-fss.teamdokumenthandtering.dokdistadmin/.default",
-  "DOKDISTDPO_SERVICEREGISTRY_URL": "https://qa-meldingsutveksling.difi.no/serviceregistry/",
+  "DOKDISTDPO_SERVICEREGISTRY_URL": "https://qa-meldingsutveksling.difi.no/serviceregistry",
   "DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNAL_ENDPOINTURL": "https://www.altinn.no/ServiceEngineExternal/BrokerServiceExternal.svc",
   "DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNALSTREAMED_ENDPOINTURL": "https://www.altinn.no/ServiceEngineExternal/BrokerServiceExternalStreamed.svc",
   "SRVDOKDISTDPO": "/serviceuser/data/dev/srvdokdistdpo",

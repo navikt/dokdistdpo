@@ -38,9 +38,10 @@ public class AltinnEformidling implements Eformidling {
 
 	@Override
 	public void send(AltinnDpoRequest altinnDpoRequest) {
+		AltinnDpoRequest.Forsendelse forsendelse = altinnDpoRequest.forsendelse();
 
-		log.info("Hentet mottakerInfo={} for {}. conversationId={}, bestillingsId={}", altinnDpoRequest.dpoMottakerInfo(),
-				altinnDpoRequest.forsendelse().organisasjonsnavn(), altinnDpoRequest.forsendelse().konversjonsId(), altinnDpoRequest.forsendelse().bestillingsId());
+		log.info("Hentet mottakerNavn={} for {}. conversationId={}, bestillingsId={}", forsendelse.organisasjonsnavn(),
+				forsendelse.mottakerId(), forsendelse.konversjonsId(), forsendelse.bestillingsId());
 
 		final InputStream sbdZip = dpoMessagePackager.packageMessage(altinnDpoRequest,
 				appCertificate, altinnDpoRequest.dpoMottakerInfo().x509Certificate());

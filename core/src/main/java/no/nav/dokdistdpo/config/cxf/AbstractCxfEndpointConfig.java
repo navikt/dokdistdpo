@@ -2,6 +2,7 @@ package no.nav.dokdistdpo.config.cxf;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
+import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.message.Message;
@@ -9,6 +10,8 @@ import org.apache.cxf.message.Message;
 import javax.xml.namespace.QName;
 import java.net.URL;
 import java.util.HashMap;
+
+import static java.lang.Boolean.TRUE;
 
 public abstract class AbstractCxfEndpointConfig {
 
@@ -46,9 +49,13 @@ public abstract class AbstractCxfEndpointConfig {
 		factoryBean.getInInterceptors().add(interceptor);
 	}
 
-	protected <T> T createPort(Class<T> portType) {
-		factoryBean.getFeatures().add(new TimeoutFeature(dokdistdpoProperties.altinn().brokerserviceexternal().connecttimeoutms(),
-				dokdistdpoProperties.altinn().brokerserviceexternal().readtimeoutms()));
+	protected <T> T createPort(Class<T> portType, boolean isStreamed) {
+		DokdistdpoProperties.AltinnProperties altinnProperties = dokdistdpoProperties.altinn();
+		factoryBean.getFeatures().add(new TimeoutFeature(
+				isStreamed ? altinnProperties.brokerserviceexternalstreamed().connecttimeoutms() :
+						altinnProperties.brokerserviceexternal().connecttimeoutms(),
+				isStreamed ? altinnProperties.brokerserviceexternalstreamed().readtimeoutms() :
+						altinnProperties.brokerserviceexternal().readtimeoutms()));
 		return factoryBean.create(portType);
 	}
 
@@ -58,5 +65,13 @@ public abstract class AbstractCxfEndpointConfig {
 			return url.toString();
 		}
 		throw new IllegalStateException("Failed to find resource: " + classpathResource);
+	}
+
+	protected void setRequestContext(final Client client) {
+		client.getRequestContext().put("ws-security.must-understand", TRUE);
+		client.getRequestContext().put("ws-security.username", dokdistdpoProperties.dpo().username());
+		client.getRequestContext().put("ws-security.callback-handler", new ClientCallBackHandler(dokdistdpoProperties.dpo().password()));
+		client.getRequestContext().put("org.apache.cxf.message.Message.MAINTAIN_SESSION", TRUE);
+		client.getRequestContext().put("jakarta.xml.ws.session.maintain", TRUE);
 	}
 }

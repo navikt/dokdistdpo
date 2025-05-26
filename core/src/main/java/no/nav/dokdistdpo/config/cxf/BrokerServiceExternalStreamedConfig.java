@@ -12,13 +12,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import static java.lang.Boolean.TRUE;
 import static no.altinn.brokerserviceexternalstreamed.BrokerServiceExternalStreamedSF.CustomBindingIBrokerServiceExternalStreamed;
 import static no.altinn.brokerserviceexternalstreamed.BrokerServiceExternalStreamedSF.SERVICE;
 
 @Profile("nais")
 @Configuration
-public class BrokerServiceExternalStreamedConfig extends AbstractCxfEndpointConfig{
+public class BrokerServiceExternalStreamedConfig extends AbstractCxfEndpointConfig {
 
 	public BrokerServiceExternalStreamedConfig(Bus bus, DokdistdpoProperties dokdistdpoProperties) {
 		super(bus, dokdistdpoProperties);
@@ -35,18 +34,10 @@ public class BrokerServiceExternalStreamedConfig extends AbstractCxfEndpointConf
 		addOutInterceptor(new CookiesOutInterceptor());
 		addOutInterceptor(new HeaderOutInterceptor());
 
-		IBrokerServiceExternalStreamed iBrokerServiceExternalStreamed = createPort(IBrokerServiceExternalStreamed.class);
+		IBrokerServiceExternalStreamed iBrokerServiceExternalStreamed = createPort(IBrokerServiceExternalStreamed.class, true);
 		Client client = ClientProxy.getClient(iBrokerServiceExternalStreamed);
-		setRequestContext(client, dokdistdpoProperties.dpo());
+		setRequestContext(client);
 
 		return iBrokerServiceExternalStreamed;
-	}
-
-	private void setRequestContext(final Client client,  DokdistdpoProperties.DpoUserProperties dpoUserProperties) {
-		client.getRequestContext().put("ws-security.must-understand", TRUE);
-		client.getRequestContext().put("ws-security.username", dpoUserProperties.username());
-		client.getRequestContext().put("ws-security.callback-handler", new ClientCallBackHandler(dpoUserProperties.password()));
-		client.getRequestContext().put("org.apache.cxf.message.Message.MAINTAIN_SESSION", TRUE);
-		client.getRequestContext().put("jakarta.xml.ws.session.maintain", TRUE);
 	}
 }
