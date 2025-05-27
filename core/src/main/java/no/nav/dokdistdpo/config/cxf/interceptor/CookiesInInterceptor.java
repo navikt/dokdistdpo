@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class CookiesInInterceptor extends AbstractPhaseInterceptor {
+public class CookiesInInterceptor extends AbstractPhaseInterceptor<Message> {
 
 	public CookiesInInterceptor() {
 		super(Phase.PRE_PROTOCOL);

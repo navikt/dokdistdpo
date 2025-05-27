@@ -1,12 +1,8 @@
 package no.nav.dokdistdpo.constant;
 
-import java.time.ZoneId;
-import java.util.TimeZone;
 import java.util.UUID;
 
 public final class DokdistdpoConstant {
-	public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("Europe/Oslo");
-	public static final ZoneId DEFAULT_ZONE_ID = DEFAULT_TIME_ZONE.toZoneId();
 
 	public static final String NAV_ORGNUMMER = "991078045";
 

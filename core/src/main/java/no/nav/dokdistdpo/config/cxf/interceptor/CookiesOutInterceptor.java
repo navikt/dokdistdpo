@@ -11,7 +11,7 @@ import static org.apache.cxf.message.Message.PROTOCOL_HEADERS;
 import static org.apache.cxf.phase.Phase.PRE_PROTOCOL;
 
 @SuppressWarnings("unchecked")
-public class CookiesOutInterceptor extends AbstractPhaseInterceptor {
+public class CookiesOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
 	public CookiesOutInterceptor() {
 		super(PRE_PROTOCOL);

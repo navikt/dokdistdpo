@@ -4,12 +4,9 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
-import no.nav.dokdistdpo.consumer.dpo.NavDokument;
-import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,8 +17,6 @@ import java.util.zip.ZipInputStream;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonList;
-import static no.nav.dokdistdpo.consumer.dpo.NavDokument.fromDpoMelding;
 import static org.apache.commons.io.IOUtils.toByteArray;
 
 public final class TestUtils {
@@ -35,18 +30,6 @@ public final class TestUtils {
 
 
 	private TestUtils() {
-	}
-
-	public static AltinnDpoRequest createAltinnDpoRequest(ForsendelseMetadataType forsendelseMetadata) {
-		NavDokumentpakke navDokumentpakke = NavDokumentpakke.builder()
-				.navDokument(fromDpoMelding(forsendelseMetadata.name(), new ByteArrayInputStream(AVTALTMELDING_CONTENTS.getBytes())))
-				.navDokumenter(singletonList(NavDokument.fromVedlegg("test1.pdf", new ByteArrayInputStream("test1pdf".getBytes()))))
-				.build();
-
-		return AltinnDpoRequest.builder()
-				.forsendelse(createForsendelse(forsendelseMetadata))
-				.navDokumentpakke(navDokumentpakke)
-				.build();
 	}
 
 	public static AltinnDpoRequest.Forsendelse createForsendelse(ForsendelseMetadataType forsendelseMetadata) {

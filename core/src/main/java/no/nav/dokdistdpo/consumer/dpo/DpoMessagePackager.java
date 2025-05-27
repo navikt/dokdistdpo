@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.certificate.AppCertificate;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.ArkivmeldingStandardBusinessDocumentMapper;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.Arkivmelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
@@ -31,16 +29,11 @@ public class DpoMessagePackager {
 
 	private final ObjectMapper objectMapper;
 	private final DpoContentPackager dpoContentPackager;
-	private final AvtaltStandardBusinessDocumentMapper avtaltStandardBusinessDocumentMapper;
-	private final ArkivmeldingStandardBusinessDocumentMapper arkivmeldingStandardBusinessDocumentMapper;
 
 	public DpoMessagePackager(ObjectMapper dpoObjectMapper,
 							  DpoContentPackager dpoContentPackager) {
 		this.objectMapper = dpoObjectMapper;
 		this.dpoContentPackager = dpoContentPackager;
-		this.avtaltStandardBusinessDocumentMapper = new AvtaltStandardBusinessDocumentMapper();
-		this.arkivmeldingStandardBusinessDocumentMapper = new ArkivmeldingStandardBusinessDocumentMapper();
-
 	}
 
 	/**

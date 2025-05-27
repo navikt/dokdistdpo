@@ -28,10 +28,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Component
 public class AppCertificate {
 
-	private static final String ERR_MISSING_PRIVATE_KEY_OR_PASS = "Problem accessing PrivateKey with alias \"%s\" inadequate access or Password is wrong";
-	private static final String ERR_MISSING_PRIVATE_KEY = "No PrivateKey with alias \"%s\" found in the KeyStore";
-	private static final String ERR_MISSING_CERTIFICATE = "No AppCertificate with alias \"%s\" found in the KeyStore";
-	private static final String ERR_GENERAL = "Unexpected problem occurred when operating KeyStore";
+	private static final String ERR_MISSING_PRIVATE_KEY_OR_PASS = "Feil ved tilgang til PrivateKey med alias \"%s\": tilgang nektet eller feil passord";
+	private static final String ERR_MISSING_PRIVATE_KEY = "Ingen PrivateKey med alias \"%s\" ble funnet i KeyStore";
+	private static final String ERR_MISSING_CERTIFICATE = "Ingen AppCertificate med alias \"%s\" ble funnet i KeyStore";
+	private static final String ERR_GENERAL = "Uventet feil oppstod ved operasjon på KeyStore.";
 
 	private final KeyStoreProperties properties;
 	private final KeyStore keyStore;
