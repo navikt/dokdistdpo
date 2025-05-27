@@ -79,15 +79,16 @@ public class AppCertificate {
 	public static X509Certificate convertToX509Certificate(final String pemCertificate) {
 		validatePemCertificate(pemCertificate);
 		try (InputStreamReader inputStreamReader = new InputStreamReader(new ByteArrayInputStream(pemCertificate.getBytes()))) {
-			PEMParser pemParser = new PEMParser(new BufferedReader(inputStreamReader));
-			final Object certificate = pemParser.readObject();
-			if (!(certificate instanceof X509CertificateHolder)) {
-				throw new CertificateConversionException("PEM data inneholder ikke et X.509 sertifikat");
-			}
-			return new JcaX509CertificateConverter()
-					.setProvider("BC")
-					.getCertificate((X509CertificateHolder) certificate);
+			try (PEMParser pemParser = new PEMParser(new BufferedReader(inputStreamReader))) {
+				final Object certificate = pemParser.readObject();
+				if (!(certificate instanceof X509CertificateHolder)) {
+					throw new CertificateConversionException("PEM data inneholder ikke et X.509 sertifikat");
+				}
+				return new JcaX509CertificateConverter()
+						.setProvider("BC")
+						.getCertificate((X509CertificateHolder) certificate);
 
+			}
 		} catch (IOException e) {
 			throw new CertificateConversionException("Klarter ikke konvertere PEM til X.509 sertifikat", e);
 		} catch (CertificateException e) {

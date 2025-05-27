@@ -13,7 +13,7 @@ import static org.apache.cxf.message.Message.PROTOCOL_HEADERS;
 import static org.apache.cxf.phase.Phase.PRE_PROTOCOL_ENDING;
 
 @Slf4j
-public class HeaderOutInterceptor extends AbstractPhaseInterceptor {
+public class HeaderOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
 	public HeaderOutInterceptor() {
 		super(PRE_PROTOCOL_ENDING);

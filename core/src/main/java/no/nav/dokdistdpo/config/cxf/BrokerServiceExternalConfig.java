@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import static java.lang.Boolean.TRUE;
 import static no.altinn.brokerserviceexternal.BrokerServiceExternalSF.CustomBindingIBrokerServiceExternal;
 import static no.altinn.brokerserviceexternal.BrokerServiceExternalSF.SERVICE;
 

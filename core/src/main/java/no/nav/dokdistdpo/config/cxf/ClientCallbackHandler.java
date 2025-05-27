@@ -5,11 +5,11 @@ import org.apache.wss4j.common.ext.WSPasswordCallback;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 
-public class ClientCallBackHandler implements CallbackHandler {
+public class ClientCallbackHandler implements CallbackHandler {
 
 	private final String password;
 
-	public ClientCallBackHandler(String password) {
+	public ClientCallbackHandler(String password) {
 		this.password = password;
 	}
 

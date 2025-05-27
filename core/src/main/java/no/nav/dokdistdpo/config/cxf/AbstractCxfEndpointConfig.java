@@ -70,7 +70,7 @@ public abstract class AbstractCxfEndpointConfig {
 	protected void setRequestContext(final Client client) {
 		client.getRequestContext().put("ws-security.must-understand", TRUE);
 		client.getRequestContext().put("ws-security.username", dokdistdpoProperties.dpo().username());
-		client.getRequestContext().put("ws-security.callback-handler", new ClientCallBackHandler(dokdistdpoProperties.dpo().password()));
+		client.getRequestContext().put("ws-security.callback-handler", new ClientCallbackHandler(dokdistdpoProperties.dpo().password()));
 		client.getRequestContext().put("org.apache.cxf.message.Message.MAINTAIN_SESSION", TRUE);
 		client.getRequestContext().put("jakarta.xml.ws.session.maintain", TRUE);
 	}
