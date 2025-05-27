@@ -17,7 +17,7 @@ public class DpoMottakerInfoService {
 		this.serviceRegistryConsumer = serviceRegistryConsumer;
 	}
 
-	public MottakerInfo hentMottakerInfo(String mottakerId, String processIdentifier) {
+	public DpoMottakerInfo hentMottakerInfo(String mottakerId, String processIdentifier) {
 		final IdentifierResource identifierResource = serviceRegistryConsumer.getIdentifierResource(mottakerId, processIdentifier);
 		final Optional<IdentifierResource.ServiceRecord> anyServiceRecord = identifierResource.findServiceRecord(processIdentifier, DPO);
 
@@ -26,6 +26,6 @@ public class DpoMottakerInfoService {
 
 		final IdentifierResource.Service service= serviceRecord.service();
 
-		return new MottakerInfo(serviceRecord.organisationNumber(), serviceRecord.pemCertificate(), service.serviceCode(), service.serviceEditionCode());
+		return new DpoMottakerInfo(serviceRecord.organisationNumber(), serviceRecord.pemCertificate(), service.serviceCode(), service.serviceEditionCode());
 	}
 }

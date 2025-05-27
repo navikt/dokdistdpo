@@ -5,6 +5,7 @@ import no.difi.asic.AsicWriter;
 import no.difi.asic.AsicWriterFactory;
 import no.difi.asic.SignatureHelper;
 import no.nav.dokdistdpo.certificate.AppCertificate;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.XmlManifestCreator;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.Stream;
 
 import static no.difi.asic.MimeType.XML;
 import static no.difi.asic.MimeType.forString;
@@ -32,22 +32,19 @@ public class AsiceCreator {
 		this.xmlManifestCreator = new XmlManifestCreator();
 	}
 
-	public ByteArrayOutputStream createAsiceStreamed(NavDokumentpakke navDokumentpakke,
-													 Stream<? extends NavDokument> dokumenter,
+	public ByteArrayOutputStream createAsiceStreamed(AltinnDpoRequest altinnDpoRequest,
 													 AppCertificate appCertificate) throws IOException {
-
 		ByteArrayOutputStream asicArchive = new ByteArrayOutputStream();
-		String manifest = xmlManifestCreator.createManifest(navDokumentpakke);
-		NavDokument dpoMelding = navDokumentpakke.arkivmelding();
+		String manifest = xmlManifestCreator.createManifest(altinnDpoRequest);
+		NavDokumentpakke navDokumentpakke = altinnDpoRequest.navDokumentpakke();
 
 		AsicWriter asicWriter = AsicWriterFactory.newFactory()
 				.newContainer(asicArchive)
 				.add(toBufferedStream(manifest.getBytes()), MANIFEST_XML, XML);
 
-		try (InputStream meldingInputstream = toBufferedStream(navDokumentpakke.arkivmelding().innhold())) {
-			asicWriter.add(meldingInputstream, dpoMelding.filnavn(), forString(dpoMelding.mimeType()));
-
-			dokumenter.forEach(dok -> addDocumentToAsic(asicWriter, dok));
+		try (InputStream meldingInputstream = toBufferedStream(navDokumentpakke.navDokument().innhold())) {
+			asicWriter.add(meldingInputstream, navDokumentpakke.navDokument().filnavn(), forString(navDokumentpakke.navDokument().mimeType()));
+			navDokumentpakke.navDokumenter().forEach(dok -> addDocumentToAsic(asicWriter, dok));
 		}
 
 		asicWriter.sign(new DefaultSignatureHelper(appCertificate));
@@ -61,7 +58,7 @@ public class AsiceCreator {
 			}
 			asicWriter.add(inputStream, dokument.filnavn(), forString(dokument.mimeType()));
 		} catch (IOException e) {
-			throw new DokumentpakkingException("Kunne ikke pakke arkivmelding: " + dokument.filnavn(), e);
+			throw new DokumentpakkingException("Kunne ikke pakke navDokument: " + dokument.filnavn(), e);
 		}
 	}
 

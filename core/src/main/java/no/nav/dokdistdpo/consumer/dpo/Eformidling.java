@@ -1,8 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo;
 
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
+
 public interface Eformidling {
-
-	void send(NavDokumentpakke navDokumentpakke, String arkivmelding);
-
-	void bekreft(String filreferanse);
+	void send(AltinnDpoRequest altinnDpoRequest);
 }

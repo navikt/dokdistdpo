@@ -1,5 +1,6 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
 
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.manifest.Avsender;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.manifest.HovedDokument;
@@ -17,12 +18,13 @@ public class XmlManifestCreator {
 	private static final String HOVEDDOKUMENT = "Hoveddokument";
 	private static final String HOVEDDOKUMENT_LANG = "no";
 
-	public String createManifest(final NavDokumentpakke navDokumentpakke) {
+	public String createManifest(final AltinnDpoRequest altinnDpoRequest) {
+		NavDokumentpakke navDokumentpakke = altinnDpoRequest.navDokumentpakke();
 		Avsender avsender = new Avsender(new Organisasjon(NAV_ORGNUMMER));
-		Mottaker mottaker = new Mottaker(new Organisasjon(navDokumentpakke.mottakerId()));
+		Mottaker mottaker = new Mottaker(new Organisasjon(altinnDpoRequest.forsendelse().mottakerId()));
 		HovedDokument hoveddokumentXml = HovedDokument.builder()
-				.href(navDokumentpakke.arkivmelding().filnavn())
-				.mime(navDokumentpakke.arkivmelding().mimeType())
+				.href(navDokumentpakke.navDokument().filnavn())
+				.mime(navDokumentpakke.navDokument().mimeType())
 				.tittel(HovedDokument.Tittel.builder()
 						.tittel(HOVEDDOKUMENT)
 						.lang(HOVEDDOKUMENT_LANG)

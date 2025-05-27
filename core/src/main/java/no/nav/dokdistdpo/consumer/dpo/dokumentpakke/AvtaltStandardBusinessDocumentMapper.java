@@ -1,6 +1,6 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
 
-import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.BusinessScope;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.CorrelationInformation;
@@ -26,34 +26,31 @@ public class AvtaltStandardBusinessDocumentMapper {
 
 	public static final String HEADER_VERSION = "1.0";
 	static final String TYPE_VERSION = "1.0";
-	static final String ARKIVMELDING_TYPE_VERSION = "2.0";
 	static final String SCOPE_MESSAGECHANELL_IDENTIFIER = "dokdistdpo";
 	static final String DOKUMENTIDENTIFICATION_TYPE_AVTALTMELDING = "avtalt";
-	static final String DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING = "arkivmelding";
 	public static final int SIKKERHETSNIVAA = 4;
 	public static final Duration EXPECTED_RESPONSE_WITHIN_HOURS = ofDays(10);
 
 
-	public StandardBusinessDocument mapAvtaltMeldingEnvelope(NavDokumentpakke navDokumentpakke,
-															 String dpoMelding) {
+	public StandardBusinessDocument mapAvtaltMeldingEnvelope(AltinnDpoRequest.Forsendelse forsendelse) {
 
 
 		BusinessScope businessScope = BusinessScope.builder()
-				.scope(Set.of(createAvtaltConversationIdScope(navDokumentpakke.conversationId()),
+				.scope(Set.of(createAvtaltConversationIdScope(forsendelse.konversjonsId()),
 						createMessageChannelScope()))
 				.build();
 		StandardBusinessDocumentHeader sbdh = StandardBusinessDocumentHeader.builder()
 				.headerVersion(HEADER_VERSION)
-				.documentIdentification(createDocumentIdentification(navDokumentpakke.bestillingsId()))
+				.documentIdentification(createDocumentIdentification(forsendelse.bestillingsId()))
 				.businessScope(businessScope)
 				.build();
 
-		sbdh.addReceiver(sbdh.createPartner(navDokumentpakke.mottakerId()));
+		sbdh.addReceiver(sbdh.createPartner(forsendelse.mottakerId()));
 		sbdh.addSender(sbdh.createPartner(NAV_ORGNUMMER));
 
 		return StandardBusinessDocument.builder()
 				.standardBusinessDocumentHeader(sbdh)
-				.any(createAvtaltMelding(dpoMelding))
+				.any(createAvtaltMelding(forsendelse.forsendelseMetadata()))
 				.build();
 	}
 

@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.exception.technical.ServiceRegistryTechnicalException;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import static java.lang.String.format;
 import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGISTRATION_MASKINPORTEN;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @Slf4j
@@ -26,9 +27,7 @@ public class ServiceRegistryConsumer {
 								   RestClient.Builder restClientBuilder) {
 		this.restClient = restClientBuilder
 				.baseUrl(dokdistdpoProperties.serviceRegistry().url())
-				.defaultHeaders(httpHeaders -> {
-					httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-				})
+				.defaultHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 				.build();
 	}
 
@@ -36,7 +35,7 @@ public class ServiceRegistryConsumer {
 	public IdentifierResource getIdentifierResource(final String orgnummer, final String processIdentifier) {
 		return restClient.get()
 				.uri(uriBuilder -> uriBuilder
-						.path("identifier/{orgnummer}/process/{processIdentifier}")
+						.path("/identifier/{orgnummer}/process/{processIdentifier}")
 						.build(orgnummer, processIdentifier))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN))
 				.retrieve()

@@ -3,6 +3,7 @@ package no.nav.dokdistdpo.consumer.dokdistadmin;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.FeilregistrerForsendelseRequest;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.Forsendelse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OpprettForsendelseRequest;
 import no.nav.dokdistdpo.exception.functional.DokdistadminFunctionalException;
@@ -52,14 +53,14 @@ public class DokdistAdminConsumer {
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public Long opprettForsendelse(OpprettForsendelseRequest opprettForsendelseRequest) {
+	public Forsendelse opprettForsendelse(OpprettForsendelseRequest opprettForsendelseRequest) {
 		return restClient.post()
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.body(opprettForsendelseRequest)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) ->
 						dokdistadminHandleError(res, "opprettForsendelse", "bestillingsId", opprettForsendelseRequest.bestillingsId()))
-				.body(Long.class);
+				.body(Forsendelse.class);
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
@@ -93,7 +94,6 @@ public class DokdistAdminConsumer {
 
 		log.info("oppdaterForsendelse har oppdatert forsendelse med forsendelseId={} og forsendelseStatus={}", oppdaterForsendelse.forsendelseId(), oppdaterForsendelse.forsendelseStatus());
 	}
-
 
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste, String feltnavn, String feltVerdi) throws IOException {
 		ProblemDetail problemDetail = getProblemDetail(response.getBody());
