@@ -99,4 +99,4 @@ spec:
       - kvPath: {{ NAV_VIRKSOMHETSSERTIFIKAT_VAULT }}
         mountPath: "/secrets/virksomhetssertifikat"
       - kvPath: {{ SRVDOKDISTDPO }}
-        mountPath: "/secret´s/serviceuser/srvdokdistdpo"
+        mountPath: "/secrets/serviceuser/srvdokdistdpo"
