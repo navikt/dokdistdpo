@@ -8,24 +8,15 @@ import java.util.List;
 public record OpprettForsendelseRequest(
 		String bestillingsId,
 		String distribusjonsKanal,
-		String distribusjonstype,
-		String distribusjonstidspunkt,
 		String bestillendeFagsystem,
 		String tema,
 		String forsendelseTittel,
-		String batchId,
 		String dokumentProdApp,
-		String originalDistribusjonId,
 		Mottaker mottaker,
+		List<Dokument> dokumenter,
+		String originalDistribusjonId,
+		String distribusjonstype,
+		String distribusjonstidspunkt,
 		ArkivInformasjon arkivInformasjon,
-		Postadresse postadresse,
-		List<Dokument> dokumenter
-
-) {
-
-	@Builder
-	public record ArkivInformasjon(String arkivId,
-								   String arkivSystem) {
-	}
-
+		Postadresse postadresse) {
 }

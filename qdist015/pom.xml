@@ -9,7 +9,7 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>app</artifactId>
+	<artifactId>qdist015</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -17,18 +17,15 @@
 			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>no.nav.dokdistdpo</groupId>
-			<artifactId>qdist015</artifactId>
+			<groupId>no.nav.meldinger.virksomhet</groupId>
+			<artifactId>melding-virksomhet-dokdistfordeling</artifactId>
+		</dependency>
+
+		<!--test-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 	</dependencies>
 
-	<build>
-		<finalName>app</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 </project>

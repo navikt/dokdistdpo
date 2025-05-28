@@ -6,19 +6,20 @@ import java.util.List;
 
 @Builder
 public record HentForsendelseResponse(
+		Long forsendelseId,
 		String bestillingsId,
 		String konversasjonId,
 		String forsendelseStatus,
-		String modus,
 		String tema,
+		String bestillendeFagsystem,
+		String dokumentProdApp,
 		String forsendelseTittel,
 		String forsendelseMetadata,
 		String forsendelseMetadataType,
+		String distribusjonstype,
+		String distribusjonstidspunkt,
 		Mottaker mottaker,
+		Postadresse postadresse,
 		ArkivInformasjon arkivInformasjon,
 		List<Dokument> dokumenter) {
-
-	@Builder
-	public record ArkivInformasjon(String arkivId) {
-	}
 }

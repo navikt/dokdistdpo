@@ -3,6 +3,7 @@ package no.nav.dokdistdpo.config.properties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -18,7 +19,11 @@ public record DokdistdpoProperties(
 		@Valid
 		AltinnProperties altinn,
 		@Valid
-		DpoUserProperties dpo) {
+		DpoUserProperties dpo,
+		@Valid
+		MqGatewayProperties mqGateway,
+		@Valid
+		JuridiskloggConfig juridisklogg) {
 
 	public record Serviceuser(String username, String password) {}
 
@@ -35,8 +40,7 @@ public record DokdistdpoProperties(
 
 	public record AltinnProperties(
 			AltinnBrokerProperties brokerserviceexternal,
-			AltinnBrokerProperties brokerserviceexternalstreamed
-	) {
+			AltinnBrokerProperties brokerserviceexternalstreamed) {
 	}
 
 	public record AltinnBrokerProperties(
@@ -54,5 +58,17 @@ public record DokdistdpoProperties(
 			String username,
 			@NotBlank
 			String password) {
+	}
+
+	public record MqGatewayProperties(
+			@NotBlank String hostname,
+			@NotBlank String managerName,
+			@Positive int port,
+			@NotBlank String channelName,
+			boolean autostartupQdist015) {
+	}
+
+	public record JuridiskloggConfig(
+			@NotBlank String url) {
 	}
 }

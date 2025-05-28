@@ -6,6 +6,7 @@ import lombok.Builder;
 public record Dokument(
 		String tilknyttetSom,
 		String dokumentObjektReferanse,
+		Integer rekkefolge,
 		String arkivDokumentInfoId,
 		String dokumenttypeId) {
 }
