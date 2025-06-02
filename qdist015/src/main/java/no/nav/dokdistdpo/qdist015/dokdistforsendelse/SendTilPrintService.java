@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import static java.time.LocalDateTime.now;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_BESTILLINGS_ID;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 
 @Component
 public class SendTilPrintService {
@@ -37,12 +38,14 @@ public class SendTilPrintService {
 	@Handler
 	public DistribuerTilKanal sendForsendelseTilPrint(HentForsendelseResponse hentForsendelseResponse, Exchange exchange) {
 		final String nyBestillingsId = UUID.randomUUID().toString();
-		exchange.setProperty(PROPERTY_BESTILLINGS_ID, nyBestillingsId);
 
 		forsendelseValidator.assertOpprettForsendelseRequest(hentForsendelseResponse);
 		OpprettForsendelseRequest opprettForsendelse = opprettForsendelseMapper.mapToOpprettForsendelse(hentForsendelseResponse, nyBestillingsId);
 
 		Forsendelse nyForsendelse = dokdistAdminConsumer.opprettForsendelse(opprettForsendelse);
+
+		exchange.setProperty(PROPERTY_BESTILLINGS_ID, nyBestillingsId);
+		exchange.setProperty(PROPERTY_FORSENDELSE_ID, nyForsendelse.forsendelseId());
 
 		opprettFeilregistrerForsendelse(hentForsendelseResponse.forsendelseId(), nyBestillingsId);
 
