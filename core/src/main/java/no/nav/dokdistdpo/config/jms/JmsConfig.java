@@ -66,6 +66,7 @@ public class JmsConfig {
 		MQConnectionFactory mqConnectionFactory = new MQConnectionFactory();
 		mqConnectionFactory.setHostName(dokdistdpoProperties.mqGateway().hostname());
 		mqConnectionFactory.setChannel(dokdistdpoProperties.mqGateway().channelName());
+		mqConnectionFactory.setPort(dokdistdpoProperties.mqGateway().port());
 		mqConnectionFactory.setQueueManager(dokdistdpoProperties.mqGateway().managerName());
 		mqConnectionFactory.setTransportType(WMQ_CM_CLIENT);
 		mqConnectionFactory.setCCSID(UTF_8_WITH_PUA);

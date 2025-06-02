@@ -9,7 +9,7 @@ public final class DokdistdpoConstant {
 	public static final String FORSENDELSE_STATUS_KLAR_FOR_DIST = "KLAR_FOR_DIST";
 	public static final String FORSENDELSE_STATUS_OVERSENDT = "OVERSENDT";
 
-	public static final String PROPERTY_KONVERSAJON_ID = "konversajonsId";
+	public static final String PROPERTY_KONVERSASJON_ID = "konversasjonId";
 	public static final String PROPERTY_BESTILLINGS_ID = "bestillingsId";
 	public static final String PROPERTY_FORSENDELSE_ID = "forsendelseId";
 

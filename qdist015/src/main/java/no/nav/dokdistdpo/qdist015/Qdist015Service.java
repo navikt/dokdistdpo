@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_BESTILLINGS_ID;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_KONVERSAJON_ID;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_KONVERSASJON_ID;
 
 @Component
 public class Qdist015Service {
@@ -50,7 +50,7 @@ public class Qdist015Service {
 	@Handler
 	public AltinnDpoRequest processForsendelse(DistribuerTilKanal distribuerTilKanal, Exchange exchange) {
 		final String konversajonId = UUID.randomUUID().toString();
-		exchange.setProperty(PROPERTY_KONVERSAJON_ID, konversajonId);
+		exchange.setProperty(PROPERTY_KONVERSASJON_ID, konversajonId);
 
 		HentForsendelseResponse hentForsendelseResponse = dokdistadminService.hentForsendelse(distribuerTilKanal.getForsendelseId());
 		exchange.setProperty(PROPERTY_FORSENDELSE_ID, distribuerTilKanal.getForsendelseId());

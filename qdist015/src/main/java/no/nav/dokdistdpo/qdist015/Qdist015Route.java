@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import static jakarta.xml.bind.JAXBContext.newInstance;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_KONVERSAJON_ID;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_KONVERSASJON_ID;
 import static no.nav.dokdistdpo.qdist015.dokdistforsendelse.SendTilPrintService.SEND_TIL_PRINT;
 import static org.apache.camel.ExchangePattern.InOnly;
 import static org.apache.camel.LoggingLevel.ERROR;
@@ -89,7 +89,7 @@ public class Qdist015Route extends RouteBuilder {
 	}
 
 	public static String getIdsForLogging() {
-		return "konversasjonId=${exchangeProperty." + PROPERTY_KONVERSAJON_ID + "}, " +
+		return "konversasjonId=${exchangeProperty." + PROPERTY_KONVERSASJON_ID + "}, " +
 				"forsendelseId=${exchangeProperty." + PROPERTY_FORSENDELSE_ID + "}";
 	}
 
