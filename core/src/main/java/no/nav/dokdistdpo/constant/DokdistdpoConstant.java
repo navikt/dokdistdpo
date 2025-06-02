@@ -6,6 +6,13 @@ public final class DokdistdpoConstant {
 
 	public static final String NAV_ORGNUMMER = "991078045";
 
+	public static final String FORSENDELSE_STATUS_KLAR_FOR_DIST = "KLAR_FOR_DIST";
+	public static final String FORSENDELSE_STATUS_OVERSENDT = "OVERSENDT";
+
+	public static final String PROPERTY_KONVERSASJON_ID = "konversasjonId";
+	public static final String PROPERTY_BESTILLINGS_ID = "bestillingsId";
+	public static final String PROPERTY_FORSENDELSE_ID = "forsendelseId";
+
 	public static final String AVTALTMELDING_XML = "avtaltmelding.xml";
 	public static final String AVTALTMELDING_DOCUMENT_IDENTIFICATOR = "urn:no:difi:avtalt:xsd::avtalt";
 	public static final String SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER = "urn:no:difi:profile:avtalt:avtalt:ver1.0";

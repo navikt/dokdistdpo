@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.3</version>
+		<version>3.5.0</version>
 	</parent>
 
 	<groupId>no.nav.dokdistdpo</groupId>
@@ -18,12 +18,15 @@
 		<module>app</module>
 		<module>core</module>
 		<module>altinn-schemas</module>
+		<module>qdist015</module>
 	</modules>
 
 	<properties>
 		<java.version>21</java.version>
 		<nimbus-jose-jwt.version>10.0.2</nimbus-jose-jwt.version>
 		<lombok.version>1.18.36</lombok.version>
+		<ibm.mq.client.version>9.4.2.1</ibm.mq.client.version>
+		<camel.version>4.11.0</camel.version>
 		<cxf.version>4.1.1</cxf.version>
 		<jaxws-ri.version>4.0.3</jaxws-ri.version>
 		<commons-lang3.version>3.17.0</commons-lang3.version>
@@ -35,6 +38,7 @@
 		<tink.version>1.17.0</tink.version>
 		<tink-gcpkms.version>1.10.0</tink-gcpkms.version>
 		<commons-asic.version>1.0.2</commons-asic.version>
+		<melding-virksomhet-dokdistfordeling.version>7-18c61bf</melding-virksomhet-dokdistfordeling.version>
 		<!-- Plugins -->
 		<maven-jaxb2-plugin.version>2.1.1</maven-jaxb2-plugin.version>
 		<hisrc-basicjaxb.version>2.2.1</hisrc-basicjaxb.version>
@@ -56,6 +60,11 @@
 			<dependency>
 				<groupId>no.nav.dokdistdpo</groupId>
 				<artifactId>altinn-schemas</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.dokdistdpo</groupId>
+				<artifactId>qdist015</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
@@ -97,11 +106,34 @@
 				<version>${logstash-logback-encoder.version}</version>
 			</dependency>
 
+			<!--dokdistfordeling-->
+			<dependency>
+				<groupId>no.nav.meldinger.virksomhet</groupId>
+				<artifactId>melding-virksomhet-dokdistfordeling</artifactId>
+				<version>${melding-virksomhet-dokdistfordeling.version}</version>
+			</dependency>
+
+			<!--IBM MQ-->
+			<dependency>
+				<groupId>com.ibm.mq</groupId>
+				<artifactId>com.ibm.mq.jakarta.client</artifactId>
+				<version>${ibm.mq.client.version}</version>
+			</dependency>
+
 			<!-- cxf -->
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-bom</artifactId>
 				<version>${cxf.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!--Apache Camel-->
+			<dependency>
+				<groupId>org.apache.camel.springboot</groupId>
+				<artifactId>camel-spring-boot-bom</artifactId>
+				<version>${camel.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -128,6 +160,11 @@
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcpkix-jdk18on</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcutil-jdk18on</artifactId>
 				<version>${bouncycastle.version}</version>
 			</dependency>
 		</dependencies>
