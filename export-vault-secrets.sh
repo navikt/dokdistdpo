@@ -26,3 +26,33 @@ then
     echo "Setting dokdistdpo_serviceuser_password"
     export  dokdistdpo_serviceuser_password=$(cat /secrets/serviceuser/srvdokdistdpo/password)
 fi
+
+if test -f /var/run/secrets/nais.io/dokdistdpo/GOOGLE_APPLICATION_CREDENTIALS
+then
+    echo "Setting GOOGLE_APPLICATION_CREDENTIALS"
+    export GOOGLE_APPLICATION_CREDENTIALS=/var/run/secrets/nais.io/dokdistdpo/GOOGLE_APPLICATION_CREDENTIALS
+fi
+
+if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_password
+then
+    echo "Setting dokdistdpo_dpo_password"
+    export dokdistdpo_dpo_password=/var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_password
+fi
+
+if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_username
+then
+    echo "Setting dokdistdpo_dpo_username"
+    export dokdistdpo_dpo_username=/var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_username
+fi
+
+if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_qdist015_autostartup; then
+    echo "Setting dokdistdpo_qdist015_autostartup"
+
+    autostartup=$(tr '[:upper:]' '[:lower:]' < /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_qdist015_autostartup)
+
+    if [[ "$autostartup" == "true" ]]; then
+        export dokdistdpo_qdist015_autostartup=true
+    else [[ "$autostartup" == "false" ]];
+        export dokdistdpo_qdist015_autostartup=false
+    fi
+fi
