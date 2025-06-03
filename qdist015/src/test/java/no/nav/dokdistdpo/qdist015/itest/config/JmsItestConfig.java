@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class JmsItestConfig {
 
-	public static final String QDIST014_BQ = "qdist014Bq";
-
 	@Bean
 	public Queue qdist015(@Value("${dokdistdpo_qdist015_dist_til_dpo.queuename}") String qdist015Queue) {
 		return new ActiveMQQueue(qdist015Queue);
@@ -47,7 +45,6 @@ public class JmsItestConfig {
 	/**
 	 * Opprett ConnectionFactory for test
 	 * @param embeddedActiveMQ depender på embeddedActiceMQ så serveren er klar før vi oppretter connectionFactory
-	 * @return
 	 */
 	@Bean
 	public ConnectionFactory activeMQConnectionFactory(EmbeddedActiveMQ embeddedActiveMQ) {

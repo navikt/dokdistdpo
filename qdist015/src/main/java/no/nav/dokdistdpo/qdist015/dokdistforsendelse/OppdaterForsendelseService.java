@@ -2,8 +2,6 @@ package no.nav.dokdistdpo.qdist015.dokdistforsendelse;
 
 import no.nav.dokdistdpo.consumer.dokdistadmin.DokdistAdminConsumer;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
-import org.apache.camel.Body;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Component;
 

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static no.nav.dokdistdpo.consumer.serviceregistry.IdentifierResource.ServiceIdentifier.DPO;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Component
 public class DpoMottakerInfoService {
@@ -18,15 +18,26 @@ public class DpoMottakerInfoService {
 	public DpoMottakerInfo hentMottakerInfo(ServiceRegistryRequest serviceRegistryRequest) {
 		final IdentifierResource identifierResource = serviceRegistryConsumer.getIdentifierResource(serviceRegistryRequest.mottakerId(), serviceRegistryRequest.processIdentifier());
 
-		if (identifierResource == null) {
+		if (identifierResource == null || isEmpty(identifierResource.serviceRecords())) {
 			return null;
 		}
 
-		final Optional<IdentifierResource.ServiceRecord> anyServiceRecord = identifierResource.findServiceRecord(serviceRegistryRequest.processIdentifier(), DPO);
-		IdentifierResource.ServiceRecord serviceRecord = anyServiceRecord.get();
+		final Optional<IdentifierResource.ServiceRecord> anyServiceRecord = identifierResource.findServiceRecord(serviceRegistryRequest.processIdentifier());
+		IdentifierResource.ServiceRecord serviceRecord = anyServiceRecord.orElse(null);
 
-		final IdentifierResource.Service service = serviceRecord.service();
+		if (isServiceRecordNull(serviceRecord) || isServiceNull(serviceRecord.service())) {
+			return null;
+		}
 
-		return new DpoMottakerInfo(serviceRecord.organisationNumber(), serviceRecord.pemCertificate(), service.serviceCode(), service.serviceEditionCode());
+		return new DpoMottakerInfo(serviceRecord.organisationNumber(), serviceRecord.pemCertificate(),
+				serviceRecord.service().serviceCode(), serviceRecord.service().serviceEditionCode());
+	}
+
+	boolean isServiceRecordNull(IdentifierResource.ServiceRecord serviceRecord) {
+		return serviceRecord == null || serviceRecord.service() == null || serviceRecord.pemCertificate() == null;
+	}
+
+	boolean isServiceNull(IdentifierResource.Service service) {
+		return service == null || service.serviceCode() == null || service.serviceEditionCode() == null;
 	}
 }
