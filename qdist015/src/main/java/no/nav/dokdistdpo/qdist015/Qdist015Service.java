@@ -48,7 +48,7 @@ public class Qdist015Service {
 	}
 
 	@Handler
-	public AltinnDpoRequest processForsendelse(DistribuerTilKanal distribuerTilKanal, Exchange exchange) {
+	public void processForsendelse(DistribuerTilKanal distribuerTilKanal, Exchange exchange) {
 		final String konversajonId = UUID.randomUUID().toString();
 		exchange.setProperty(PROPERTY_KONVERSASJON_ID, konversajonId);
 
@@ -57,13 +57,12 @@ public class Qdist015Service {
 		exchange.setProperty(PROPERTY_BESTILLINGS_ID, hentForsendelseResponse.bestillingsId());
 
 		DpoMottakerInfo dpoMottakerInfo = dokdistadminService.hentServiceRegistryMottakerInfo(hentForsendelseResponse);
+		AltinnDpoRequest.Forsendelse forsendelse = altinnRequestMapper.mapForsendelse(konversajonId, hentForsendelseResponse);
 
 		if (dpoMottakerInfo == null) {
 			sendTilPrintService.sendForsendelseTilPrint(hentForsendelseResponse, exchange);
-			return null;
+			return;
 		}
-
-		AltinnDpoRequest.Forsendelse forsendelse = altinnRequestMapper.mapForsendelse(konversajonId, hentForsendelseResponse);
 
 		StandardBusinessDocument standardBusinessDocument = altinnRequestMapper.getStandardBusinessDocument(forsendelse);
 
@@ -71,14 +70,13 @@ public class Qdist015Service {
 				.forsendelseId(distribuerTilKanal.getForsendelseId())
 				.forsendelse(forsendelse)
 				.businessDocument(standardBusinessDocument)
+				.dpoMottakerInfo(dpoMottakerInfo)
 				.navDokumentpakke(mapToNavDokumentpakke(hentForsendelseResponse))
 				.build();
 
 		eformidling.send(altinnDpoRequest);
 
 		juridiskloggService.lagreJuridisklogg(altinnDpoRequest);
-
-		return altinnDpoRequest;
 	}
 
 	private NavDokumentpakke mapToNavDokumentpakke(HentForsendelseResponse forsendelse) {

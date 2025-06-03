@@ -1,5 +1,8 @@
 package no.nav.dokdistdpo.qdist015;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
@@ -11,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 
@@ -41,10 +43,12 @@ public class LagreJuridiskloggService {
 				.build();
 	}
 
-	private byte[] sbdToByteArray(StandardBusinessDocument sbd) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			oos.writeObject(sbd);
+	private byte[] sbdToByteArray(StandardBusinessDocument standardBusinessDocument) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.registerModule(new JavaTimeModule());
+			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			mapper.writeValue(baos, standardBusinessDocument);
 			return baos.toByteArray();
 		} catch (IOException e) {
 			throw new LagreJuridiskLoggFunctionalException(e.getMessage(), e);

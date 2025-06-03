@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 @Builder
 public record IdentifierResource(InfoRecord infoRecord, List<ServiceRecord> serviceRecords) {
 
@@ -41,16 +43,9 @@ public record IdentifierResource(InfoRecord infoRecord, List<ServiceRecord> serv
 	}
 
 	Optional<ServiceRecord> findServiceRecord(String process, ServiceIdentifier serviceIdentifier) {
-		return serviceRecords.stream()
+		return isEmpty(serviceRecords) ? Optional.empty() : serviceRecords.stream()
 				.filter(serviceRecord -> process.equals(serviceRecord.process))
 				.filter(serviceRecord -> serviceIdentifier == serviceRecord.service.identifier)
 				.findAny();
-	}
-
-	static IdentifierResource empty() {
-		return IdentifierResource.builder()
-				.infoRecord(new InfoRecord(null, null))
-				.serviceRecords(List.of())
-				.build();
 	}
 }

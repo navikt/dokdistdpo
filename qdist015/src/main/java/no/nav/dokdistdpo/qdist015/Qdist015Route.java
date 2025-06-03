@@ -50,7 +50,8 @@ public class Qdist015Route extends RouteBuilder {
 	public void configure() throws Exception {
 		//@formatter:off
 
-		errorHandler(defaultErrorHandler().maximumRedeliveries(0)
+		errorHandler(defaultErrorHandler()
+				.maximumRedeliveries(0)
 				.log(log)
 				.logExhaustedMessageBody(false)
 				.logExhaustedMessageHistory(false)
@@ -73,6 +74,10 @@ public class Qdist015Route extends RouteBuilder {
 				.to("validator:no/nav/meldinger/virksomhet/dokdistfordeling/xsd/qdist008/out/distribuertilkanal.xsd")
 				.unmarshal(new JaxbDataFormat(newInstance(DistribuerTilKanal.class)))
 				.bean(qdist015Service)
+				.process(exchange -> {
+					String forsendelseId = exchange.getProperty(PROPERTY_FORSENDELSE_ID, String.class);
+					exchange.getIn().setBody(forsendelseId);
+				})
 				.bean(oppdaterForsendelseService)
 				.log("Qdist015: Forsendelsen ble oppdatert med forsendelseStatus OVERSENDT og behandlingen av" + getIdsForLogging() + " er avsluttet.")
 				.end();
@@ -83,8 +88,8 @@ public class Qdist015Route extends RouteBuilder {
 				.marshal(new JaxbDataFormat(newInstance(DistribuerTilKanal.class)))
 				.convertBodyTo(String.class)
 				.to("jms:" + qdist009.getQueueName())
-				.log(INFO, log,"Qdist015 har lagt forsendelse med " + getIdsForLogging() + " i køen til qdist009 for distribusjon til print");
-
+				.log(INFO, log,"Qdist015 har lagt forsendelse med " + getIdsForLogging() + " i køen til qdist009 for distribusjon til print")
+				.end();
 		//@formatter:on
 	}
 

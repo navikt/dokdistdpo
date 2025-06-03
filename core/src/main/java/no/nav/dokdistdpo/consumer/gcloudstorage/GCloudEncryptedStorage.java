@@ -2,9 +2,11 @@ package no.nav.dokdistdpo.consumer.gcloudstorage;
 
 import com.google.cloud.storage.Storage;
 import com.google.crypto.tink.Aead;
-import no.nav.dokdistdpo.exception.technical.BucketFailedToDownloadTechnicalException;
+import no.nav.dokdistdpo.exception.technical.FileDownloadFromBucketTechnicalException;
 
 import java.security.GeneralSecurityException;
+
+import static java.lang.String.format;
 
 public class GCloudEncryptedStorage implements EncryptedBucketStorage {
 
@@ -25,7 +27,7 @@ public class GCloudEncryptedStorage implements EncryptedBucketStorage {
 			byte[] plainText = aead.decrypt(cipherText, associatedData.getBytes());
 			return new String(plainText);
 		} catch (GeneralSecurityException e) {
-			throw new BucketFailedToDownloadTechnicalException(String.format("Teknisk feil mot Google Cloud Storage ved henting på objectName=%s. Feilmelding=%s",
+			throw new FileDownloadFromBucketTechnicalException(format("Teknisk feil mot Google Cloud Storage ved henting på objectName=%s. Feilmelding=%s",
 					objectName, e.getMessage()), e);
 		}
 	}

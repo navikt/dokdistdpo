@@ -19,9 +19,9 @@ public class OppdaterForsendelseService {
 	}
 
 	@Handler
-	public void oppdaterForsendelse(@Body AltinnDpoRequest altinnDpoRequest) {
+	public void oppdaterForsendelse(String forsendelseId) {
 		dokdistAdminConsumer.oppdaterForsendelse(OppdaterForsendelseRequest.builder()
-				.forsendelseId(Long.valueOf(altinnDpoRequest.forsendelseId()))
+				.forsendelseId(Long.valueOf(forsendelseId))
 				.forsendelseStatus(FORSENDELSE_STATUS_OVERSENDT)
 				.build());
 

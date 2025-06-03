@@ -4,7 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.exception.technical.ServiceRegistryTechnicalException;
 import org.slf4j.MDC;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -34,24 +35,26 @@ public class ServiceRegistryConsumer {
 				.build();
 	}
 
-	@Retryable(retryFor = ServiceRegistryTechnicalException.class)
+	@Retryable(retryFor = ServiceRegistryTechnicalException.class, maxAttempts = 3, backoff = @Backoff(delay = 5000))
 	public IdentifierResource getIdentifierResource(final String orgnummer, final String processIdentifier) {
 		return restClient.get()
 				.uri(uriBuilder -> uriBuilder
-						.path("/identifier/{orgnummer}/process/{processIdentifier}")
-						.build(orgnummer, processIdentifier))
+						.path("/identifier/{orgnummer}/process/" + processIdentifier)
+						.build(orgnummer))
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN))
-				.retrieve()
-				.onStatus(HttpStatusCode::isError, (req, res) -> {
-					if (res.getStatusCode().is4xxClientError()) {
-						log.warn(FUNKSJONELL_FEIL_ERROR_MESSAGE + "{}", res.getStatusText());
-						return;
+				.exchange((req, res) -> {
+					if (res.getStatusCode().isError()) {
+						if (res.getStatusCode().is4xxClientError()) {
+							log.warn(FUNKSJONELL_FEIL_ERROR_MESSAGE + "{}", res.getStatusText());
+							return null;
+						}
+						ProblemDetail problemDetail = res.bodyTo(ProblemDetail.class);
+						final String errorMessage = TEKNISK_FEIL_ERROR_MESSAGE + problemDetail.getDetail();
+						log.error(errorMessage);
+						throw new ServiceRegistryTechnicalException(format("hentForsendelse feilet teknisk med feilmelding=%s", problemDetail));
 					}
-					final String errorMessage = TEKNISK_FEIL_ERROR_MESSAGE + res.getStatusText();
-					log.error(errorMessage, res.getStatusText());
-					throw new ServiceRegistryTechnicalException(format("hentForsendelse feilet teknisk med feilmelding=%s", res.getStatusText()));
-				})
-				.body(IdentifierResource.class);
+					return res.bodyTo(IdentifierResource.class);
+				});
 	}
 }

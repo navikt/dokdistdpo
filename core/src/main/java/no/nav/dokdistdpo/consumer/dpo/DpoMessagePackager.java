@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -58,10 +59,15 @@ public class DpoMessagePackager {
 
 	private void writeZip(StandardBusinessDocument konvolutt, InputStream innhold, OutputStream outputStream) {
 		try (ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream)) {
-
 			if (konvolutt.getAny() instanceof AvtaltMelding || konvolutt.getAny() instanceof Arkivmelding) {
 				zipOutputStream.putNextEntry(new ZipEntry(DPO_SBD));
-				objectMapper.writeValue(zipOutputStream, konvolutt);
+				OutputStream nonClosingStream = new FilterOutputStream(zipOutputStream) {
+					@Override
+					public void close() {
+						// Noop — for å forhindre at datastrømmen avsluttes for tidlig
+					}
+				};
+				objectMapper.writeValue(nonClosingStream, konvolutt);
 				zipOutputStream.closeEntry();
 			}
 
@@ -69,9 +75,9 @@ public class DpoMessagePackager {
 			IOUtils.copy(innhold, zipOutputStream);
 			zipOutputStream.closeEntry();
 			zipOutputStream.finish();
-
 		} catch (IOException e) {
 			throw new DokumentpakkingException("Klarte ikke lage sbd.zip", e);
 		}
+
 	}
 }

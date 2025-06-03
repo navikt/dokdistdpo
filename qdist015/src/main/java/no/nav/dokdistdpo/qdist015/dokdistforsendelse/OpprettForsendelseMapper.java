@@ -26,7 +26,7 @@ public class OpprettForsendelseMapper {
 	}
 
 	public OpprettForsendelseRequest mapToOpprettForsendelse(HentForsendelseResponse hentForsendelseResponse, String nyBestillingsId) {
-		forsendelseValidator.assertOpprettForsendelseRequest(hentForsendelseResponse);
+		forsendelseValidator.assertOpprettForsendelseRequest(hentForsendelseResponse, nyBestillingsId);
 		AtomicReference<Integer> rekkefolge = new AtomicReference<>(2);
 
 		return OpprettForsendelseRequest.builder()

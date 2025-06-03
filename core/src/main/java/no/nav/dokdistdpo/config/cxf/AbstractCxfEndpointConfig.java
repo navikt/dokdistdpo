@@ -3,14 +3,15 @@ package no.nav.dokdistdpo.config.cxf;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.message.Message;
 
 import javax.xml.namespace.QName;
 import java.net.URL;
-import java.util.HashMap;
 
+import static jakarta.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING;
 import static java.lang.Boolean.TRUE;
 
 public abstract class AbstractCxfEndpointConfig {
@@ -20,17 +21,20 @@ public abstract class AbstractCxfEndpointConfig {
 
 	public AbstractCxfEndpointConfig(Bus bus, DokdistdpoProperties dokdistdpoProperties) {
 		factoryBean = new JaxWsProxyFactoryBean();
-		factoryBean.setProperties(new HashMap<>());
 		this.dokdistdpoProperties = dokdistdpoProperties;
 		factoryBean.setBus(bus);
 	}
 
-	protected void setAddress(String aktoerUrl) {
-		factoryBean.setAddress(aktoerUrl);
+	protected void setAddress(String endpointUrl) {
+		factoryBean.setAddress(endpointUrl);
 	}
 
 	protected void setWsdlUrl(String classPathResourceWsdlUrl) {
 		factoryBean.setWsdlURL(getUrlFromClasspathResource(classPathResourceWsdlUrl));
+	}
+
+	protected void addFeature(Feature feature) {
+		factoryBean.getFeatures().add(feature);
 	}
 
 	protected void setEndpointName(QName endpointName) {
@@ -50,6 +54,7 @@ public abstract class AbstractCxfEndpointConfig {
 	}
 
 	protected <T> T createPort(Class<T> portType, boolean isStreamed) {
+		factoryBean.setBindingId(SOAP12HTTP_BINDING);
 		DokdistdpoProperties.AltinnProperties altinnProperties = dokdistdpoProperties.altinn();
 		factoryBean.getFeatures().add(new TimeoutFeature(
 				isStreamed ? altinnProperties.brokerserviceexternalstreamed().connecttimeoutms() :
