@@ -68,7 +68,7 @@ public class Qdist015Route extends RouteBuilder {
 				.to("jms:" + qdist015FunksjonellFeil.getQueueName());
 
 		from("jms:" + qdist015.getQueueName() + "?transacted=true")
-				.autoStartup(true)
+				.autoStartup(dokdistdpoProperties.qdist015().autostartup())
 				.routeId(QDIST015_ROUTE_ID)
 				.setExchangePattern(InOnly)
 				.process(new MdcHeaderProcessor())
