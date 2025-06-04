@@ -23,7 +23,9 @@ public record DokdistdpoProperties(
 		@Valid
 		MqGatewayProperties mqGateway,
 		@Valid
-		JuridiskloggConfig juridisklogg) {
+		JuridiskloggConfig juridisklogg,
+		@Valid
+		Qdist015 qdist015) {
 
 	public record Serviceuser(String username, String password) {}
 
@@ -71,4 +73,7 @@ public record DokdistdpoProperties(
 	public record JuridiskloggConfig(
 			@NotBlank String url) {
 	}
+
+	public record Qdist015(
+			boolean autostartup) {}
 }
