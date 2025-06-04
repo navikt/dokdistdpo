@@ -6,6 +6,7 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.Queue;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
+import org.apache.camel.component.jms.JmsComponent;
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -77,5 +78,12 @@ public class JmsConfig {
 		SSLSocketFactory sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		mqConnectionFactory.setSSLSocketFactory(sslSocketFactory);
 		return mqConnectionFactory;
+	}
+
+	@Bean
+	public JmsComponent jmsComponent(ConnectionFactory connectionFactory) {
+		JmsComponent jms = new JmsComponent();
+		jms.setConnectionFactory(connectionFactory);
+		return jms;
 	}
 }

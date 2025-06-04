@@ -50,6 +50,8 @@ public class Qdist015Route extends RouteBuilder {
 	public void configure() throws Exception {
 		//@formatter:off
 
+		log.info("Registrert QDIST015 route på kø: {}", qdist015.getQueueName());
+
 		errorHandler(defaultErrorHandler()
 				.maximumRedeliveries(0)
 				.log(log)
@@ -66,7 +68,7 @@ public class Qdist015Route extends RouteBuilder {
 				.to("jms:" + qdist015FunksjonellFeil.getQueueName());
 
 		from("jms:" + qdist015.getQueueName() + "?transacted=true")
-				.autoStartup(dokdistdpoProperties.qdist015().autostartup())
+				.autoStartup(true)
 				.routeId(QDIST015_ROUTE_ID)
 				.setExchangePattern(InOnly)
 				.process(new MdcHeaderProcessor())
