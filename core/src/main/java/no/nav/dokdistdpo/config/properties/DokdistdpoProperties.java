@@ -66,8 +66,7 @@ public record DokdistdpoProperties(
 			@NotBlank String hostname,
 			@NotBlank String managerName,
 			@Positive int port,
-			@NotBlank String channelName,
-			boolean autostartupQdist015) {
+			@NotBlank String channelName) {
 	}
 
 	public record JuridiskloggConfig(

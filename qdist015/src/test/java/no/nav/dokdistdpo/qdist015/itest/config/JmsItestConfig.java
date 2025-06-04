@@ -31,8 +31,8 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue backoutQueue(@Value("${dokdistdpo_qdist015_backout.queuename}") String qdist014Bq) {
-		return new ActiveMQQueue(qdist014Bq);
+	public Queue backoutQueue(@Value("${dokdistdpo_qdist015_backout.queuename}") String qdist015Bq) {
+		return new ActiveMQQueue(qdist015Bq);
 	}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
