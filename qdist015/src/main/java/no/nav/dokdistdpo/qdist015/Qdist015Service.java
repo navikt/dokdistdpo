@@ -51,9 +51,9 @@ public class Qdist015Service {
 	public void processForsendelse(DistribuerTilKanal distribuerTilKanal, Exchange exchange) {
 		final String konversajonId = UUID.randomUUID().toString();
 		exchange.setProperty(PROPERTY_KONVERSASJON_ID, konversajonId);
+		exchange.setProperty(PROPERTY_FORSENDELSE_ID, distribuerTilKanal.getForsendelseId());
 
 		HentForsendelseResponse hentForsendelseResponse = dokdistadminService.hentForsendelse(distribuerTilKanal.getForsendelseId());
-		exchange.setProperty(PROPERTY_FORSENDELSE_ID, distribuerTilKanal.getForsendelseId());
 		exchange.setProperty(PROPERTY_BESTILLINGS_ID, hentForsendelseResponse.bestillingsId());
 
 		DpoMottakerInfo dpoMottakerInfo = dokdistadminService.hentServiceRegistryMottakerInfo(hentForsendelseResponse);

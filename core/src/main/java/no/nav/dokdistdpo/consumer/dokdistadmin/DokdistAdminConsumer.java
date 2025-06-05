@@ -45,6 +45,8 @@ public class DokdistAdminConsumer {
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public HentForsendelseResponse hentForsendelse(String forsendelseId) {
+		log.info("hentForsendelse henter forsendelse med forsendelseId={}", forsendelseId);
+
 		return restClient.get()
 				.uri(uriBuilder -> uriBuilder.path("/{forsendelseId}")
 						.build(forsendelseId))

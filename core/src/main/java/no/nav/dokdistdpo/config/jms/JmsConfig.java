@@ -19,6 +19,7 @@ import javax.net.ssl.SSLSocketFactory;
 import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
 import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
 import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMS_IBM_ENCODING;
+import static com.ibm.msg.client.jakarta.jms.JmsConstants.USERID;
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 
 @Profile("nais")
@@ -53,7 +54,8 @@ public class JmsConfig {
 
 		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
 		adapter.setTargetConnectionFactory(mqConnectionFactory);
-		adapter.createConnection(dokdistdpoProperties.serviceuser().username(), dokdistdpoProperties.serviceuser().password());
+		adapter.setUsername(dokdistdpoProperties.serviceuser().username());
+		adapter.setPassword(dokdistdpoProperties.serviceuser().password());
 
 		JmsPoolConnectionFactory poolConnectionFactory = new JmsPoolConnectionFactory();
 		poolConnectionFactory.setConnectionFactory(mqConnectionFactory);
@@ -74,16 +76,10 @@ public class JmsConfig {
 		mqConnectionFactory.setSSLCipherSuite(ANY_TLS13_OR_HIGHER);
 		mqConnectionFactory.setIntProperty(JMS_IBM_ENCODING, MQENC_NATIVE);
 		mqConnectionFactory.setIntProperty(JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
+		mqConnectionFactory.setStringProperty(USERID, dokdistdpoProperties.serviceuser().username());
 
 		SSLSocketFactory sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		mqConnectionFactory.setSSLSocketFactory(sslSocketFactory);
 		return mqConnectionFactory;
-	}
-
-	@Bean
-	public JmsComponent jmsComponent(ConnectionFactory connectionFactory) {
-		JmsComponent jms = new JmsComponent();
-		jms.setConnectionFactory(connectionFactory);
-		return jms;
 	}
 }
