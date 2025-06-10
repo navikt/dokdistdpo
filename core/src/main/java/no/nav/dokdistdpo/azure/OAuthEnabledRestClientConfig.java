@@ -8,19 +8,17 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.ClientCredentialsOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.endpoint.RestClientClientCredentialsTokenResponseClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
+import org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver;
 import org.springframework.web.client.RestClient;
 
 import java.net.ProxySelector;
@@ -108,10 +106,6 @@ public class OAuthEnabledRestClientConfig {
 	}
 
 	private OAuth2ClientHttpRequestInterceptor.ClientRegistrationIdResolver clientRegistrationIdResolver() {
-		return (request) -> {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			return (authentication instanceof OAuth2AuthenticationToken principal) ?
-					principal.getAuthorizedClientRegistrationId() : null;
-		};
+		return new RequestAttributeClientRegistrationIdResolver();
 	}
 }
