@@ -22,9 +22,11 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 public class LagreJuridiskloggService {
 
 	private final JuridiskLoggConsumer juridiskLoggConsumer;
+	private final ObjectMapper objectMapper;
 
 	public LagreJuridiskloggService(JuridiskLoggConsumer juridiskLoggConsumer) {
 		this.juridiskLoggConsumer = juridiskLoggConsumer;
+		this.objectMapper = new ObjectMapper();
 	}
 
 	public void lagreJuridisklogg(AltinnDpoRequest altinnDpoRequest) {
@@ -45,10 +47,9 @@ public class LagreJuridiskloggService {
 
 	private byte[] sbdToByteArray(StandardBusinessDocument standardBusinessDocument) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.registerModule(new JavaTimeModule());
-			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-			mapper.writeValue(baos, standardBusinessDocument);
+			objectMapper.registerModule(new JavaTimeModule());
+			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			objectMapper.writeValue(baos, standardBusinessDocument);
 			return baos.toByteArray();
 		} catch (IOException e) {
 			throw new LagreJuridiskLoggFunctionalException(e.getMessage(), e);

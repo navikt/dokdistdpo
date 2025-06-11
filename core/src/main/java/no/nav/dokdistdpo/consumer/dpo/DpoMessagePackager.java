@@ -69,6 +69,7 @@ public class DpoMessagePackager {
 				};
 				objectMapper.writeValue(nonClosingStream, konvolutt);
 				zipOutputStream.closeEntry();
+				nonClosingStream.close();
 			}
 
 			zipOutputStream.putNextEntry(new ZipEntry(DPO_ASIC));

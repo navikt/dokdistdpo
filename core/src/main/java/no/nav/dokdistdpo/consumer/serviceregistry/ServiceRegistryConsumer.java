@@ -5,7 +5,6 @@ import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.exception.technical.ServiceRegistryTechnicalException;
 import org.slf4j.MDC;
 import org.springframework.http.ProblemDetail;
-import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -35,7 +34,7 @@ public class ServiceRegistryConsumer {
 				.build();
 	}
 
-	@Retryable(retryFor = ServiceRegistryTechnicalException.class, maxAttempts = 3, backoff = @Backoff(delay = 5000))
+	@Retryable(retryFor = ServiceRegistryTechnicalException.class)
 	public IdentifierResource getIdentifierResource(final String orgnummer, final String processIdentifier) {
 		return restClient.get()
 				.uri(uriBuilder -> uriBuilder

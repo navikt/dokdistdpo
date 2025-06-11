@@ -49,6 +49,22 @@ public class JmsConfig {
 	}
 
 	private JmsPoolConnectionFactory createConnectionFactory(DokdistdpoProperties dokdistdpoProperties) throws JMSException {
+
+		MQConnectionFactory mqConnectionFactory = getMqConnectionFactory(dokdistdpoProperties);
+
+		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
+		adapter.setTargetConnectionFactory(mqConnectionFactory);
+		adapter.setUsername(dokdistdpoProperties.serviceuser().username());
+		adapter.setPassword(dokdistdpoProperties.serviceuser().password());
+
+		JmsPoolConnectionFactory pooledFactory = new JmsPoolConnectionFactory();
+		pooledFactory.setConnectionFactory(adapter);
+		pooledFactory.setMaxConnections(10);
+		pooledFactory.setMaxSessionsPerConnection(10);
+		return pooledFactory;
+	}
+
+	private static MQConnectionFactory getMqConnectionFactory(DokdistdpoProperties dokdistdpoProperties) throws JMSException {
 		MQConnectionFactory mqConnectionFactory = new MQConnectionFactory();
 		mqConnectionFactory.setHostName(dokdistdpoProperties.mqGateway().hostname());
 		mqConnectionFactory.setPort(dokdistdpoProperties.mqGateway().port());
@@ -63,16 +79,6 @@ public class JmsConfig {
 		mqConnectionFactory.setSSLCipherSuite(ANY_TLS13_OR_HIGHER);
 		SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		mqConnectionFactory.setSSLSocketFactory(factory);
-
-		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
-		adapter.setTargetConnectionFactory(mqConnectionFactory);
-		adapter.setUsername(dokdistdpoProperties.serviceuser().username());
-		adapter.setPassword(dokdistdpoProperties.serviceuser().password());
-
-		JmsPoolConnectionFactory pooledFactory = new JmsPoolConnectionFactory();
-		pooledFactory.setConnectionFactory(adapter);
-		pooledFactory.setMaxConnections(10);
-		pooledFactory.setMaxSessionsPerConnection(10);
-		return pooledFactory;
+		return mqConnectionFactory;
 	}
 }
