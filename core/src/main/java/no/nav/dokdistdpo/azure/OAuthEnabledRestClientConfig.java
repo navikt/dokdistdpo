@@ -2,18 +2,13 @@ package no.nav.dokdistdpo.azure;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.ClientCredentialsOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.endpoint.RestClientClientCredentialsTokenResponseClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -21,7 +16,6 @@ import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpReq
 import org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver;
 import org.springframework.web.client.RestClient;
 
-import java.net.ProxySelector;
 import java.util.List;
 
 import static org.springframework.security.oauth2.core.AuthorizationGrantType.CLIENT_CREDENTIALS;
@@ -36,40 +30,58 @@ public class OAuthEnabledRestClientConfig {
 	public static final String CLIENT_REGISTRATION_MASKINPORTEN = "maskinporten";
 
 	@Bean
-	public RestClient restClient(OAuth2AuthorizedClientManager authorizedClientManager) {
+	public RestClient dokdistadminRestClient(DokdistdpoProperties dokdistdpoProperties,
+											 OAuth2AuthorizedClientManager authorizedClientManager) {
 		var oauth2Interceptor =
 				new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
 
-		oauth2Interceptor.setClientRegistrationIdResolver(clientRegistrationIdResolver());
-
 		return RestClient.builder()
+				.baseUrl(dokdistdpoProperties.endpoints().dokdistadmin().url())
 				.requestInterceptor(oauth2Interceptor)
 				.build();
 	}
 
 	@Bean
-	public OAuth2AuthorizedClientManager authorizedClientManager(
-			ClientRegistrationRepository clientRegistrationRepository,
-			OAuth2AuthorizedClientService authorizedClientService) {
+	public RestClient maskinportenRestClient(DokdistdpoProperties dokdistdpoProperties,
+											 ClientRegistrationRepository clientRegistrationRepository,
+											 OAuth2AuthorizedClientManager authorizedClientManager) {
 
-		ClientCredentialsOAuth2AuthorizedClientProvider auth2AuthorizedClientProvider = new ClientCredentialsOAuth2AuthorizedClientProvider();
+		var oauth2Interceptor =
+				new OAuth2AuthInterceptor(authorizedClientManager,
+						clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN));
 
-		var connectionManager = new PoolingHttpClientConnectionManager();
-		HttpClient httpClient = HttpClientBuilder.create()
-				.setConnectionManager(connectionManager)
-				.setProxySelector(ProxySelector.getDefault())
+		return RestClient.builder()
+				.baseUrl(dokdistdpoProperties.serviceRegistry().url())
+				.requestInterceptor(oauth2Interceptor)
 				.build();
+	}
 
-		RestClient restClientWithProxy = RestClient.builder()
-				.requestFactory(new HttpComponentsClientHttpRequestFactory(httpClient))
-				.build();
+	@Bean
+	public OAuth2ClientHttpRequestInterceptor OAuth2ClientHttpRequestInterceptor(
+			OAuth2AuthorizedClientManager authorizedClientManager) {
 
-		RestClientClientCredentialsTokenResponseClient tokenResponseClient = new RestClientClientCredentialsTokenResponseClient();
-		tokenResponseClient.setRestClient(restClientWithProxy);
-		auth2AuthorizedClientProvider.setAccessTokenResponseClient(tokenResponseClient);
+		var oAuth2ClientHttpRequestInterceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+		oAuth2ClientHttpRequestInterceptor.setClientRegistrationIdResolver(clientRegistrationIdResolver());
 
-		var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientService);
-		authorizedClientManager.setAuthorizedClientProvider(auth2AuthorizedClientProvider);
+		return oAuth2ClientHttpRequestInterceptor;
+	}
+
+	@Bean
+	public OAuth2AuthorizedClientManager authorizedClientManager(MaskinportenProperties maskinportenProperties,
+																 ClientRegistrationRepository clientRegistrationRepository,
+																 OAuth2AuthorizedClientService auth2AuthorizedClientService) {
+
+		var authorizedClientManager =
+				new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+						clientRegistrationRepository, auth2AuthorizedClientService);
+
+
+		authorizedClientManager.setAuthorizedClientProvider(OAuth2AuthorizedClientProviderBuilder.builder()
+				.authorizationCode()
+				.refreshToken()
+				.clientCredentials()
+				.provider(new MaskinportenAuthorizedClientProvider(maskinportenProperties))
+				.build());
 
 		return authorizedClientManager;
 	}
@@ -80,12 +92,11 @@ public class OAuthEnabledRestClientConfig {
 	}
 
 	@Bean
-	ClientRegistrationRepository clientRegistrationRepository(List<ClientRegistration> clientRegistration) {
-		return new InMemoryClientRegistrationRepository(clientRegistration);
+	ClientRegistrationRepository clientRegistrationRepository(AzureProperties azureProperties, DokdistdpoProperties properties, MaskinportenProperties maskinportenProperties) {
+		return new InMemoryClientRegistrationRepository(clientRegistrations(azureProperties, properties, maskinportenProperties));
 	}
 
-	@Bean
-	List<ClientRegistration> clientRegistration(AzureProperties azureProperties, DokdistdpoProperties properties, MaskinportenProperties maskinportenProperties) {
+	List<ClientRegistration> clientRegistrations(AzureProperties azureProperties, DokdistdpoProperties properties, MaskinportenProperties maskinportenProperties) {
 		return List.of(ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN)
 						.tokenUri(azureProperties.openidConfigTokenEndpoint())
 						.clientId(azureProperties.appClientId())

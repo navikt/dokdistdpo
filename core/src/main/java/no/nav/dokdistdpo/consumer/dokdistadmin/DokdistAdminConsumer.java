@@ -25,29 +25,24 @@ import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGIST
 import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
 import static no.nav.dokdistdpo.constant.NavHeaders.NAV_CALLID;
 import static no.nav.dokdistdpo.utils.DokdistdpoUtils.getProblemDetail;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @Slf4j
 @Component
 public class DokdistAdminConsumer {
 
-	private final RestClient restClient;
+	private final RestClient dokdistadminRestClient;
 
-	public DokdistAdminConsumer(RestClient.Builder restClientBuilder,
+	public DokdistAdminConsumer(RestClient dokdistadminRestClient,
 								DokdistdpoProperties dokdistdpoProperties) {
-		this.restClient = restClientBuilder
-				.baseUrl(dokdistdpoProperties.endpoints().dokdistadmin().url())
-				.defaultHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-				.build();
+		this.dokdistadminRestClient = dokdistadminRestClient;
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public HentForsendelseResponse hentForsendelse(String forsendelseId) {
 		log.info("hentForsendelse henter forsendelse med forsendelseId={}", forsendelseId);
 
-		return restClient.get()
+		return dokdistadminRestClient.get()
 				.uri(uriBuilder -> uriBuilder.path("/{forsendelseId}")
 						.build(forsendelseId))
 				.header(NAV_CALLID, MDC.get(CALL_ID))
@@ -61,7 +56,7 @@ public class DokdistAdminConsumer {
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public Forsendelse opprettForsendelse(OpprettForsendelseRequest opprettForsendelseRequest) {
-		return restClient.post()
+		return dokdistadminRestClient.post()
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.body(opprettForsendelseRequest)
@@ -76,7 +71,7 @@ public class DokdistAdminConsumer {
 
 		log.info("feilregistrerForsendelse feilregistrerer forsendelse med forsendelseId={}", feilregistrerForsendelse.forsendelseId());
 
-		restClient.put()
+		dokdistadminRestClient.put()
 				.uri("/feilregistrerforsendelse")
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
@@ -93,7 +88,7 @@ public class DokdistAdminConsumer {
 	public void oppdaterForsendelse(OppdaterForsendelseRequest oppdaterForsendelse) {
 		log.info("oppdaterForsendelse oppdaterer forsendelse med forsendelseId={}", oppdaterForsendelse.forsendelseId());
 
-		restClient.put()
+		dokdistadminRestClient.put()
 				.uri("/oppdaterforsendelse")
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
@@ -106,7 +101,7 @@ public class DokdistAdminConsumer {
 	}
 
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste, String feltnavn, String feltVerdi) throws IOException {
-		ProblemDetail problemDetail = getProblemDetail(response.getBody());
+		ProblemDetail problemDetail = getProblemDetail(response);
 		if (response.getStatusCode().is4xxClientError()) {
 			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt med %s=%s. Feilmelding=%s",
 					tjeneste, feltnavn, feltVerdi, problemDetail.getDetail()), problemDetail);
