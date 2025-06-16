@@ -1,7 +1,6 @@
 package no.nav.dokdistdpo.consumer.serviceregistry;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.exception.technical.ServiceRegistryTechnicalException;
 import no.nav.dokdistdpo.utils.DokdistdpoUtils;
 import org.slf4j.MDC;
@@ -25,8 +24,7 @@ public class ServiceRegistryConsumer {
 
 	private final RestClient maskinportenRestClient;
 
-	public ServiceRegistryConsumer(DokdistdpoProperties dokdistdpoProperties,
-								   RestClient maskinportenRestClient) {
+	public ServiceRegistryConsumer(RestClient maskinportenRestClient) {
 		this.maskinportenRestClient = maskinportenRestClient;
 	}
 
