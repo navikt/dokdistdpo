@@ -30,7 +30,7 @@ public class ForsendelseValidator {
 		assertNotEmpty("forsendelse.forsendelseMetadataType", response.forsendelseMetadataType());
 
 		if (!isAvtaltmeldingOrArkivmelding(response)) {
-			throw new DokdistdpoIllegalArgumentException("Ugyldig ForsendelseMetadataType: Verken avtalt eller forsendelseMetadata er angitt, forsendelseMetadataType=" + response.forsendelseMetadataType());
+			throw new DokdistdpoIllegalArgumentException("Ugyldig forsendelseMetadataType: Verken DPO_AVTALEMELDING eller DPO_ARKIVMELDING er angitt, forsendelseMetadataType=" + response.forsendelseMetadataType());
 		}
 	}
 
@@ -38,13 +38,13 @@ public class ForsendelseValidator {
 		return HOVEDDOKUMENT.equals(tilknyttetSom);
 	}
 
-	public void assertOpprettForsendelseRequest(HentForsendelseResponse hentForsendelse) {
+	public void assertOpprettForsendelseRequest(HentForsendelseResponse hentForsendelse, String nyBestillingsId) {
 		assertBaisFields(hentForsendelse);
+		assertNotEmpty("nyBestillingsId", nyBestillingsId);
 		assertNotNull("Mottaker", hentForsendelse.mottaker());
 		assertMottaker(hentForsendelse.mottaker());
 		assertNotNull("arkivinformasjon", hentForsendelse.arkivInformasjon());
 		assertArkivInformasjon(hentForsendelse.arkivInformasjon());
-		assertNotNull("postadresse", hentForsendelse.postadresse());
 		assertLandkodeIfPresent(hentForsendelse.postadresse());
 		assertThatAtLeastOneDocumentIsPresent(hentForsendelse.dokumenter());
 		hentForsendelse.dokumenter().forEach(this::assertDokument);
@@ -76,7 +76,9 @@ public class ForsendelseValidator {
 	}
 
 	private void assertLandkodeIfPresent(Postadresse postadresse) {
-		assertNotEmpty("postadresse.landkode", postadresse.landkode());
+		if (postadresse != null) {
+			assertNotEmpty("postadresse.landkode", postadresse.landkode());
+		}
 	}
 
 	private void assertArkivInformasjon(ArkivInformasjon arkivInformasjon) {

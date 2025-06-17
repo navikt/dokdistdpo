@@ -36,10 +36,10 @@ public class SendTilPrintService {
 	}
 
 	@Handler
-	public DistribuerTilKanal sendForsendelseTilPrint(HentForsendelseResponse hentForsendelseResponse, Exchange exchange) {
+	public void sendForsendelseTilPrint(HentForsendelseResponse hentForsendelseResponse, Exchange exchange) {
 		final String nyBestillingsId = UUID.randomUUID().toString();
 
-		forsendelseValidator.assertOpprettForsendelseRequest(hentForsendelseResponse);
+		forsendelseValidator.assertOpprettForsendelseRequest(hentForsendelseResponse, nyBestillingsId);
 		OpprettForsendelseRequest opprettForsendelse = opprettForsendelseMapper.mapToOpprettForsendelse(hentForsendelseResponse, nyBestillingsId);
 
 		Forsendelse nyForsendelse = dokdistAdminConsumer.opprettForsendelse(opprettForsendelse);
@@ -53,8 +53,6 @@ public class SendTilPrintService {
 				.useForsendelseId(String.valueOf(nyForsendelse.forsendelseId()));
 
 		producerTemplate.sendBody(SEND_TIL_PRINT, distribuerTilKanal);
-
-		return distribuerTilKanal;
 	}
 
 	private void opprettFeilregistrerForsendelse(Long oldForsendelseId, String nyBestillingId) {

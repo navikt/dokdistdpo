@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.dokdistdpo.consumer.serviceregistry.IdentifierResource.ServiceIdentifier.DPO;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 @Builder
 public record IdentifierResource(InfoRecord infoRecord, List<ServiceRecord> serviceRecords) {
 
@@ -40,17 +43,10 @@ public record IdentifierResource(InfoRecord infoRecord, List<ServiceRecord> serv
 		private final String fullname;
 	}
 
-	Optional<ServiceRecord> findServiceRecord(String process, ServiceIdentifier serviceIdentifier) {
-		return serviceRecords.stream()
+	Optional<ServiceRecord> findServiceRecord(String process) {
+		return isEmpty(serviceRecords) ? Optional.empty() : serviceRecords.stream()
 				.filter(serviceRecord -> process.equals(serviceRecord.process))
-				.filter(serviceRecord -> serviceIdentifier == serviceRecord.service.identifier)
+				.filter(serviceRecord -> DPO == serviceRecord.service.identifier)
 				.findAny();
-	}
-
-	static IdentifierResource empty() {
-		return IdentifierResource.builder()
-				.infoRecord(new InfoRecord(null, null))
-				.serviceRecords(List.of())
-				.build();
 	}
 }

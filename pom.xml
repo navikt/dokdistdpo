@@ -26,7 +26,7 @@
 		<nimbus-jose-jwt.version>10.0.2</nimbus-jose-jwt.version>
 		<lombok.version>1.18.36</lombok.version>
 		<ibm.mq.client.version>9.4.2.1</ibm.mq.client.version>
-		<camel.version>4.11.0</camel.version>
+		<camel.version>4.12.0</camel.version>
 		<cxf.version>4.1.1</cxf.version>
 		<jaxws-ri.version>4.0.3</jaxws-ri.version>
 		<commons-lang3.version>3.17.0</commons-lang3.version>
@@ -39,6 +39,10 @@
 		<tink-gcpkms.version>1.10.0</tink-gcpkms.version>
 		<commons-asic.version>1.0.2</commons-asic.version>
 		<melding-virksomhet-dokdistfordeling.version>7-18c61bf</melding-virksomhet-dokdistfordeling.version>
+
+		<!-- Test -->
+		<spring-cloud-contract-wiremock.version>4.3.0</spring-cloud-contract-wiremock.version>
+
 		<!-- Plugins -->
 		<maven-jaxb2-plugin.version>2.1.1</maven-jaxb2-plugin.version>
 		<hisrc-basicjaxb.version>2.2.1</hisrc-basicjaxb.version>
@@ -166,6 +170,14 @@
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcutil-jdk18on</artifactId>
 				<version>${bouncycastle.version}</version>
+			</dependency>
+
+			<!-- test -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-contract-wiremock</artifactId>
+				<version>${spring-cloud-contract-wiremock.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

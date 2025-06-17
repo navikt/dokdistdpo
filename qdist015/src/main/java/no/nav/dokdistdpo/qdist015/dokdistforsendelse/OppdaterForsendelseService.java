@@ -2,8 +2,6 @@ package no.nav.dokdistdpo.qdist015.dokdistforsendelse;
 
 import no.nav.dokdistdpo.consumer.dokdistadmin.DokdistAdminConsumer;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
-import org.apache.camel.Body;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +17,9 @@ public class OppdaterForsendelseService {
 	}
 
 	@Handler
-	public void oppdaterForsendelse(@Body AltinnDpoRequest altinnDpoRequest) {
+	public void oppdaterForsendelse(String forsendelseId) {
 		dokdistAdminConsumer.oppdaterForsendelse(OppdaterForsendelseRequest.builder()
-				.forsendelseId(Long.valueOf(altinnDpoRequest.forsendelseId()))
+				.forsendelseId(Long.valueOf(forsendelseId))
 				.forsendelseStatus(FORSENDELSE_STATUS_OVERSENDT)
 				.build());
 

@@ -36,23 +36,16 @@ fi
 if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_password
 then
     echo "Setting dokdistdpo_dpo_password"
-    export dokdistdpo_dpo_password=/var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_password
+    export dokdistdpo_dpo_password=$(cat /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_password)
 fi
 
 if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_username
 then
     echo "Setting dokdistdpo_dpo_username"
-    export dokdistdpo_dpo_username=/var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_username
+    export dokdistdpo_dpo_username=$(cat /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_username)
 fi
 
 if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_qdist015_autostartup; then
-    echo "Setting dokdistdpo_qdist015_autostartup"
-
-    autostartup=$(tr '[:upper:]' '[:lower:]' < /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_qdist015_autostartup)
-
-    if [[ "$autostartup" == "true" ]]; then
-        export dokdistdpo_qdist015_autostartup=true
-    else [[ "$autostartup" == "false" ]];
-        export dokdistdpo_qdist015_autostartup=false
-    fi
+  echo "Setting dokdistdpo_qdist015_autostartup"
+  export dokdistdpo_qdist015_autostartup=$(cat /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_qdist015_autostartup)
 fi

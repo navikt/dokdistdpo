@@ -18,6 +18,7 @@ import javax.net.ssl.SSLSocketFactory;
 import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
 import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
 import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMS_IBM_ENCODING;
+import static com.ibm.msg.client.jakarta.jms.JmsConstants.USERID;
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 
 @Profile("nais")
@@ -48,34 +49,36 @@ public class JmsConfig {
 	}
 
 	private JmsPoolConnectionFactory createConnectionFactory(DokdistdpoProperties dokdistdpoProperties) throws JMSException {
+
 		MQConnectionFactory mqConnectionFactory = getMqConnectionFactory(dokdistdpoProperties);
 
 		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
 		adapter.setTargetConnectionFactory(mqConnectionFactory);
-		adapter.createConnection(dokdistdpoProperties.serviceuser().username(), dokdistdpoProperties.serviceuser().password());
+		adapter.setUsername(dokdistdpoProperties.serviceuser().username());
+		adapter.setPassword(dokdistdpoProperties.serviceuser().password());
 
-		JmsPoolConnectionFactory poolConnectionFactory = new JmsPoolConnectionFactory();
-		poolConnectionFactory.setConnectionFactory(mqConnectionFactory);
-		poolConnectionFactory.setMaxConnections(10);
-		poolConnectionFactory.setMaxSessionsPerConnection(10);
-
-		return poolConnectionFactory;
+		JmsPoolConnectionFactory pooledFactory = new JmsPoolConnectionFactory();
+		pooledFactory.setConnectionFactory(adapter);
+		pooledFactory.setMaxConnections(10);
+		pooledFactory.setMaxSessionsPerConnection(10);
+		return pooledFactory;
 	}
 
-	private MQConnectionFactory getMqConnectionFactory(DokdistdpoProperties dokdistdpoProperties) throws JMSException {
+	private static MQConnectionFactory getMqConnectionFactory(DokdistdpoProperties dokdistdpoProperties) throws JMSException {
 		MQConnectionFactory mqConnectionFactory = new MQConnectionFactory();
 		mqConnectionFactory.setHostName(dokdistdpoProperties.mqGateway().hostname());
-		mqConnectionFactory.setChannel(dokdistdpoProperties.mqGateway().channelName());
 		mqConnectionFactory.setPort(dokdistdpoProperties.mqGateway().port());
 		mqConnectionFactory.setQueueManager(dokdistdpoProperties.mqGateway().managerName());
 		mqConnectionFactory.setTransportType(WMQ_CM_CLIENT);
 		mqConnectionFactory.setCCSID(UTF_8_WITH_PUA);
-		mqConnectionFactory.setSSLCipherSuite(ANY_TLS13_OR_HIGHER);
 		mqConnectionFactory.setIntProperty(JMS_IBM_ENCODING, MQENC_NATIVE);
 		mqConnectionFactory.setIntProperty(JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
+		mqConnectionFactory.setStringProperty(USERID, dokdistdpoProperties.serviceuser().username());
+		mqConnectionFactory.setChannel(dokdistdpoProperties.mqGateway().channelName());
 
-		SSLSocketFactory sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-		mqConnectionFactory.setSSLSocketFactory(sslSocketFactory);
+		mqConnectionFactory.setSSLCipherSuite(ANY_TLS13_OR_HIGHER);
+		SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+		mqConnectionFactory.setSSLSocketFactory(factory);
 		return mqConnectionFactory;
 	}
 }

@@ -22,6 +22,7 @@
   "DOKDISTMELLOMLAGER_BUCKET": "dokdistmellomlager-prod",
   "DOKDISTMELLOMLAGER_KEYRING": "dokdistmellomlager-keyring",
   "DOKDISTMELLOMLAGER_KEYID": "dokdistmellomlager-symmetric",
+  "ENVIRONMENT": "p",
   "MIN_REPLICAS": "2",
   "MAX_REPLICAS": "4",
   "INGRESSES": [

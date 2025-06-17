@@ -1,0 +1,47 @@
+{
+  "forsendelseId": "333333",
+  "bestillingsId": "insertCallIdHere",
+  "forsendelseStatus": "KLAR_FOR_DIST",
+  "forsendelseTittel": "forsendelseTittel",
+  "forsendelseMetadata": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ns2:distribuerTilKanal xmlns:ns2=\"http://nav.no/melding/virksomhet/dokdistfordeling\">\n\t<forsendelseId>33333</forsendelseId>\n</ns2:distribuerTilKanal>\n",
+  "forsendelseMetadataType": "metadataType",
+  "bestillendeFagsystem": "FS22",
+  "tema": "FOR",
+  "mottaker": {
+    "mottakerId": "974761084",
+    "mottakerNavn": "mottakerNavn",
+    "mottakerType": "ORGANISASJON"
+  },
+  "arkivInformasjon": {
+    "arkivSystem": "JOARK",
+    "arkivId": "123"
+  },
+  "postadresse": {
+    "adresselinje1": "adresselinjeEn",
+    "adresselinje2": "adresselinjeTo",
+    "adresselinje3": "adresselinjeTre",
+    "postnummer": "123",
+    "poststed": "poststed",
+    "landkode": "NO"
+  },
+  "dokumenter": [
+    {
+      "tilknyttetSom": "HOVEDDOKUMENT",
+      "dokumentObjektReferanse": "dokumentObjektReferanseHoveddok",
+      "arkivDokumentInfoId": "463791441",
+      "dokumenttypeId": "dokumenttypeIdHoveddok"
+    },
+    {
+      "tilknyttetSom": "VEDLEGG",
+      "dokumentObjektReferanse": "dokumentObjektReferanseVedlegg1",
+      "arkivDokumentInfoId": "463791442",
+      "dokumenttypeId": "dokumenttypeId2Vedlegg1"
+    },
+    {
+      "tilknyttetSom": "VEDLEGG",
+      "dokumentObjektReferanse": "dokumentObjektReferanseVedlegg2",
+      "arkivDokumentInfoId": "463791443",
+      "dokumenttypeId": "dokumenttypeIdVedlegg2"
+    }
+  ]
+}

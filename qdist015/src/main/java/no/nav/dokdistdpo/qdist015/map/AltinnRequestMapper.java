@@ -25,6 +25,7 @@ public class AltinnRequestMapper {
 		return AltinnDpoRequest.Forsendelse.builder()
 				.bestillingsId(hentForsendelseResponse.bestillingsId())
 				.konversjonsId(konversasjonId)
+				.journalpostId(hentForsendelseResponse.arkivInformasjon().arkivId())
 				.mottakerId(hentForsendelseResponse.mottaker().mottakerId())
 				.organisasjonsnavn(hentForsendelseResponse.mottaker().mottakerNavn())
 				.forsendelseMetadata(hentForsendelseResponse.forsendelseMetadata())
