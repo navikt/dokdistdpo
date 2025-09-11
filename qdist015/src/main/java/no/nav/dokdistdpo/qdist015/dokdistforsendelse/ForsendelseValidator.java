@@ -17,7 +17,6 @@ import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadata
 import static no.nav.dokdistdpo.utils.DokdistdpoUtils.assertNotEmpty;
 import static no.nav.dokdistdpo.utils.DokdistdpoUtils.assertNotNull;
 
-
 public class ForsendelseValidator {
 
 	private static final String HOVEDDOKUMENT = "HOVEDDOKUMENT";
@@ -26,7 +25,10 @@ public class ForsendelseValidator {
 		assertNotNull("hentForsendelseResponse", response);
 		assertMottaker(response.mottaker());
 		validateForsendelseStatus(response.forsendelseStatus());
-		assertNotEmpty("forsendelse.forsendelseMetadata", response.forsendelseMetadata());
+
+		if (response.forsendelseMetadata() == null || response.forsendelseMetadata().length == 0) {
+			throw new DokdistdpoIllegalArgumentException("forsendelse.forsendelseMetadata kan ikke være null eller tomt");
+		}
 		assertNotEmpty("forsendelse.forsendelseMetadataType", response.forsendelseMetadataType());
 
 		if (!isAvtaltmeldingOrArkivmelding(response)) {

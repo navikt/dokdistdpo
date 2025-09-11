@@ -84,7 +84,7 @@ public class Qdist015Service {
 
 		return NavDokumentpakke.builder()
 				.navDokument(NavDokument.fromDpoMelding(
-						forsendelse.forsendelseMetadataType(), new ByteArrayInputStream(forsendelse.forsendelseMetadata().getBytes())
+						forsendelse.forsendelseMetadataType(), new ByteArrayInputStream(forsendelse.forsendelseMetadata())
 				))
 				.navDokumenter(gcsForsendelseDokumenter.stream()
 						.map(dok ->

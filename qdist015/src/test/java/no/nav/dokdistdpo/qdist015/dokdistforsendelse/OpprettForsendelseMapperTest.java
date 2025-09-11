@@ -87,7 +87,7 @@ class OpprettForsendelseMapperTest {
 	@Test
 	public void shouldThrowExceptionIfBestillingIdIsBlank() {
 		DokdistdpoIllegalArgumentException exception = assertThrows(DokdistdpoIllegalArgumentException.class, () -> mapper.mapToOpprettForsendelse(createHentForsendelseResponse(), null));
-		assertEquals("nyBestillingsId kan ikke være null or tomt", exception.getMessage());
+		assertEquals("nyBestillingsId kan ikke være null eller tomt", exception.getMessage());
 	}
 
 	@Test
