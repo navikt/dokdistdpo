@@ -14,7 +14,7 @@ public record HentForsendelseResponse(
 		String bestillendeFagsystem,
 		String dokumentProdApp,
 		String forsendelseTittel,
-		String forsendelseMetadata,
+		byte[] forsendelseMetadata,
 		String forsendelseMetadataType,
 		String distribusjonstype,
 		String distribusjonstidspunkt,

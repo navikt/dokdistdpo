@@ -81,7 +81,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 
 		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));
 
-		Awaitility.await().atMost(10, TimeUnit.SECONDS).untilAsserted(this::verifyAltinnUploadWithPostProcessing);
+		await().atMost(10, SECONDS).untilAsserted(this::verifyAltinnUploadWithPostProcessing);
 	}
 
 	@ParameterizedTest
@@ -117,7 +117,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 
 		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));
 
-		Awaitility.await().atMost(10, TimeUnit.SECONDS).untilAsserted(this::verifySendToPrint);
+		await().atMost(10, SECONDS).untilAsserted(this::verifySendToPrint);
 	}
 
 	@Test
