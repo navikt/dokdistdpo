@@ -35,7 +35,7 @@
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
 
 		<google-cloud.version>26.59.0</google-cloud.version>
-		<tink.version>1.17.0</tink.version>
+		<tink.version>1.18.0</tink.version>
 		<tink-gcpkms.version>1.10.0</tink-gcpkms.version>
 		<commons-asic.version>1.0.2</commons-asic.version>
 		<melding-virksomhet-dokdistfordeling.version>7-18c61bf</melding-virksomhet-dokdistfordeling.version>
