@@ -48,9 +48,7 @@ public class DokdistAdminConsumer {
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
-				.onStatus(HttpStatusCode::isError, (req, res) -> {
-					dokdistadminHandleError(res, "hentForsendelse", "forsendelseId", forsendelseId);
-				})
+				.onStatus(HttpStatusCode::isError, (req, res) -> dokdistadminHandleError(res, "hentForsendelse", "forsendelseId", forsendelseId))
 				.body(HentForsendelseResponse.class);
 	}
 

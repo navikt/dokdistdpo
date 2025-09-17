@@ -18,7 +18,7 @@ class AltinnRequestMapperTest {
 
 	private static final String KONVERSASJON_ID = "1234627b-b791-4d5f-923e-5fb132839e5f";
 
-	AltinnRequestMapper altinnRequestMapper = new AltinnRequestMapper();
+	private final AltinnRequestMapper altinnRequestMapper = new AltinnRequestMapper();
 
 	@ParameterizedTest
 	@MethodSource
