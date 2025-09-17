@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ArkivmeldingStandardBusinessDocumentMapperTest {
 
-	private ArkivmeldingStandardBusinessDocumentMapper mapper = new ArkivmeldingStandardBusinessDocumentMapper();
+	private final ArkivmeldingStandardBusinessDocumentMapper mapper = new ArkivmeldingStandardBusinessDocumentMapper();
 
 
 	@Test

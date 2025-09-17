@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class JsonSerializer {
 
-	private static ObjectMapper objectMapper = new ObjectMapper();
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 	private static final ObjectWriter writer = objectMapper.writer();
 
 	static {

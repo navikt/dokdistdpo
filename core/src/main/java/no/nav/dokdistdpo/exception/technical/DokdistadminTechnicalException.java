@@ -4,7 +4,7 @@ import org.springframework.http.ProblemDetail;
 
 public class DokdistadminTechnicalException extends DokdistdpoTechnicalException {
 
-	private ProblemDetail problemDetail;
+	private final ProblemDetail problemDetail;
 
 	public DokdistadminTechnicalException(String message, ProblemDetail problemDetail) {
 		super(message);

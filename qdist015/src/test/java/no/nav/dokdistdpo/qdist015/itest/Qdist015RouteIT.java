@@ -8,7 +8,6 @@ import no.nav.dokdistdpo.exception.technical.FileDownloadFromBucketTechnicalExce
 import no.nav.dokdistdpo.qdist015.GCSForsendelseDokument;
 import no.nav.dokdistdpo.qdist015.itest.config.AbstractQdist015ITest;
 import no.nav.dokdistdpo.qdist015.utils.JsonSerializer;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,8 +16,6 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;

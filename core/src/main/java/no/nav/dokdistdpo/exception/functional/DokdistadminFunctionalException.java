@@ -4,7 +4,7 @@ import org.springframework.http.ProblemDetail;
 
 public class DokdistadminFunctionalException extends DokdistdpoFunctionalException {
 
-	private ProblemDetail problemDetail;
+	private final ProblemDetail problemDetail;
 
 	public DokdistadminFunctionalException(String message, ProblemDetail problemDetail) {
 		super(message);
