@@ -32,7 +32,7 @@
 		<jaxws-ri.version>4.0.3</jaxws-ri.version>
 		<commons-lang3.version>3.18.0</commons-lang3.version>
 		<commons-io.version>2.20.0</commons-io.version>
-		<bouncycastle.version>1.81</bouncycastle.version>
+		<bouncycastle.version>1.82</bouncycastle.version>
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
 		<libraries-bom.version>26.59.0</libraries-bom.version>
 		<tink.version>1.18.0</tink.version>
