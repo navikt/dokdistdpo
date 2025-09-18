@@ -34,7 +34,7 @@
 		<commons-io.version>2.20.0</commons-io.version>
 		<bouncycastle.version>1.81</bouncycastle.version>
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
-		<libraries-bom.version>26.59.0</libraries-bom.version>
+		<libraries-bom.version>26.68.0</libraries-bom.version>
 		<tink.version>1.18.0</tink.version>
 		<tink-gcpkms.version>1.10.0</tink-gcpkms.version>
 
