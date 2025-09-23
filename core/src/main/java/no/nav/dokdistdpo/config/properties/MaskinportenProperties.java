@@ -7,11 +7,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record MaskinportenProperties(@NotEmpty
 									 String issuer,
 									 @NotEmpty
-									 String clientId,
-									 @NotEmpty
-									 String scopes,
-									 @NotEmpty
-									 String tokenEndpoint,
-									 @NotEmpty
-									 String clientJwk) {
+									 String tokenEndpoint) {
 }
