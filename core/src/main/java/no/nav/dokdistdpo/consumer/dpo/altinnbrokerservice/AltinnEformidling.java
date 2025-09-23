@@ -63,6 +63,7 @@ public class AltinnEformidling implements Eformidling {
 
 	UploadManifest mapUploadManifest(final AltinnDpoRequest altinnDpoRequest) {
 		return UploadManifest.builder()
+				.mottakerId(altinnDpoRequest.forsendelse().mottakerId())
 				.avsender(NAV_ORGNUMMER)
 				.serviceCode(altinnDpoRequest.dpoMottakerInfo().serviceCode())
 				.serviceEditionCode(altinnDpoRequest.dpoMottakerInfo().serviceEditionCode())
