@@ -45,6 +45,18 @@ then
     export dokdistdpo_dpo_username=$(cat /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_username)
 fi
 
+if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_scope
+then
+    echo "Setting dokdistdpo_dpo_scope"
+    export dokdistdpo_dpo_scope=$(cat /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_scope)
+fi
+
+if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_clientid
+then
+    echo "Setting dokdistdpo_dpo_clientid"
+    export dokdistdpo_dpo_clientid=$(cat /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_dpo_clientid)
+fi
+
 if test -f /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_qdist015_autostartup; then
   echo "Setting dokdistdpo_qdist015_autostartup"
   export dokdistdpo_qdist015_autostartup=$(cat /var/run/secrets/nais.io/dokdistdpo/dokdistdpo_qdist015_autostartup)

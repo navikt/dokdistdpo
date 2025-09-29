@@ -1,9 +1,11 @@
 package no.nav.dokdistdpo.azure;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
-import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
+import no.nav.dokdistdpo.consumer.dpo.maskinporten.MaskinportenConsumer;
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -16,18 +18,16 @@ import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpReq
 import org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.springframework.security.oauth2.core.AuthorizationGrantType.CLIENT_CREDENTIALS;
-import static org.springframework.security.oauth2.core.AuthorizationGrantType.JWT_BEARER;
 import static org.springframework.security.oauth2.core.ClientAuthenticationMethod.CLIENT_SECRET_BASIC;
-import static org.springframework.security.oauth2.core.ClientAuthenticationMethod.NONE;
 
 @Configuration
 public class OAuthEnabledRestClientConfig {
 
 	public static final String CLIENT_REGISTRATION_DOKDISTADMIN = "azure-dokdistadmin";
-	public static final String CLIENT_REGISTRATION_MASKINPORTEN = "maskinporten";
 
 	@Bean
 	public RestClient dokdistadminRestClient(DokdistdpoProperties dokdistdpoProperties,
@@ -42,22 +42,15 @@ public class OAuthEnabledRestClientConfig {
 	}
 
 	@Bean
-	public RestClient maskinportenRestClient(DokdistdpoProperties dokdistdpoProperties,
-											 ClientRegistrationRepository clientRegistrationRepository,
-											 OAuth2AuthorizedClientManager authorizedClientManager) {
-
-		var oauth2Interceptor =
-				new OAuth2AuthInterceptor(authorizedClientManager,
-						clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN));
-
+	public RestClient maskinportenAuthorizedRestClient(MaskinportenConsumer maskinportenConsumer) {
 		return RestClient.builder()
-				.baseUrl(dokdistdpoProperties.serviceRegistry().url())
-				.requestInterceptor(oauth2Interceptor)
+				.requestFactory(jdkClientHttpRequestFactory())
+				.requestInterceptor(new MaskinportenRequestInterceptor(maskinportenConsumer))
 				.build();
 	}
 
 	@Bean
-	public OAuth2ClientHttpRequestInterceptor OAuth2ClientHttpRequestInterceptor(
+	public OAuth2ClientHttpRequestInterceptor oAuth2ClientHttpRequestInterceptor(
 			OAuth2AuthorizedClientManager authorizedClientManager) {
 
 		var oAuth2ClientHttpRequestInterceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
@@ -67,8 +60,7 @@ public class OAuthEnabledRestClientConfig {
 	}
 
 	@Bean
-	public OAuth2AuthorizedClientManager authorizedClientManager(MaskinportenProperties maskinportenProperties,
-																 ClientRegistrationRepository clientRegistrationRepository,
+	public OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistrationRepository clientRegistrationRepository,
 																 OAuth2AuthorizedClientService auth2AuthorizedClientService) {
 
 		var authorizedClientManager =
@@ -80,7 +72,6 @@ public class OAuthEnabledRestClientConfig {
 				.authorizationCode()
 				.refreshToken()
 				.clientCredentials()
-				.provider(new MaskinportenAuthorizedClientProvider(maskinportenProperties))
 				.build());
 
 		return authorizedClientManager;
@@ -92,31 +83,30 @@ public class OAuthEnabledRestClientConfig {
 	}
 
 	@Bean
-	ClientRegistrationRepository clientRegistrationRepository(AzureProperties azureProperties, DokdistdpoProperties properties, MaskinportenProperties maskinportenProperties) {
-		return new InMemoryClientRegistrationRepository(clientRegistrations(azureProperties, properties, maskinportenProperties));
+	ClientRegistrationRepository clientRegistrationRepository(AzureProperties azureProperties, DokdistdpoProperties properties) {
+		return new InMemoryClientRegistrationRepository(clientRegistrations(azureProperties, properties));
 	}
 
-	List<ClientRegistration> clientRegistrations(AzureProperties azureProperties, DokdistdpoProperties properties, MaskinportenProperties maskinportenProperties) {
+	List<ClientRegistration> clientRegistrations(AzureProperties azureProperties, DokdistdpoProperties properties) {
 		return List.of(ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN)
-						.tokenUri(azureProperties.openidConfigTokenEndpoint())
-						.clientId(azureProperties.appClientId())
-						.clientSecret(azureProperties.appClientSecret())
-						.clientAuthenticationMethod(CLIENT_SECRET_BASIC)
-						.authorizationGrantType(CLIENT_CREDENTIALS)
-						.scope(properties.endpoints().dokdistadmin().scope())
-						.build(),
-				ClientRegistration.withRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN)
-						.tokenUri(maskinportenProperties.tokenEndpoint())
-						.clientId(maskinportenProperties.clientId())
-						.issuerUri(maskinportenProperties.issuer())
-						.clientAuthenticationMethod(NONE)
-						.authorizationGrantType(JWT_BEARER)
-						.scope(maskinportenProperties.scopes())
-						.build()
+				.tokenUri(azureProperties.openidConfigTokenEndpoint())
+				.clientId(azureProperties.appClientId())
+				.clientSecret(azureProperties.appClientSecret())
+				.clientAuthenticationMethod(CLIENT_SECRET_BASIC)
+				.authorizationGrantType(CLIENT_CREDENTIALS)
+				.scope(properties.endpoints().dokdistadmin().scope())
+				.build()
 		);
 	}
 
 	private OAuth2ClientHttpRequestInterceptor.ClientRegistrationIdResolver clientRegistrationIdResolver() {
 		return new RequestAttributeClientRegistrationIdResolver();
+	}
+
+	private static JdkClientHttpRequestFactory jdkClientHttpRequestFactory() {
+		return ClientHttpRequestFactoryBuilder.jdk()
+				.withCustomizer(jdkClientHttpRequestFactory ->
+						jdkClientHttpRequestFactory.setReadTimeout(Duration.ofSeconds(20)))
+				.build();
 	}
 }

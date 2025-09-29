@@ -1,5 +1,7 @@
 package no.nav.dokdistdpo.constant;
 
+import java.time.ZoneId;
+import java.util.TimeZone;
 import java.util.UUID;
 
 public final class DokdistdpoConstant {
@@ -23,6 +25,9 @@ public final class DokdistdpoConstant {
 
 	public static final String ARKIVMELDING_DOCUMENT_IDENTIFICATOR = "urn:no:difi:arkivmelding:xsd::arkivmelding";
 	public static final String SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER = "urn:no:difi:profile:arkivmelding:administrasjon:ver1.0";
+
+	public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("Europe/Oslo");
+	public static final ZoneId DEFAULT_ZONE_ID = DEFAULT_TIME_ZONE.toZoneId();
 
 	private DokdistdpoConstant() {
 	}

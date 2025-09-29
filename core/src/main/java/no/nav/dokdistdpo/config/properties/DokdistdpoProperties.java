@@ -27,7 +27,8 @@ public record DokdistdpoProperties(
 		@Valid
 		Qdist015 qdist015) {
 
-	public record Serviceuser(String username, String password) {}
+	public record Serviceuser(String username, String password) {
+	}
 
 	public record ServiceRegistryConfig(
 			@NotBlank String url) {
@@ -59,7 +60,11 @@ public record DokdistdpoProperties(
 			@NotBlank
 			String username,
 			@NotBlank
-			String password) {
+			String password,
+			@NotBlank
+			String clientid,
+			@NotBlank
+			String scope) {
 	}
 
 	public record MqGatewayProperties(
@@ -74,5 +79,6 @@ public record DokdistdpoProperties(
 	}
 
 	public record Qdist015(
-			boolean autostartup) {}
+			boolean autostartup) {
+	}
 }

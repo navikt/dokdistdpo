@@ -33,6 +33,7 @@ import static org.mockito.Mockito.mock;
 		OAuthEnabledRestClientConfig.class,
 		BrokerServiceExternalTestConfig.class,
 		BrokerServiceExternalStreamedConfigTest.class,
+		CacheTestConfig.class
 })
 public class ApplicationTestConfig {
 

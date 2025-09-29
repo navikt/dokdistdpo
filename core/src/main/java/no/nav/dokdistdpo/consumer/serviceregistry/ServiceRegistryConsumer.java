@@ -1,19 +1,17 @@
 package no.nav.dokdistdpo.consumer.serviceregistry;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.exception.technical.ServiceRegistryTechnicalException;
 import no.nav.dokdistdpo.utils.DokdistdpoUtils;
-import org.slf4j.MDC;
 import org.springframework.http.ProblemDetail;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import static java.lang.String.format;
-import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGISTRATION_MASKINPORTEN;
-import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
-import static no.nav.dokdistdpo.constant.NavHeaders.NAV_CALLID;
-import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @Component
@@ -22,20 +20,22 @@ public class ServiceRegistryConsumer {
 	public static final String TEKNISK_FEIL_ERROR_MESSAGE = "Klarte ikke hente mottakerInfo fra service registry. Teknisk feil: ";
 	public static final String FUNKSJONELL_FEIL_ERROR_MESSAGE = "Klarte ikke hente mottakerInfo fra service registry. Funksjonell feil: ";
 
-	private final RestClient maskinportenRestClient;
+	private final RestClient maskinportenAuthorizedRestClient;
 
-	public ServiceRegistryConsumer(RestClient maskinportenRestClient) {
-		this.maskinportenRestClient = maskinportenRestClient;
+	public ServiceRegistryConsumer(RestClient maskinportenAuthorizedRestClient,
+								   DokdistdpoProperties dokdistdpoProperties) {
+		this.maskinportenAuthorizedRestClient = maskinportenAuthorizedRestClient.mutate()
+				.baseUrl(dokdistdpoProperties.serviceRegistry().url())
+				.defaultHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+				.build();
 	}
 
 	@Retryable(retryFor = ServiceRegistryTechnicalException.class)
 	public IdentifierResource getIdentifierResource(final String orgnummer, final String processIdentifier) {
-		return maskinportenRestClient.get()
+		return maskinportenAuthorizedRestClient.get()
 				.uri(uriBuilder -> uriBuilder
 						.path("/identifier/{orgnummer}/process/" + processIdentifier)
 						.build(orgnummer))
-				.header(NAV_CALLID, MDC.get(CALL_ID))
-				.attributes(clientRegistrationId(CLIENT_REGISTRATION_MASKINPORTEN))
 				.exchange((req, res) -> {
 					if (res.getStatusCode().isError()) {
 						ProblemDetail problemDetail = DokdistdpoUtils.getProblemDetail(res);
