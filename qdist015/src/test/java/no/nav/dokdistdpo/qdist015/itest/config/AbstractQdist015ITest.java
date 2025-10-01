@@ -42,7 +42,7 @@ public abstract class AbstractQdist015ITest {
 	protected static final String FORSENDELSE_ID = "333333";
 	protected static final String BASE_DOKDISTADMIN_PATH = "/administrerforsendelse";
 	protected static final String OPPDATERFORSENDELSE_URL = BASE_DOKDISTADMIN_PATH + "/oppdaterforsendelse";
-	public static final String FEILREGISTRERFORSENDELSE_URL = BASE_DOKDISTADMIN_PATH +"/feilregistrerforsendelse";
+	public static final String FEILREGISTRERFORSENDELSE_URL = BASE_DOKDISTADMIN_PATH + "/feilregistrerforsendelse";
 	public static final String DOKUMENT_OBJEKT_REFERANSE_HOVEDDOK = "dokumentObjektReferanseHoveddok";
 	public static final String DOKUMENT_OBJEKT_REFERANSE_VEDLEGG1 = "dokumentObjektReferanseVedlegg1";
 	public static final String DOKUMENT_OBJEKT_REFERANSE_VEDLEGG2 = "dokumentObjektReferanseVedlegg2";

@@ -1,7 +1,6 @@
 package no.nav.dokdistdpo.consumer.dokdistadmin;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.FeilregistrerForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.Forsendelse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
@@ -22,6 +21,7 @@ import java.io.IOException;
 
 import static java.lang.String.format;
 import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGISTRATION_DOKDISTADMIN;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
 import static no.nav.dokdistdpo.constant.NavHeaders.NAV_CALLID;
 import static no.nav.dokdistdpo.utils.DokdistdpoUtils.getProblemDetail;
@@ -33,8 +33,7 @@ public class DokdistAdminConsumer {
 
 	private final RestClient dokdistadminRestClient;
 
-	public DokdistAdminConsumer(RestClient dokdistadminRestClient,
-								DokdistdpoProperties dokdistdpoProperties) {
+	public DokdistAdminConsumer(RestClient dokdistadminRestClient) {
 		this.dokdistadminRestClient = dokdistadminRestClient;
 	}
 
@@ -48,7 +47,7 @@ public class DokdistAdminConsumer {
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
-				.onStatus(HttpStatusCode::isError, (req, res) -> dokdistadminHandleError(res, "hentForsendelse", "forsendelseId", forsendelseId))
+				.onStatus(HttpStatusCode::isError, (req, res) -> dokdistadminHandleError(res, "hentForsendelse", PROPERTY_FORSENDELSE_ID, forsendelseId))
 				.body(HentForsendelseResponse.class);
 	}
 
@@ -76,7 +75,7 @@ public class DokdistAdminConsumer {
 				.body(feilregistrerForsendelse)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) ->
-						dokdistadminHandleError(res, "feilregistrerForsendelse", "forsendelseId", feilregistrerForsendelse.forsendelseId().toString()))
+						dokdistadminHandleError(res, "feilregistrerForsendelse", PROPERTY_FORSENDELSE_ID, feilregistrerForsendelse.forsendelseId().toString()))
 				.toBodilessEntity();
 
 		log.info("feilregistrerForsendelse har feilregistrert forsendelse med forsendelseId={}", feilregistrerForsendelse.forsendelseId());
@@ -90,9 +89,10 @@ public class DokdistAdminConsumer {
 				.uri("/oppdaterforsendelse")
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
+				.body(oppdaterForsendelse)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) ->
-						dokdistadminHandleError(res, "oppdaterForsendelse", "forsendelseId", oppdaterForsendelse.forsendelseId().toString()))
+						dokdistadminHandleError(res, "oppdaterForsendelse", PROPERTY_FORSENDELSE_ID, oppdaterForsendelse.forsendelseId().toString()))
 				.toBodilessEntity();
 
 		log.info("oppdaterForsendelse har oppdatert forsendelse med forsendelseId={} og forsendelseStatus={}", oppdaterForsendelse.forsendelseId(), oppdaterForsendelse.forsendelseStatus());

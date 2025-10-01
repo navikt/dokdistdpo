@@ -3,9 +3,9 @@ package no.nav.dokdistdpo.qdist015.dokdistforsendelse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.DokdistAdminConsumer;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
-import no.nav.dokdistdpo.consumer.serviceregistry.DpoMottakerInfo;
-import no.nav.dokdistdpo.consumer.serviceregistry.DpoMottakerInfoService;
-import no.nav.dokdistdpo.consumer.serviceregistry.ServiceRegistryRequest;
+import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfo;
+import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfoService;
+import no.nav.dokdistdpo.consumer.dpo.serviceregistry.ServiceRegistryRequest;
 import org.springframework.stereotype.Component;
 
 import static java.lang.Enum.valueOf;

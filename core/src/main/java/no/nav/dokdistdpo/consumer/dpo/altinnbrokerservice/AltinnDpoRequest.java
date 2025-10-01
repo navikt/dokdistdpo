@@ -3,7 +3,7 @@ package no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice;
 import lombok.Builder;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
-import no.nav.dokdistdpo.consumer.serviceregistry.DpoMottakerInfo;
+import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfo;
 
 @Builder
 public record AltinnDpoRequest(

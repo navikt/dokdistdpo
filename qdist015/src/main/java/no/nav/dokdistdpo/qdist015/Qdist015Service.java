@@ -6,7 +6,7 @@ import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
-import no.nav.dokdistdpo.consumer.serviceregistry.DpoMottakerInfo;
+import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfo;
 import no.nav.dokdistdpo.qdist015.dokdistforsendelse.DokdistadminService;
 import no.nav.dokdistdpo.qdist015.dokdistforsendelse.SendTilPrintService;
 import no.nav.dokdistdpo.qdist015.map.AltinnRequestMapper;

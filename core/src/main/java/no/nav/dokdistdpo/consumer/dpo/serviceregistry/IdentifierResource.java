@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.consumer.serviceregistry;
+package no.nav.dokdistdpo.consumer.dpo.serviceregistry;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.dokdistdpo.consumer.serviceregistry.IdentifierResource.ServiceIdentifier.DPO;
+import static no.nav.dokdistdpo.consumer.dpo.serviceregistry.IdentifierResource.ServiceIdentifier.DPO;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Builder
