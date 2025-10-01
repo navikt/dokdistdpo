@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.consumer.serviceregistry;
+package no.nav.dokdistdpo.consumer.dpo.serviceregistry;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;

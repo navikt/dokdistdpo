@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.consumer.serviceregistry;
+package no.nav.dokdistdpo.consumer.dpo.serviceregistry;
 
 import java.security.cert.X509Certificate;
 
