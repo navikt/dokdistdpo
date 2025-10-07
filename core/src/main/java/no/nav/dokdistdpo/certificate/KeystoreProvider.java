@@ -23,7 +23,7 @@ public class KeystoreProvider {
 			KeyStore keyStore = KeyStore.getInstance(type);
 
 			try (var inputStream = path.getInputStream()) {
-				keyStore.load(isBase64Empty(properties) ? Base64.getDecoder().wrap(inputStream) : inputStream, password);
+				keyStore.load(isBase64(properties) ? Base64.getDecoder().wrap(inputStream) : inputStream, password);
 			}
 
 			return keyStore;
@@ -36,7 +36,7 @@ public class KeystoreProvider {
 		}
 	}
 
-	private static boolean isBase64Empty(KeyStoreProperties properties) {
+	private static boolean isBase64(KeyStoreProperties properties) {
 		return Objects.requireNonNull(properties.key()).endsWith(".b64");
 	}
 

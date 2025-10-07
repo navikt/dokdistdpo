@@ -1,6 +1,8 @@
 package no.nav.dokdistdpo.certificate;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import no.nav.dok.validators.Exists;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -10,6 +12,6 @@ public record KeyStoreProperties(
 		@NotBlank String type,
 		@NotBlank String alias,
 		@NotBlank String password,
-		@NotBlank String key) {
+		@NotNull @Exists String key) {
 
 }
