@@ -27,12 +27,15 @@ public class SendTilPrintService {
 	private final OpprettForsendelseMapper opprettForsendelseMapper;
 	private final ProducerTemplate producerTemplate;
 	private final ForsendelseValidator forsendelseValidator;
+	private final OppdaterForsendelseService oppdaterForsendelseService;
 
-	public SendTilPrintService(DokdistAdminConsumer dokdistAdminConsumer, ProducerTemplate producerTemplate) {
+	public SendTilPrintService(DokdistAdminConsumer dokdistAdminConsumer, ProducerTemplate producerTemplate,
+							   OppdaterForsendelseService oppdaterForsendelseService)  {
 		this.dokdistAdminConsumer = dokdistAdminConsumer;
 		this.opprettForsendelseMapper = new OpprettForsendelseMapper();
 		this.producerTemplate = producerTemplate;
 		this.forsendelseValidator = new ForsendelseValidator();
+		this.oppdaterForsendelseService = oppdaterForsendelseService;
 	}
 
 	@Handler
@@ -51,6 +54,8 @@ public class SendTilPrintService {
 
 		DistribuerTilKanal distribuerTilKanal = new DistribuerTilKanal()
 				.useForsendelseId(String.valueOf(nyForsendelse.forsendelseId()));
+
+		oppdaterForsendelseService.oppdaterForsendelseMedKlartForDist(nyForsendelse.forsendelseId());
 
 		producerTemplate.sendBody(SEND_TIL_PRINT, distribuerTilKanal);
 	}

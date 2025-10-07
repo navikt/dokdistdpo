@@ -3,7 +3,6 @@ package no.nav.dokdistdpo.qdist015;
 import jakarta.jms.Queue;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.exception.functional.DokdistdpoFunctionalException;
-import no.nav.dokdistdpo.qdist015.dokdistforsendelse.OppdaterForsendelseService;
 import no.nav.dokdistdpo.qdist015.utils.MdcHeaderProcessor;
 import no.nav.meldinger.virksomhet.dokdistfordeling.qdist008.out.DistribuerTilKanal;
 import org.apache.camel.ValidationException;
@@ -31,19 +30,16 @@ public class Qdist015Route extends RouteBuilder {
 	private final Queue qdist009;
 	private final Qdist015Service qdist015Service;
 	private final DokdistdpoProperties dokdistdpoProperties;
-	private final OppdaterForsendelseService oppdaterForsendelseService;
 
 	public Qdist015Route(Queue qdist015, Queue qdist015FunksjonellFeil,
 						 Queue qdist009,
 						 Qdist015Service qdist015Service,
-						 DokdistdpoProperties dokdistdpoProperties,
-						 OppdaterForsendelseService oppdaterForsendelseService) {
+						 DokdistdpoProperties dokdistdpoProperties) {
 		this.qdist015 = qdist015;
 		this.qdist015FunksjonellFeil = qdist015FunksjonellFeil;
 		this.qdist009 = qdist009;
 		this.qdist015Service = qdist015Service;
 		this.dokdistdpoProperties = dokdistdpoProperties;
-		this.oppdaterForsendelseService = oppdaterForsendelseService;
 	}
 
 	@Override
@@ -80,7 +76,6 @@ public class Qdist015Route extends RouteBuilder {
 					String forsendelseId = exchange.getProperty(PROPERTY_FORSENDELSE_ID, String.class);
 					exchange.getIn().setBody(forsendelseId);
 				})
-				.bean(oppdaterForsendelseService)
 				.log("Qdist015: Forsendelsen ble oppdatert med forsendelseStatus OVERSENDT og behandlingen av" + getIdsForLogging() + " er avsluttet.")
 				.end();
 

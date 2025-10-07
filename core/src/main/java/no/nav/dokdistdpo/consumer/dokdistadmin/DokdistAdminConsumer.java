@@ -20,6 +20,7 @@ import org.springframework.web.client.RestClient;
 import java.io.IOException;
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGISTRATION_DOKDISTADMIN;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
@@ -38,7 +39,7 @@ public class DokdistAdminConsumer {
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public HentForsendelseResponse hentForsendelse(String forsendelseId) {
+	public HentForsendelseResponse hentForsendelse(Long forsendelseId) {
 		log.info("hentForsendelse henter forsendelse med forsendelseId={}", forsendelseId);
 
 		return dokdistadminRestClient.get()
@@ -47,7 +48,7 @@ public class DokdistAdminConsumer {
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
-				.onStatus(HttpStatusCode::isError, (req, res) -> dokdistadminHandleError(res, "hentForsendelse", PROPERTY_FORSENDELSE_ID, forsendelseId))
+				.onStatus(HttpStatusCode::isError, (req, res) -> dokdistadminHandleError(res, "hentForsendelse", PROPERTY_FORSENDELSE_ID, valueOf(forsendelseId)))
 				.body(HentForsendelseResponse.class);
 	}
 

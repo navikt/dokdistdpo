@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public final class DokdistdpoConstant {
 
-	public static final String NAV_ORGNUMMER = "991078045";
+	public static final String NAV_ORGNUMMER = "889640782";
 
 	public static final String FORSENDELSE_STATUS_KLAR_FOR_DIST = "KLAR_FOR_DIST";
 	public static final String FORSENDELSE_STATUS_OVERSENDT = "OVERSENDT";
