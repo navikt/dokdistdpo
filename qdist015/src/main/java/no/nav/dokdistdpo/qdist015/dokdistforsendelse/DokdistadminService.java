@@ -26,7 +26,7 @@ public class DokdistadminService {
 		this.forsendelseValidator = new ForsendelseValidator();
 	}
 
-	public HentForsendelseResponse hentForsendelse(String forsendelseId) {
+	public HentForsendelseResponse hentForsendelse(Long forsendelseId) {
 		HentForsendelseResponse hentForsendelseResponse = dokdistAdminConsumer.hentForsendelse(forsendelseId);
 		forsendelseValidator.assertHentForsendelse(hentForsendelseResponse);
 		return hentForsendelseResponse;

@@ -8,6 +8,7 @@ import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
 import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfo;
 import no.nav.dokdistdpo.qdist015.dokdistforsendelse.DokdistadminService;
+import no.nav.dokdistdpo.qdist015.dokdistforsendelse.OppdaterForsendelseService;
 import no.nav.dokdistdpo.qdist015.dokdistforsendelse.SendTilPrintService;
 import no.nav.dokdistdpo.qdist015.map.AltinnRequestMapper;
 import no.nav.meldinger.virksomhet.dokdistfordeling.qdist008.out.DistribuerTilKanal;
@@ -31,6 +32,7 @@ public class Qdist015Service {
 	private final AltinnRequestMapper altinnRequestMapper;
 	private final DokdistadminService dokdistadminService;
 	private final Eformidling eformidling;
+	private final OppdaterForsendelseService oppdaterForsendelseService;
 	private final LagreJuridiskloggService juridiskloggService;
 
 	public Qdist015Service(GStorageDokumentService gStorageDokumentService,
@@ -38,22 +40,25 @@ public class Qdist015Service {
 						   AltinnRequestMapper altinnRequestMapper,
 						   DokdistadminService dokdistadminService,
 						   Eformidling eformidling,
-						   LagreJuridiskloggService juridiskloggService) {
+						   LagreJuridiskloggService juridiskloggService,
+						   OppdaterForsendelseService oppdaterForsendelseService) {
 		this.gStorageDokumentService = gStorageDokumentService;
 		this.sendTilPrintService = sendTilPrintService;
 		this.altinnRequestMapper = altinnRequestMapper;
 		this.dokdistadminService = dokdistadminService;
 		this.eformidling = eformidling;
 		this.juridiskloggService = juridiskloggService;
+		this.oppdaterForsendelseService = oppdaterForsendelseService;
 	}
 
 	@Handler
 	public void processForsendelse(DistribuerTilKanal distribuerTilKanal, Exchange exchange) {
 		final String konversajonId = UUID.randomUUID().toString();
+		final Long forsendelseId = Long.valueOf(distribuerTilKanal.getForsendelseId());
 		exchange.setProperty(PROPERTY_KONVERSASJON_ID, konversajonId);
-		exchange.setProperty(PROPERTY_FORSENDELSE_ID, distribuerTilKanal.getForsendelseId());
+		exchange.setProperty(PROPERTY_FORSENDELSE_ID, forsendelseId);
 
-		HentForsendelseResponse hentForsendelseResponse = dokdistadminService.hentForsendelse(distribuerTilKanal.getForsendelseId());
+		HentForsendelseResponse hentForsendelseResponse = dokdistadminService.hentForsendelse(forsendelseId);
 		exchange.setProperty(PROPERTY_BESTILLINGS_ID, hentForsendelseResponse.bestillingsId());
 
 		DpoMottakerInfo dpoMottakerInfo = dokdistadminService.hentServiceRegistryMottakerInfo(hentForsendelseResponse);
@@ -76,6 +81,7 @@ public class Qdist015Service {
 
 		eformidling.send(altinnDpoRequest);
 
+		oppdaterForsendelseService.oppdaterForsendelse(forsendelseId);
 		juridiskloggService.lagreJuridisklogg(altinnDpoRequest);
 	}
 
