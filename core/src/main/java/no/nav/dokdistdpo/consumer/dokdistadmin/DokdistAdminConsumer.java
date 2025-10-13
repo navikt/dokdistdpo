@@ -3,6 +3,7 @@ package no.nav.dokdistdpo.consumer.dokdistadmin;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.FeilregistrerForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.Forsendelse;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OpprettForsendelseRequest;
@@ -31,6 +32,8 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 @Slf4j
 @Component
 public class DokdistAdminConsumer {
+
+	private static final String DOKDISTKANAL_DPO = "DPO";
 
 	private final RestClient dokdistadminRestClient;
 
@@ -97,6 +100,20 @@ public class DokdistAdminConsumer {
 				.toBodilessEntity();
 
 		log.info("oppdaterForsendelse har oppdatert forsendelse med forsendelseId={} og forsendelseStatus={}", oppdaterForsendelse.forsendelseId(), oppdaterForsendelse.forsendelseStatus());
+	}
+
+	public HentEformidlingforsendelserResponse hentEformidlingForsendelser() {
+		return dokdistadminRestClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/henteformidlingforsendelser")
+						.queryParam("distribusjonKanal", DOKDISTKANAL_DPO)
+						.build())
+				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
+				.retrieve()
+				.onStatus(HttpStatusCode::isError, (req, res) ->
+						dokdistadminHandleError(res, "hentEformidlingForsendelser", "", ""))
+				.body(HentEformidlingforsendelserResponse.class);
+
 	}
 
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste, String feltnavn, String feltVerdi) throws IOException {

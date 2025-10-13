@@ -1,9 +1,12 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
@@ -40,5 +43,20 @@ public class StandardBusinessDocumentHeader {
 		return Partner.builder()
 				.identifier(identification)
 				.build();
+	}
+
+	@JsonIgnore
+	public Set<Scope> getScopes() {
+		return Optional.ofNullable(this.getBusinessScope()).flatMap(p -> Optional.ofNullable(p.getScope())).orElseGet(Collections::emptySet);
+	}
+
+	@JsonIgnore
+	public Optional<Scope> getScope(ScopeType scopeType) {
+		return this.getScopes().stream().filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType())).findAny();
+	}
+
+	@JsonIgnore
+	public String getDocumentType() {
+		return this.getDocumentIdentification().getType();
 	}
 }

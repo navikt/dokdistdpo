@@ -24,7 +24,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,7 +54,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	private JmsTemplate jmsTemplate;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		reset(encryptedBucketStorage);
 
 		stubAzure();
@@ -163,7 +163,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	}
 
 	private void verifyServiceRegistry() {
-		verify(getRequestedFor(urlMatching("/serviceregistry/identifier/" + TRYGDERETTEN_ORGNUMMER + "/process/" + SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER)));
+		verify(getRequestedFor(urlMatching("/serviceregistry/identifier/" + TRYGDERETTEN_ORGNUMMER + "/process/" + AVTALTMELDING_PROCESS_IDENTIFIER)));
 	}
 
 	private void verifyPutAdministrerforsendelse() {

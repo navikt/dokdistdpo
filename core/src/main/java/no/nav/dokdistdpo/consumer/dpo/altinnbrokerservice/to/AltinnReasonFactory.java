@@ -7,7 +7,7 @@ import no.altinn.brokerserviceexternal.IBrokerServiceExternalTestAltinnFaultFaul
 import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamedDownloadFileStreamedAltinnFaultFaultFaultMessage;
 import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamedUploadFileStreamedAltinnFaultFaultFaultMessage;
 
-public class AltinnResonFactory {
+public class AltinnReasonFactory {
 
 	public static AltinnReason from(IBrokerServiceExternalInitiateBrokerServiceAltinnFaultFaultFaultMessage initateAltinnFault) {
 		return createAltinnReason(initateAltinnFault.getFaultInfo());
@@ -45,5 +45,8 @@ public class AltinnResonFactory {
 				fault.getAltinnErrorMessage().getValue(),
 				fault.getUserId().getValue(),
 				fault.getAltinnLocalizedErrorMessage().getValue());
+	}
+
+	private AltinnReasonFactory() {
 	}
 }

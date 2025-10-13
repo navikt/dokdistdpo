@@ -6,30 +6,39 @@ import jakarta.xml.ws.BindingProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.altinn.brokerserviceexternalstreamed.BrokerServiceExternalStreamedSF;
 import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamed;
+import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamedDownloadFileStreamedAltinnFaultFaultFaultMessage;
 import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamedUploadFileStreamedAltinnFaultFaultFaultMessage;
 import no.altinn.brokerserviceexternalstreamed.ObjectFactory;
 import no.altinn.brokerserviceexternalstreamed.ReceiptExternalStreamedBE;
 import no.altinn.brokerserviceexternalstreamed.StreamedPayloadExternalBE;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.AltinnReasonFactory;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.MessageFromAltinn;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.ReceiptTo;
+import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
 import no.nav.dokdistdpo.exception.technical.AltinnBrokerServiceWsException;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
-import static no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.AltinnResonFactory.from;
+import static no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.AltinnReasonFactory.from;
 
 @Slf4j
 @Component
 public class AltinnBrokerServiceStreamed {
 
 	private static final String ALTINN_OPPLASTING_FEILET = "Opplasting av fil til Altinn feilet: {}";
+	private static final String ALTINN_AVLESING_AV_MELDING_FEILET = "Kunne ikke lese fil fra Altinn: ";
+	private static final String ALTINN_NEDLASTING_FEILET = "Kunne ikke laste ned fil fra Altinn: {}";
+
 
 	private final String ALTINN_BROKERSERVICEEXTERNALSTREAMED_NAMESPACE = BrokerServiceExternalStreamedSF.SERVICE.getNamespaceURI();
 
@@ -49,7 +58,6 @@ public class AltinnBrokerServiceStreamed {
 		StreamedPayloadExternalBE streamedPayloadExternalBE = objectFactory.createStreamedPayloadExternalBE();
 		streamedPayloadExternalBE.setDataStream(dataHandler);
 
-
 		try {
 			final ReceiptExternalStreamedBE receiptExternalStreamedBE = brokerServiceExternalStreamed.uploadFileStreamed(streamedPayloadExternalBE);
 
@@ -67,8 +75,35 @@ public class AltinnBrokerServiceStreamed {
 			log.error(ALTINN_OPPLASTING_FEILET, from(e));
 			throw new AltinnBrokerServiceWsException(ALTINN_OPPLASTING_FEILET, from(e), e);
 		}
+	}
 
+	public List<MessageFromAltinn> downloadFilesFromAltinn(List<String> filreferanser) {
+		return filreferanser.stream()
+				.map(filreferanse -> mapReferenceToDownloadedFile(filreferanse, downloadFile(filreferanse)))
+				.toList();
+	}
 
+	private MessageFromAltinn mapReferenceToDownloadedFile(String filreferanse, DataHandler dataHandler) {
+		try {
+			InputStream inputStream = dataHandler.getInputStream();
+			return new MessageFromAltinn(filreferanse,inputStream);
+
+		} catch (IOException | IllegalStateException e) {
+			log.error(ALTINN_AVLESING_AV_MELDING_FEILET, e);
+			throw new DokumentpakkingException(ALTINN_AVLESING_AV_MELDING_FEILET, e);
+		}
+
+	}
+
+	public DataHandler downloadFile(String filreferanse) {
+		try {
+			final DataHandler dataHandler = brokerServiceExternalStreamed.downloadFileStreamed(filreferanse, NAV_ORGNUMMER);
+			log.info("Lastet ned fil fra Altinn med filreferanse={}", filreferanse);
+			return dataHandler;
+		} catch (IBrokerServiceExternalStreamedDownloadFileStreamedAltinnFaultFaultFaultMessage e) {
+			log.error(ALTINN_NEDLASTING_FEILET, from(e));
+			throw new AltinnBrokerServiceWsException(ALTINN_NEDLASTING_FEILET, AltinnReasonFactory.from(e), e);
+		}
 	}
 
 	private Optional<List<Header>> mapHeaders(String filreferanse, String fileName) {

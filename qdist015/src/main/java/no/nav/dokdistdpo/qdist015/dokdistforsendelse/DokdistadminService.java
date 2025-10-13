@@ -9,8 +9,8 @@ import no.nav.dokdistdpo.consumer.dpo.serviceregistry.ServiceRegistryRequest;
 import org.springframework.stereotype.Component;
 
 import static java.lang.Enum.valueOf;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
 
 @Component
 public class DokdistadminService {
@@ -46,8 +46,8 @@ public class DokdistadminService {
 	private String getProcessIdentifier(String metadataType) {
 		ForsendelseMetadataType forsendelseMetadataType = valueOf(ForsendelseMetadataType.class, metadataType);
 		return switch (forsendelseMetadataType) {
-			case DPO_ARKIVMELDING -> SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
-			case DPO_AVTALEMELDING -> SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER;
+			case DPO_ARKIVMELDING -> ARKIVMELDING_PROCESS_IDENTIFIER;
+			case DPO_AVTALEMELDING -> AVTALTMELDING_PROCESS_IDENTIFIER;
 		};
 	}
 }
