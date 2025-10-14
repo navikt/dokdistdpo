@@ -77,7 +77,7 @@ public class AltinnBrokerServiceExternal {
 			iBrokerServiceExternal.confirmDownloaded(fileReference, NAV_ORGNUMMER);
 			log.info("Kvittering med filreferanse={} er lastet ned fra Altinn", fileReference);
 		} catch (IBrokerServiceExternalConfirmDownloadedAltinnFaultFaultFaultMessage e) {
-			log.error(CONFIRM_DOWNLOADED_FEILET + "med fileReference: {}",fileReference);
+			log.error(CONFIRM_DOWNLOADED_FEILET + "med fileReference: {}", fileReference);
 			throw new AltinnBrokerServiceWsException(CONFIRM_DOWNLOADED_FEILET, AltinnReasonFactory.from(e), e);
 		}
 	}

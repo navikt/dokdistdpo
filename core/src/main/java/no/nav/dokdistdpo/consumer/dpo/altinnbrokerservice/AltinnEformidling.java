@@ -94,10 +94,11 @@ public class AltinnEformidling implements Eformidling {
 	public List<DownloadResponse> hent(ServiceRegistryRequest serviceRegistryRequest) {
 		ServiceCode serviceCode = getServiceCode(serviceRegistryRequest);
 
+		log.info("Henter filreferanser til meldinger fra Altinns formidlingstjeneste på serviceCode={}", serviceCode);
 		List<String> filreferanser = altinnBrokerServiceExternal.getAvailableFiles(serviceCode, getSearchCriteria());
 		log.info("Hentet {} filreferanser fra Altinn, referanser={}", filreferanser.size(), filreferanser);
 
-		log.info("Henteer kvitteringsmeldinger fra Altinn");
+		log.info("Henter kvitteringsmeldinger fra Altinn");
 		List<MessageFromAltinn> messagesFromAltinn = altinnBrokerServiceStreamed.downloadFilesFromAltinn(filreferanser);
 		log.info("Hentet {} meldinger fra Altinn, referanser={}", messagesFromAltinn.size(), messagesFromAltinn.stream()
 				.map(MessageFromAltinn::filreferanse)
