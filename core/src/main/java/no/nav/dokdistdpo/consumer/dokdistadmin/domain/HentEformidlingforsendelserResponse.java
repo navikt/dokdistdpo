@@ -9,6 +9,7 @@ public record HentEformidlingforsendelserResponse(List<Forsendelse> forsendelser
 			String forsendelseId,
 			String forsendelseStatus,
 			String distribusjonKanal,
-			String konversasjonId, Mottaker mottaker) {
+			String konversasjonId,
+			Mottaker mottaker) {
 	}
 }

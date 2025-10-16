@@ -33,7 +33,7 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 @Component
 public class DokdistAdminConsumer {
 
-	private static final String DOKDISTKANAL_DPO = "DPO";
+	private static final String DISTRIBUSJONSKANAL_DPO = "DPO";
 
 	private final RestClient dokdistadminRestClient;
 
@@ -106,12 +106,12 @@ public class DokdistAdminConsumer {
 		return dokdistadminRestClient.get()
 				.uri(uriBuilder -> uriBuilder
 						.path("/henteformidlingforsendelser")
-						.queryParam("distribusjonKanal", DOKDISTKANAL_DPO)
+						.queryParam("distribusjonKanal", DISTRIBUSJONSKANAL_DPO)
 						.build())
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (req, res) ->
-						dokdistadminHandleError(res, "hentEformidlingForsendelser", "", ""))
+						dokdistadminHandleError(res, "hentEformidlingForsendelser"))
 				.body(HentEformidlingforsendelserResponse.class);
 
 	}
@@ -124,5 +124,15 @@ public class DokdistAdminConsumer {
 		}
 		throw new DokdistadminTechnicalException(format("%s feilet teknisk med forsendelseId=%s, feilmelding=%s",
 				tjeneste, feltVerdi, problemDetail.getDetail()), problemDetail);
+	}
+
+	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste) throws IOException {
+		ProblemDetail problemDetail = getProblemDetail(response);
+		if (response.getStatusCode().is4xxClientError()) {
+			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt. Feilmelding=%s",
+					tjeneste, problemDetail.getDetail()), problemDetail);
+		}
+		throw new DokdistadminTechnicalException(format("%s feilet teknisk, feilmelding=%s",
+				tjeneste, problemDetail.getDetail()), problemDetail);
 	}
 }

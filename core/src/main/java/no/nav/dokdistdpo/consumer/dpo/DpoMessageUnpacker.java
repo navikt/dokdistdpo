@@ -39,7 +39,7 @@ public class DpoMessageUnpacker {
 		this.objectMapper = objectMapper;
 	}
 
-	public List<AltinnDokument> unpackMessage(List<MessageFromAltinn> messageFromAltinns) {
+	public List<AltinnDokument> unpackMessageFromAltinn(List<MessageFromAltinn> messageFromAltinns) {
 		return messageFromAltinns.stream().map(this::unpack).toList();
 	}
 
