@@ -3,6 +3,7 @@ package no.nav.dokdistdpo.consumer.dokdistadmin;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.FeilregistrerForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.Forsendelse;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OpprettForsendelseRequest;
@@ -31,6 +32,8 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 @Slf4j
 @Component
 public class DokdistAdminConsumer {
+
+	private static final String DISTRIBUSJONSKANAL_DPO = "DPO";
 
 	private final RestClient dokdistadminRestClient;
 
@@ -99,6 +102,20 @@ public class DokdistAdminConsumer {
 		log.info("oppdaterForsendelse har oppdatert forsendelse med forsendelseId={} og forsendelseStatus={}", oppdaterForsendelse.forsendelseId(), oppdaterForsendelse.forsendelseStatus());
 	}
 
+	public HentEformidlingforsendelserResponse hentEformidlingForsendelser() {
+		return dokdistadminRestClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/henteformidlingforsendelser")
+						.queryParam("distribusjonKanal", DISTRIBUSJONSKANAL_DPO)
+						.build())
+				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
+				.retrieve()
+				.onStatus(HttpStatusCode::isError, (req, res) ->
+						dokdistadminHandleError(res, "hentEformidlingForsendelser"))
+				.body(HentEformidlingforsendelserResponse.class);
+
+	}
+
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste, String feltnavn, String feltVerdi) throws IOException {
 		ProblemDetail problemDetail = getProblemDetail(response);
 		if (response.getStatusCode().is4xxClientError()) {
@@ -107,5 +124,15 @@ public class DokdistAdminConsumer {
 		}
 		throw new DokdistadminTechnicalException(format("%s feilet teknisk med forsendelseId=%s, feilmelding=%s",
 				tjeneste, feltVerdi, problemDetail.getDetail()), problemDetail);
+	}
+
+	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste) throws IOException {
+		ProblemDetail problemDetail = getProblemDetail(response);
+		if (response.getStatusCode().is4xxClientError()) {
+			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt. Feilmelding=%s",
+					tjeneste, problemDetail.getDetail()), problemDetail);
+		}
+		throw new DokdistadminTechnicalException(format("%s feilet teknisk, feilmelding=%s",
+				tjeneste, problemDetail.getDetail()), problemDetail);
 	}
 }

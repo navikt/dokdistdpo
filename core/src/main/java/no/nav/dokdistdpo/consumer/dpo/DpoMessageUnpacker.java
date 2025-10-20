@@ -1,0 +1,96 @@
+package no.nav.dokdistdpo.consumer.dpo;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import lombok.extern.slf4j.Slf4j;
+import no.altinn.brokerserviceexternal.Manifest;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.AltinnDokument;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.MessageFromAltinn;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
+import no.nav.dokdistdpo.exception.functional.DokumentUnpackingException;
+import no.nav.dokdistdpo.utils.AutoCloseableTempFile;
+import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MANIFEST_XML;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SBD_JSON;
+
+@Slf4j
+@Component
+public class DpoMessageUnpacker {
+
+	private static final String TEMPFILE_EXCEPTION = "Feil ved innlesing/kopiering av inputStream til temporær fil";
+	private static final String UNMARSHALLING_EXCEPTION = "Feil ved unmarshalling av fil med filreferanse: ";
+
+	private final ObjectMapper objectMapper;
+
+	public DpoMessageUnpacker(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
+	public List<AltinnDokument> unpackMessageFromAltinn(List<MessageFromAltinn> messageFromAltinns) {
+		return messageFromAltinns.stream().map(this::unpack).toList();
+	}
+
+	private AltinnDokument unpack(MessageFromAltinn melding) {
+		log.info("Pakker ut zipfil med referanse={}", melding.filreferanse());
+
+		try (AutoCloseableTempFile tempFile = new AutoCloseableTempFile("altinn", "test")) {
+			FileUtils.copyInputStreamToFile(melding.inputStream(), tempFile.toFile());
+
+			return buildAltinnDokumentFromTempFile(tempFile.toFile(), melding.filreferanse());
+		} catch (IOException e) {
+			log.error(TEMPFILE_EXCEPTION, e);
+			throw new DokumentUnpackingException(TEMPFILE_EXCEPTION, e);
+		} finally {
+			log.info("Pakket ut zipfil med referanse={}", melding.filreferanse());
+		}
+	}
+
+	private AltinnDokument buildAltinnDokumentFromTempFile(File tempFile, String fileReference) {
+		Manifest manifest = null;
+		DpoKvitteringMelding trygderettenMelding = null;
+
+		try (ZipFile zipFile = new ZipFile(tempFile)) {
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();  // entries = manifest.xml || sbd.json
+			while (entries.hasMoreElements()) {
+				ZipEntry zipEntry = entries.nextElement();
+				final InputStream inputStream = zipFile.getInputStream(zipEntry);
+				if (MANIFEST_XML.equals(zipEntry.getName())) {
+					manifest = unmarshalXmlObject(inputStream);
+				} else if (SBD_JSON.equals(zipEntry.getName())) {
+					trygderettenMelding = objectMapper.readValue(inputStream, DpoKvitteringMelding.class);
+				} else {
+					log.info("Hopper over fil: {}", zipFile.getName());
+				}
+			}
+		} catch (JAXBException | IOException e) {
+			log.error(UNMARSHALLING_EXCEPTION + "{}", fileReference, e);
+			throw new DokumentUnpackingException(UNMARSHALLING_EXCEPTION + fileReference, e);
+		}
+		return AltinnDokument.builder()
+				.fileReference(fileReference)
+				.manifest(manifest)
+				.dpoKvitteringMelding(trygderettenMelding).build();
+
+	}
+
+	private static <T> T unmarshalXmlObject(InputStream inputStream) throws JAXBException {
+		JAXBContext context = JAXBContext.newInstance(Manifest.class);
+		Unmarshaller unmarshal = context.createUnmarshaller();
+		Object object = unmarshal.unmarshal(inputStream);
+		Assert.isInstanceOf(Manifest.class, object);
+		return (T) object;
+	}
+}

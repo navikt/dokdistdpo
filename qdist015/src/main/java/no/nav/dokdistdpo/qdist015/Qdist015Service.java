@@ -1,7 +1,7 @@
 package no.nav.dokdistdpo.qdist015;
 
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
-import no.nav.dokdistdpo.consumer.dpo.Eformidling;
+import no.nav.dokdistdpo.consumer.dpo.AltinnEformidlingClient;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
@@ -31,7 +31,7 @@ public class Qdist015Service {
 	private final SendTilPrintService sendTilPrintService;
 	private final AltinnRequestMapper altinnRequestMapper;
 	private final DokdistadminService dokdistadminService;
-	private final Eformidling eformidling;
+	private final AltinnEformidlingClient eformidling;
 	private final OppdaterForsendelseService oppdaterForsendelseService;
 	private final LagreJuridiskloggService juridiskloggService;
 
@@ -39,7 +39,7 @@ public class Qdist015Service {
 						   SendTilPrintService sendTilPrintService,
 						   AltinnRequestMapper altinnRequestMapper,
 						   DokdistadminService dokdistadminService,
-						   Eformidling eformidling,
+						   AltinnEformidlingClient eformidling,
 						   LagreJuridiskloggService juridiskloggService,
 						   OppdaterForsendelseService oppdaterForsendelseService) {
 		this.gStorageDokumentService = gStorageDokumentService;

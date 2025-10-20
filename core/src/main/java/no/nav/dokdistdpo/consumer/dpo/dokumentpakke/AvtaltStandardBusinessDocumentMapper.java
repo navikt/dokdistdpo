@@ -18,7 +18,7 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_DOCUME
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVERSATION_ID;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.MESSAGE_CHANNEL;
 
@@ -73,7 +73,7 @@ public class AvtaltStandardBusinessDocumentMapper {
 		Scope conversationIdScope = Scope.builder()
 				.type(CONVERSATION_ID.name())
 				.instanceIdentifier(conversationId)
-				.identifier(SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER)
+				.identifier(AVTALTMELDING_PROCESS_IDENTIFIER)
 				.build();
 		conversationIdScope.addScopeInformation(correlationInformation);
 
@@ -90,7 +90,7 @@ public class AvtaltStandardBusinessDocumentMapper {
 
 	private AvtaltMelding createAvtaltMelding(String avtaltmelding) {
 		final AvtaltMelding avtaltMelding = new AvtaltMelding();
-		avtaltMelding.setIdentifier(SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER);
+		avtaltMelding.setIdentifier(AVTALTMELDING_PROCESS_IDENTIFIER);
 		avtaltMelding.setSikkerhetsnivaa(SIKKERHETSNIVAA);
 		avtaltMelding.setHoveddokument(AVTALTMELDING_XML);
 		avtaltMelding.setContent(avtaltmelding);

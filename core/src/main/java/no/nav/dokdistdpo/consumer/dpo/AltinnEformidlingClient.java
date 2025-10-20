@@ -1,10 +1,9 @@
-package no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice;
+package no.nav.dokdistdpo.consumer.dpo;
 
 import jakarta.activation.DataHandler;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.certificate.AppCertificate;
-import no.nav.dokdistdpo.consumer.dpo.DpoMessagePackager;
-import no.nav.dokdistdpo.consumer.dpo.Eformidling;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.mapper.InputStreamDataSource;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerServiceExternal;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerServiceStreamed;
@@ -13,11 +12,12 @@ import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.UploadManifest;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 
 @Slf4j
 @Component
-public class AltinnEformidling implements Eformidling {
+public class AltinnEformidlingClient {
 
 	private final AppCertificate appCertificate;
 	private final DpoMessagePackager dpoMessagePackager;
@@ -26,17 +26,16 @@ public class AltinnEformidling implements Eformidling {
 
 	private static final String FILE_NAME = "sbd.zip";
 
-	public AltinnEformidling(AppCertificate appCertificate,
-							 DpoMessagePackager dpoMessagePackager,
-							 AltinnBrokerServiceExternal altinnBrokerServiceExternal,
-							 AltinnBrokerServiceStreamed altinnBrokerServiceStreamed) {
+	public AltinnEformidlingClient(AppCertificate appCertificate,
+								   DpoMessagePackager dpoMessagePackager,
+								   AltinnBrokerServiceExternal altinnBrokerServiceExternal,
+								   AltinnBrokerServiceStreamed altinnBrokerServiceStreamed) {
 		this.appCertificate = appCertificate;
 		this.dpoMessagePackager = dpoMessagePackager;
 		this.altinnBrokerServiceExternal = altinnBrokerServiceExternal;
 		this.altinnBrokerServiceStreamed = altinnBrokerServiceStreamed;
 	}
 
-	@Override
 	public void send(AltinnDpoRequest altinnDpoRequest) {
 		AltinnDpoRequest.Forsendelse forsendelse = altinnDpoRequest.forsendelse();
 
@@ -71,4 +70,5 @@ public class AltinnEformidling implements Eformidling {
 				.senderReference(altinnDpoRequest.forsendelse().konversjonsId())
 				.build();
 	}
+
 }

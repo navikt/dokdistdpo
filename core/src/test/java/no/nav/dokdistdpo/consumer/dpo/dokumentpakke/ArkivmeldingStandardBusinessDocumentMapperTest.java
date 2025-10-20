@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_DOCUMENT_IDENTIFICATOR;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_ARKIVMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.ArkivmeldingStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_ARKIVMELDING;
@@ -59,7 +59,7 @@ class ArkivmeldingStandardBusinessDocumentMapperTest {
 		assertThat(sbdh.getBusinessScope().getScope()).hasSize(2);
 		assertThat(sbdh.getBusinessScope().getScope()).anyMatch(ScopeType.CONVERSATION_ID)
 				.flatExtracting(Scope::getInstanceIdentifier, Scope::getIdentifier)
-				.contains(CONVERSATION_ID.toString(), SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER);
+				.contains(CONVERSATION_ID.toString(), ARKIVMELDING_PROCESS_IDENTIFIER);
 
 		assertThat(sbdh.getBusinessScope().getScope())
 				.anyMatch(ScopeType.MESSAGE_CHANNEL)

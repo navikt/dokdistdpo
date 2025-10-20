@@ -18,7 +18,7 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_DOCUMEN
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.SIKKERHETSNIVAA;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.TYPE_VERSION;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVERSATION_ID;
@@ -71,7 +71,7 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 		Scope conversationIdScope = Scope.builder()
 				.type(CONVERSATION_ID.name())
 				.instanceIdentifier(conversationId)
-				.identifier(SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER)
+				.identifier(ARKIVMELDING_PROCESS_IDENTIFIER)
 				.build();
 		conversationIdScope.addScopeInformation(correlationInformation);
 
@@ -88,7 +88,7 @@ public class ArkivmeldingStandardBusinessDocumentMapper {
 
 	private Arkivmelding createArkivmelding(String dpoMelding) {
 		final Arkivmelding arkivmelding = new Arkivmelding();
-		arkivmelding.setIdentifier(SCOPE_CONVERSATION_ID_ARKIVMELDING_PROCESS_IDENTIFIER);
+		arkivmelding.setIdentifier(ARKIVMELDING_PROCESS_IDENTIFIER);
 		arkivmelding.setSikkerhetsnivaa(SIKKERHETSNIVAA);
 		arkivmelding.setHoveddokument(AVTALTMELDING_XML);
 		arkivmelding.setContent(dpoMelding);

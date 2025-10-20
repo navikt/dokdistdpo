@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_DOCUMENT_IDENTIFICATOR;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_AVTALEMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_AVTALTMELDING;
@@ -58,7 +58,7 @@ class AvtaltStandardBusinessDocumentMapperTest {
 		assertThat(sbdh.getBusinessScope().getScope()).hasSize(2);
 		assertThat(sbdh.getBusinessScope().getScope()).anyMatch(ScopeType.CONVERSATION_ID)
 				.flatExtracting(Scope::getInstanceIdentifier, Scope::getIdentifier)
-				.contains(CONVERSATION_ID.toString(), SCOPE_CONVERSATION_ID_AVTALT_PROCESS_IDENTIFIER);
+				.contains(CONVERSATION_ID.toString(), AVTALTMELDING_PROCESS_IDENTIFIER);
 
 		assertThat(sbdh.getBusinessScope().getScope())
 				.anyMatch(ScopeType.MESSAGE_CHANNEL)
