@@ -1,5 +1,6 @@
 package no.nav.dokdistdpo.qdist015;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.dpo.AltinnEformidlingClient;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
@@ -24,6 +25,7 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_BESTILLINGS
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_KONVERSASJON_ID;
 
+@Slf4j
 @Component
 public class Qdist015Service {
 
@@ -58,6 +60,7 @@ public class Qdist015Service {
 		exchange.setProperty(PROPERTY_KONVERSASJON_ID, konversajonId);
 		exchange.setProperty(PROPERTY_FORSENDELSE_ID, forsendelseId);
 
+		log.info("prosesserer forsendelseId={} med konversajonId={}", forsendelseId, konversajonId);
 		HentForsendelseResponse hentForsendelseResponse = dokdistadminService.hentForsendelse(forsendelseId);
 		exchange.setProperty(PROPERTY_BESTILLINGS_ID, hentForsendelseResponse.bestillingsId());
 

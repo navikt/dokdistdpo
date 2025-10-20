@@ -20,6 +20,7 @@
 		<module>core</module>
 		<module>altinn-schemas</module>
 		<module>qdist015</module>
+		<module>sdist008</module>
 	</modules>
 
 	<properties>
@@ -69,6 +70,11 @@
 			<dependency>
 				<groupId>no.nav.dokdistdpo</groupId>
 				<artifactId>qdist015</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.dokdistdpo</groupId>
+				<artifactId>sdist008</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
