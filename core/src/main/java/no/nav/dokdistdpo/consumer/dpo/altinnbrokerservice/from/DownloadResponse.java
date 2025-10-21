@@ -6,12 +6,13 @@ import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.Kvitterin
 
 @Builder
 public record DownloadResponse(String processIdentifier,
-		String documentType,
-		String conversationId,
-		String fileReference,
-		String sendersReference,
-		String sendtDate,
-		KvitteringStatus kvitteringStatus ) {
+							   String documentType,
+							   String conversationId,
+							   String fileReference,
+							   String sendersReference,
+							   String sendtDate,
+							   String messageChannel,
+							   KvitteringStatus kvitteringStatus) {
 
 	public static DownloadResponse from(AltinnDokument altinnDokument) {
 		DpoKvitteringMelding dpoKvitteringMelding = altinnDokument.dpoKvitteringMelding();
@@ -21,6 +22,7 @@ public record DownloadResponse(String processIdentifier,
 				.conversationId(dpoKvitteringMelding.getConversationId())
 				.fileReference(altinnDokument.fileReference())
 				.sendersReference(altinnDokument.manifest().getSendersReference())
+				.messageChannel(altinnDokument.dpoKvitteringMelding().getMessageChannelName())
 				.kvitteringStatus(dpoKvitteringMelding.getStatus())
 				.build();
 	}

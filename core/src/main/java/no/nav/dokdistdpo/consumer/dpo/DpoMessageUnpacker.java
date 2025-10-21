@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MANIFEST_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SBD_JSON;
 
@@ -32,6 +33,7 @@ public class DpoMessageUnpacker {
 
 	private static final String TEMPFILE_EXCEPTION = "Feil ved innlesing/kopiering av inputStream til temporær fil";
 	private static final String UNMARSHALLING_EXCEPTION = "Feil ved unmarshalling av fil med filreferanse: ";
+	private static final String MESSAGE_CHANNEL = "dokdistdpo";
 
 	private final ObjectMapper objectMapper;
 
@@ -40,7 +42,11 @@ public class DpoMessageUnpacker {
 	}
 
 	public List<AltinnDokument> unpackMessageFromAltinn(List<MessageFromAltinn> messageFromAltinns) {
-		return messageFromAltinns.stream().map(this::unpack).toList();
+		return messageFromAltinns.stream()
+				.map(this::unpack)
+				.filter(altinnDokument -> nonNull(altinnDokument.dpoKvitteringMelding()))
+				.filter(altinnDokument -> MESSAGE_CHANNEL.equals(altinnDokument.dpoKvitteringMelding().getMessageChannelName()))
+				.toList();
 	}
 
 	private AltinnDokument unpack(MessageFromAltinn melding) {
@@ -60,7 +66,7 @@ public class DpoMessageUnpacker {
 
 	private AltinnDokument buildAltinnDokumentFromTempFile(File tempFile, String fileReference) {
 		Manifest manifest = null;
-		DpoKvitteringMelding trygderettenMelding = null;
+		DpoKvitteringMelding dpoKvitteringMelding = null;
 
 		try (ZipFile zipFile = new ZipFile(tempFile)) {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();  // entries = manifest.xml || sbd.json
@@ -70,7 +76,7 @@ public class DpoMessageUnpacker {
 				if (MANIFEST_XML.equals(zipEntry.getName())) {
 					manifest = unmarshalXmlObject(inputStream);
 				} else if (SBD_JSON.equals(zipEntry.getName())) {
-					trygderettenMelding = objectMapper.readValue(inputStream, DpoKvitteringMelding.class);
+					dpoKvitteringMelding = objectMapper.readValue(inputStream, DpoKvitteringMelding.class);
 				} else {
 					log.info("Hopper over fil: {}", zipFile.getName());
 				}
@@ -82,7 +88,8 @@ public class DpoMessageUnpacker {
 		return AltinnDokument.builder()
 				.fileReference(fileReference)
 				.manifest(manifest)
-				.dpoKvitteringMelding(trygderettenMelding).build();
+				.dpoKvitteringMelding(dpoKvitteringMelding)
+				.build();
 
 	}
 

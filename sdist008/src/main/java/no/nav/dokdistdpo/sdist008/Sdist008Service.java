@@ -11,17 +11,17 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseIkkeEkspedert;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.validerForsendelseOgDpoKvitteringStatus;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
-import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.EKSPEDERT;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
-import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.OVERSENDT;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @Component
 public class Sdist008Service {
 
-	private static final String HENT_KVITTEING = "sdist008 hentet dpo kvittering med kvitteringStatus={}";
+	private static final String HENT_KVITTERING = "sdist008 hentet dpo kvittering med kvitteringStatus={}";
 	private final AltinnEformidlingKvitteringClient eformidling;
 	private final DokdistForsendelseService dokdistForsendelseService;
 
@@ -50,7 +50,7 @@ public class Sdist008Service {
 							Forsendelse forsendelse = uekspederteDpoForsendelse.get(konversasjonId);
 							behandleForsendelse(forsendelse, downloadResponse, forsendelseStatusEndringer);
 						} else {
-							log.warn("DPO kvitteringe finnnes ikke i oversikten overn uekspederte DPO forsendelser. konversasjonsId={}, downloadResponse={}", konversasjonId, downloadResponse);
+							log.warn("DPO kvitteringe finnnes ikke i oversikten over uekspederte DPO forsendelser. konversasjonsId={}, downloadResponse={}", konversasjonId, downloadResponse);
 						}
 					});
 			log.info("Sdist008 har oppdatert status på dpo forsendelser: {}", forsendelseStatusEndringer);
@@ -59,40 +59,26 @@ public class Sdist008Service {
 
 	private void behandleForsendelse(Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
 		try {
-			if (validerForsendelse(forsendelse, downloadResponse)) {
+			if (isForsendelseIkkeEkspedert(forsendelse, downloadResponse)) {
 				log.info("Sdist008 behandler forsendelse={}", forsendelse);
 				KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
 
 				if (kvitteringStatus == null) {
 					log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
 				} else {
-					kontrollerForsendelseStatus(kvitteringStatus.status(), forsendelse, endringer);
+					validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatus.status());
+					mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.status(), forsendelse, endringer);
 				}
 				eformidling.bekreftMottattKvittering(downloadResponse.fileReference());
 
 			} else {
-				log.warn("sdist001 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse={}. Ingen handling foretas.",
+				log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse={}. Ingen handling foretas.",
 						downloadResponse.conversationId(), forsendelse);
 			}
 		} catch (Exception e) {
-			log.error("sdist001 avvik har oppstått ved behandling av forsendelse={}. Ingen statusoppdatering er gjort. Feilmelding={}",
+			log.error("sdist008 avvik har oppstått ved behandling av forsendelse={}. Ingen statusoppdatering er gjort. Feilmelding={}",
 					forsendelse, e.getMessage(), e);
 		}
-	}
-
-	private void kontrollerForsendelseStatus(String kvitteringStatus, Forsendelse forsendelse, ForsendelseStatusEndringer endringer) {
-		String forsendelseStatus = forsendelse.forsendelseStatus();
-
-		if (OVERSENDT.name().equals(forsendelseStatus) && !BEKREFTET.name().equals(forsendelseStatus)) {
-			log.warn("sdist008 forsendelse={} ble feilaktig returnert av hentEformidlingForsendelser.", forsendelse);
-			return;
-		}
-
-		if (kvitteringStatus == null) {
-			log.error("forsendelse={} mottatt kvittering med kvitteringStatus=null", forsendelse);
-			return;
-		}
-		mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus, forsendelse, endringer);
 	}
 
 	private void mapFraDpoOgOppdaterForsendelseStatus(String kvitteringStatus, Forsendelse forsendelse, ForsendelseStatusEndringer forsendelseStatusEndringer) {
@@ -101,15 +87,17 @@ public class Sdist008Service {
 		DpoKvitteringStatus dpoKvitteringStatus = DpoKvitteringStatus.valueOf(kvitteringStatus);
 
 		switch (dpoKvitteringStatus) {
+			case OPPRETTET ->
+					log.info(HENT_KVITTERING + "Ingen handling foretas. forsendelse={}", kvitteringStatus, forsendelse);
 			case SENDT -> {
 				log.info("sdist008 hentet DPO-kvitteringer med kvitteringStatus={}. Forsendelser med forsendelseIder: ({}) oppdateres til BEKREFTET", kvitteringStatus, forsendelse);
 				dokdistForsendelseService.oppdaterForsendelse(forsendelseId, BEKREFTET.name());
 				forsendelseStatusEndringer.bekreftet.add(forsendelseId);
 			}
 			case MOTTATT ->
-					log.info(HENT_KVITTEING + "Ingen handling foretas. forsendelse={}", kvitteringStatus, forsendelse);
+					log.info(HENT_KVITTERING + "Ingen handling foretas. forsendelse={}", kvitteringStatus, forsendelse);
 			case LEVERT, LEST -> {
-				log.info(HENT_KVITTEING + "Forsendelse med ({}) oppdateres til EKSPEDERT", kvitteringStatus, forsendelse);
+				log.info(HENT_KVITTERING + "Forsendelse med ({}) oppdateres til EKSPEDERT", kvitteringStatus, forsendelse);
 				dokdistForsendelseService.oppdatereForsendelseTilEkspedert(forsendelseId, kvitteringStatus);
 				forsendelseStatusEndringer.ekspedert.add(forsendelseId);
 			}
@@ -123,8 +111,4 @@ public class Sdist008Service {
 		}
 	}
 
-	private boolean validerForsendelse(Forsendelse forsendelse, DownloadResponse downloadResponse) {
-		return downloadResponse.conversationId().equals(forsendelse.konversasjonId()) &&
-				!EKSPEDERT.name().equals(forsendelse.forsendelseStatus());
-	}
 }
