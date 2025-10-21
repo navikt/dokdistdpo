@@ -23,19 +23,19 @@ public class Sdist008Service {
 
 	private static final String HENT_KVITTEING = "sdist008 hentet dpo kvittering med kvitteringStatus={}";
 	private final AltinnEformidlingKvitteringClient eformidling;
-	private final DokdistadminService dokdistadminService;
+	private final DokdistForsendelseService dokdistForsendelseService;
 
 	public Sdist008Service(AltinnEformidlingKvitteringClient eformidling,
-						   DokdistadminService dokdistadminService) {
+						   DokdistForsendelseService dokdistForsendelseService) {
 		this.eformidling = eformidling;
-		this.dokdistadminService = dokdistadminService;
+		this.dokdistForsendelseService = dokdistForsendelseService;
 	}
 
 	public void hentKvitteringOgOppdaterForsendelseStatus() {
 		ForsendelseStatusEndringer forsendelseStatusEndringer = new ForsendelseStatusEndringer();
 
-		List<Forsendelse> forsendelser = dokdistadminService.hentUekspederteDpoForsendelser();
-		Map<String, Forsendelse> uekspederteDpoForsendelse = dokdistadminService.mapUekspederteDpoForsendelse(forsendelser);
+		List<Forsendelse> forsendelser = dokdistForsendelseService.hentUekspederteDpoForsendelser();
+		Map<String, Forsendelse> uekspederteDpoForsendelse = dokdistForsendelseService.mapUekspederteDpoForsendelse(forsendelser);
 		log.info("Sdist008 hentet antall={} uekspederte DPO forsendelser fra dokdistadmin", uekspederteDpoForsendelse.size());
 
 		if (isEmpty(uekspederteDpoForsendelse)) {
@@ -103,21 +103,21 @@ public class Sdist008Service {
 		switch (dpoKvitteringStatus) {
 			case SENDT -> {
 				log.info("sdist008 hentet DPO-kvitteringer med kvitteringStatus={}. Forsendelser med forsendelseIder: ({}) oppdateres til BEKREFTET", kvitteringStatus, forsendelse);
-				dokdistadminService.oppdaterForsendelse(forsendelseId, BEKREFTET.name());
+				dokdistForsendelseService.oppdaterForsendelse(forsendelseId, BEKREFTET.name());
 				forsendelseStatusEndringer.bekreftet.add(forsendelseId);
 			}
 			case MOTTATT ->
 					log.info(HENT_KVITTEING + "Ingen handling foretas. forsendelse={}", kvitteringStatus, forsendelse);
 			case LEVERT, LEST -> {
 				log.info(HENT_KVITTEING + "Forsendelse med ({}) oppdateres til EKSPEDERT", kvitteringStatus, forsendelse);
-				dokdistadminService.oppdatereForsendelseTilEkspedert(forsendelseId, kvitteringStatus);
+				dokdistForsendelseService.oppdatereForsendelseTilEkspedert(forsendelseId, kvitteringStatus);
 				forsendelseStatusEndringer.ekspedert.add(forsendelseId);
 			}
 			case FAIL ->
 					log.info("kvitteringen feilet med kvitteringStatus={}. forsendelse={}", kvitteringStatus, forsendelse);
 			case LEVETID_UTLOPT -> {
 				log.info("sdist008 avvik har oppstått med kvitteringStatus={}. Forsendelse med ({}) settes til FEILET", kvitteringStatus, forsendelse);
-				dokdistadminService.oppdaterForsendelse(forsendelseId, FEILET.name());
+				dokdistForsendelseService.oppdaterForsendelse(forsendelseId, FEILET.name());
 				forsendelseStatusEndringer.feilet.add(forsendelseId);
 			}
 		}

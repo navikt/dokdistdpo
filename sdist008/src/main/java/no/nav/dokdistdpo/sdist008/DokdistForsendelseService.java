@@ -12,14 +12,14 @@ import java.util.Map;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.EKSPEDERT;
 
-@Component
-public class DokdistadminService {
+@Component()
+public class DokdistForsendelseService {
 
 	private final DokdistAdminConsumer dokdistAdminConsumer;
 	private final JuridiskLoggService juridiskLoggService;
 
-	public DokdistadminService(DokdistAdminConsumer dokdistAdminConsumer,
-							   JuridiskLoggService juridiskLoggService) {
+	public DokdistForsendelseService(DokdistAdminConsumer dokdistAdminConsumer,
+									 JuridiskLoggService juridiskLoggService) {
 		this.dokdistAdminConsumer = dokdistAdminConsumer;
 		this.juridiskLoggService = juridiskLoggService;
 	}
