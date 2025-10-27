@@ -10,12 +10,12 @@ import static no.nav.dokdistdpo.utils.MdcUtils.generateNewCallId;
 @Component
 public class Sdist008Scheduler {
 
-	private final Sdist008Service dist008Service;
+	private final Sdist008Service sdist008Service;
 	private final LederElectionConsumer lederelectionConsumer;
 
-	public Sdist008Scheduler(Sdist008Service dist008Service,
+	public Sdist008Scheduler(Sdist008Service sdist008Service,
 							 LederElectionConsumer lederelectionConsumer) {
-		this.dist008Service = dist008Service;
+		this.sdist008Service = sdist008Service;
 		this.lederelectionConsumer = lederelectionConsumer;
 	}
 
@@ -24,7 +24,7 @@ public class Sdist008Scheduler {
 		if (lederelectionConsumer.isLeder()) {
 			generateNewCallId();
 			try {
-				dist008Service.hentKvitteringOgOppdaterForsendelseStatus();
+				sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
 			} finally {
 				clearMDC();
 			}

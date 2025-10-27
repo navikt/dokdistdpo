@@ -8,15 +8,21 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toMap;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.EKSPEDERT;
+import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
+import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.KLAR_FOR_DIST;
+import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.OPPRETTET;
 
 @Component()
 public class DokdistForsendelseService {
 
 	private final DokdistAdminConsumer dokdistAdminConsumer;
 	private final JuridiskLoggService juridiskLoggService;
+
+	private static final Set<String> UGYLDIG_FORSENDELSE_STATUS = Set.of(OPPRETTET.name(), KLAR_FOR_DIST.name(), FEILET.name(), EKSPEDERT.name());
 
 	public DokdistForsendelseService(DokdistAdminConsumer dokdistAdminConsumer,
 									 JuridiskLoggService juridiskLoggService) {
@@ -32,7 +38,7 @@ public class DokdistForsendelseService {
 	public List<HentEformidlingforsendelserResponse.Forsendelse> hentUekspederteDpoForsendelser() {
 		return dokdistAdminConsumer.hentEformidlingForsendelser().forsendelser()
 				.stream()
-				.filter(forsendelse -> !EKSPEDERT.name().equals(forsendelse.forsendelseStatus()) && forsendelse.konversasjonId() != null)
+				.filter(forsendelse -> !UGYLDIG_FORSENDELSE_STATUS.contains(forsendelse.forsendelseStatus()) && forsendelse.konversasjonId() != null)
 				.toList();
 	}
 

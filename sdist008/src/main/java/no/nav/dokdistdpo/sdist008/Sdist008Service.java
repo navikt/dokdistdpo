@@ -22,6 +22,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class Sdist008Service {
 
 	private static final String HENT_KVITTERING = "sdist008 hentet dpo kvittering med kvitteringStatus={}";
+	private static final String AVSLUTTET_BEHANDLING = "Sdist008 hentet kvittering med kvitteringStatus={}, jobben avsluttes uten videre handling for forsendelse:{}.";
 	private final AltinnEformidlingKvitteringClient eformidling;
 	private final DokdistForsendelseService dokdistForsendelseService;
 
@@ -50,7 +51,7 @@ public class Sdist008Service {
 							Forsendelse forsendelse = uekspederteDpoForsendelse.get(konversasjonId);
 							behandleForsendelse(forsendelse, downloadResponse, forsendelseStatusEndringer);
 						} else {
-							log.warn("DPO kvitteringe finnnes ikke i oversikten over uekspederte DPO forsendelser. konversasjonsId={}, downloadResponse={}", konversasjonId, downloadResponse);
+							log.warn("DPO kvitteringen finnnes ikke i oversikten over uekspederte DPO forsendelser. konversasjonsId={}, downloadResponse={}", konversasjonId, downloadResponse);
 						}
 					});
 			log.info("Sdist008 har oppdatert status på dpo forsendelser: {}", forsendelseStatusEndringer);
@@ -87,26 +88,21 @@ public class Sdist008Service {
 		DpoKvitteringStatus dpoKvitteringStatus = DpoKvitteringStatus.valueOf(kvitteringStatus);
 
 		switch (dpoKvitteringStatus) {
-			case OPPRETTET ->
-					log.info(HENT_KVITTERING + "Ingen handling foretas. forsendelse={}", kvitteringStatus, forsendelse);
+			case OPPRETTET, MOTTATT, FAIL -> log.info(AVSLUTTET_BEHANDLING, kvitteringStatus, forsendelse);
 			case SENDT -> {
 				log.info("sdist008 hentet DPO-kvitteringer med kvitteringStatus={}. Forsendelser med forsendelseIder: ({}) oppdateres til BEKREFTET", kvitteringStatus, forsendelse);
 				dokdistForsendelseService.oppdaterForsendelse(forsendelseId, BEKREFTET.name());
-				forsendelseStatusEndringer.bekreftet.add(forsendelseId);
+				forsendelseStatusEndringer.bekreftet().add(forsendelseId);
 			}
-			case MOTTATT ->
-					log.info(HENT_KVITTERING + "Ingen handling foretas. forsendelse={}", kvitteringStatus, forsendelse);
 			case LEVERT, LEST -> {
 				log.info(HENT_KVITTERING + "Forsendelse med ({}) oppdateres til EKSPEDERT", kvitteringStatus, forsendelse);
 				dokdistForsendelseService.oppdatereForsendelseTilEkspedert(forsendelseId, kvitteringStatus);
-				forsendelseStatusEndringer.ekspedert.add(forsendelseId);
+				forsendelseStatusEndringer.ekspedert().add(forsendelseId);
 			}
-			case FAIL ->
-					log.info("kvitteringen feilet med kvitteringStatus={}. forsendelse={}", kvitteringStatus, forsendelse);
 			case LEVETID_UTLOPT -> {
 				log.info("sdist008 avvik har oppstått med kvitteringStatus={}. Forsendelse med ({}) settes til FEILET", kvitteringStatus, forsendelse);
 				dokdistForsendelseService.oppdaterForsendelse(forsendelseId, FEILET.name());
-				forsendelseStatusEndringer.feilet.add(forsendelseId);
+				forsendelseStatusEndringer.feilet().add(forsendelseId);
 			}
 		}
 	}

@@ -19,11 +19,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
-import java.util.UUID;
 
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_BESTILLINGS_ID;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_KONVERSASJON_ID;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Component
@@ -55,13 +55,13 @@ public class Qdist015Service {
 
 	@Handler
 	public void processForsendelse(DistribuerTilKanal distribuerTilKanal, Exchange exchange) {
-		final String konversajonId = UUID.randomUUID().toString();
 		final Long forsendelseId = Long.valueOf(distribuerTilKanal.getForsendelseId());
-		exchange.setProperty(PROPERTY_KONVERSASJON_ID, konversajonId);
 		exchange.setProperty(PROPERTY_FORSENDELSE_ID, forsendelseId);
 
-		log.info("prosesserer forsendelseId={} med konversajonId={}", forsendelseId, konversajonId);
 		HentForsendelseResponse hentForsendelseResponse = dokdistadminService.hentForsendelse(forsendelseId);
+		final String konversajonId = getKonversasjonsId(hentForsendelseResponse);
+
+		exchange.setProperty(PROPERTY_KONVERSASJON_ID, konversajonId);
 		exchange.setProperty(PROPERTY_BESTILLINGS_ID, hentForsendelseResponse.bestillingsId());
 
 		DpoMottakerInfo dpoMottakerInfo = dokdistadminService.hentServiceRegistryMottakerInfo(hentForsendelseResponse);
@@ -100,5 +100,10 @@ public class Qdist015Service {
 								NavDokument.fromVedlegg(dok.getDokumentObjektReferanse(), new ByteArrayInputStream(dok.getPdf())))
 						.toList())
 				.build();
+	}
+
+	private String getKonversasjonsId(HentForsendelseResponse hentForsendelseResponse) {
+		return isBlank(hentForsendelseResponse.konversasjonId()) ? dokdistadminService.generereOgOppdaterKonversasjonsId(hentForsendelseResponse)
+				: hentForsendelseResponse.konversasjonId();
 	}
 }

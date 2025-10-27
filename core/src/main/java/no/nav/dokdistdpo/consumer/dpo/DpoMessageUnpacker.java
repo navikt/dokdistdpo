@@ -5,8 +5,8 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
-import no.altinn.brokerserviceexternal.Manifest;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.AltinnDokument;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.BrokerServiceManifest;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.MessageFromAltinn;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
 import no.nav.dokdistdpo.exception.functional.DokumentUnpackingException;
@@ -65,7 +65,7 @@ public class DpoMessageUnpacker {
 	}
 
 	private AltinnDokument buildAltinnDokumentFromTempFile(File tempFile, String fileReference) {
-		Manifest manifest = null;
+		BrokerServiceManifest manifest = null;
 		DpoKvitteringMelding dpoKvitteringMelding = null;
 
 		try (ZipFile zipFile = new ZipFile(tempFile)) {
@@ -94,10 +94,10 @@ public class DpoMessageUnpacker {
 	}
 
 	private static <T> T unmarshalXmlObject(InputStream inputStream) throws JAXBException {
-		JAXBContext context = JAXBContext.newInstance(Manifest.class);
+		JAXBContext context = JAXBContext.newInstance(BrokerServiceManifest.class);
 		Unmarshaller unmarshal = context.createUnmarshaller();
 		Object object = unmarshal.unmarshal(inputStream);
-		Assert.isInstanceOf(Manifest.class, object);
+		Assert.isInstanceOf(BrokerServiceManifest.class, object);
 		return (T) object;
 	}
 }
