@@ -52,7 +52,7 @@ public class StandardBusinessDocumentHeader {
 
 	@JsonIgnore
 	public Optional<Scope> getScope(ScopeType scopeType) {
-		return this.getScopes().stream().filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType())).findAny();
+		return this.getScopes().stream().filter(scopeType).findAny();
 	}
 
 	@JsonIgnore

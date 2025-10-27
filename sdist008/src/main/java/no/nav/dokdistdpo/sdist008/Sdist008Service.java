@@ -67,8 +67,8 @@ public class Sdist008Service {
 				if (kvitteringStatus == null) {
 					log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
 				} else {
-					validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatus.status());
-					mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.status(), forsendelse, endringer);
+					validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatus.getStatus());
+					mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.getStatus(), forsendelse, endringer);
 				}
 				eformidling.bekreftMottattKvittering(downloadResponse.fileReference());
 

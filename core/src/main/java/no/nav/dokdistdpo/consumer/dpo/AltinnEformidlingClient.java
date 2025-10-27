@@ -9,6 +9,8 @@ import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerSe
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerServiceStreamed;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.ReceiptTo;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.UploadManifest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
@@ -24,6 +26,7 @@ public class AltinnEformidlingClient {
 	private final AltinnBrokerServiceExternal altinnBrokerServiceExternal;
 	private final AltinnBrokerServiceStreamed altinnBrokerServiceStreamed;
 
+	private static final Logger secureLog = LoggerFactory.getLogger("secureLog");
 	private static final String FILE_NAME = "sbd.zip";
 
 	public AltinnEformidlingClient(AppCertificate appCertificate,
@@ -45,6 +48,8 @@ public class AltinnEformidlingClient {
 		final InputStream sbdZip = dpoMessagePackager.packageMessage(altinnDpoRequest,
 				appCertificate, altinnDpoRequest.dpoMottakerInfo().x509Certificate());
 
+		secureLog.info("Distribuerer forsendelse med konversasjonId={} til Altinn", forsendelse.konversjonsId());
+
 		final UploadManifest uploadManifest = mapUploadManifest(altinnDpoRequest);
 
 		log.info("Initialiserer Altinn broker med manifest={}, conversationId={}, bestillingsId={}", uploadManifest,
@@ -52,12 +57,14 @@ public class AltinnEformidlingClient {
 		final String fileReference = altinnBrokerServiceExternal.initiateBrokerService(uploadManifest);
 		log.info("Altinn broker Initialisert OK. fileReference={}, conversationId={}, bestillingsId={}", fileReference,
 				altinnDpoRequest.forsendelse().konversjonsId(), altinnDpoRequest.forsendelse().bestillingsId());
+		secureLog.info("Altinn broker Initialisert OK. fileReference={}", fileReference);
 
 		log.info("Laster opp til Altinn fileReference={}, conversationId={}, bestillingsId={}", fileReference,
 				altinnDpoRequest.forsendelse().konversjonsId(), altinnDpoRequest.forsendelse().bestillingsId());
 		ReceiptTo receiptTo = altinnBrokerServiceStreamed.uploadFileToAltinn(fileReference, FILE_NAME, new DataHandler(InputStreamDataSource.of(sbdZip)));
 		log.info("Lastet opp OK. receipt={}, conversationId={}, bestillingsId={}", receiptTo,
 				altinnDpoRequest.forsendelse().konversjonsId(), altinnDpoRequest.forsendelse().bestillingsId());
+		secureLog.info("Lastet opp OK. receipt={}", receiptTo);
 	}
 
 	UploadManifest mapUploadManifest(final AltinnDpoRequest altinnDpoRequest) {
