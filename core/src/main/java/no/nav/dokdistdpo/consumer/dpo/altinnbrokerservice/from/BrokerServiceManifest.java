@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from;
 
 
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -14,7 +15,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
 		"externalServiceCode",
@@ -25,10 +25,7 @@ import java.util.List;
 		"fileList",
 		"propertyList"
 })
-@XmlRootElement(
-		name = "BrokerServiceManifest",
-		namespace = "http://schema.altinn.no/services/ServiceEngine/Broker/2015/06"
-)
+@XmlRootElement(name = "BrokerServiceManifest")
 @Data
 public class BrokerServiceManifest {
 
@@ -48,7 +45,6 @@ public class BrokerServiceManifest {
 	@XmlElement(name = "PropertyList")
 	protected BrokerServiceManifest.PropertyList propertyList;
 
-
 	@XmlAccessorType(XmlAccessType.FIELD)
 	@XmlType(name = "", propOrder = {
 			"file"
@@ -57,7 +53,6 @@ public class BrokerServiceManifest {
 
 		@XmlElement(name = "File")
 		protected List<BrokerServiceManifest.FileList.File> file;
-
 
 		public List<BrokerServiceManifest.FileList.File> getFile() {
 			if (file == null) {
@@ -83,6 +78,8 @@ public class BrokerServiceManifest {
 
 	}
 
+
+
 	@XmlAccessorType(XmlAccessType.FIELD)
 	@XmlType(name = "", propOrder = {
 			"property"
@@ -98,7 +95,6 @@ public class BrokerServiceManifest {
 			}
 			return this.property;
 		}
-
 
 		@XmlAccessorType(XmlAccessType.FIELD)
 		@XmlType(name = "", propOrder = {
@@ -116,3 +112,4 @@ public class BrokerServiceManifest {
 		}
 	}
 }
+

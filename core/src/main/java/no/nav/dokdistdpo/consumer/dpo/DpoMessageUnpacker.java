@@ -90,14 +90,11 @@ public class DpoMessageUnpacker {
 				.manifest(manifest)
 				.dpoKvitteringMelding(dpoKvitteringMelding)
 				.build();
-
 	}
 
-	private static <T> T unmarshalXmlObject(InputStream inputStream) throws JAXBException {
+	private static BrokerServiceManifest unmarshalXmlObject(InputStream inputStream) throws JAXBException {
 		JAXBContext context = JAXBContext.newInstance(BrokerServiceManifest.class);
 		Unmarshaller unmarshal = context.createUnmarshaller();
-		Object object = unmarshal.unmarshal(inputStream);
-		Assert.isInstanceOf(BrokerServiceManifest.class, object);
-		return (T) object;
+		return  (BrokerServiceManifest) unmarshal.unmarshal(inputStream);
 	}
 }
