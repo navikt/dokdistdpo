@@ -14,10 +14,10 @@ public enum ScopeType implements Predicate<Scope> {
 	MESSAGE_CHANNEL("MessageChannel"),
 	RECEIVER_REF("ReceiverRef");
 
-	private final String name;
+	private final String fullname;
 
 	@Override
 	public boolean test(Scope scope) {
-		return this.name.equals(scope.getType()) || this.name().equals(scope.getType());
+		return this.fullname.equals(scope.getType()) || this.name().equals(scope.getType());
 	}
 }

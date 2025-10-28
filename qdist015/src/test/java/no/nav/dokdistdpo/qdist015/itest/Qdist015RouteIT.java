@@ -121,6 +121,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	void shouldThrowFileDownloadFromBucketTechnicalException() {
 		when(encryptedBucketStorage.downloadObject(eq(DOKUMENT_OBJEKT_REFERANSE_HOVEDDOK), anyString())).thenThrow(FileDownloadFromBucketTechnicalException.class);
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
+		stubPutOppdaterForsendelse(OK);
 		stubPostMaskinporten();
 		stubGetServiceRegistry(OK);
 		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));

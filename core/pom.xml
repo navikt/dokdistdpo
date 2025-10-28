@@ -74,6 +74,10 @@
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-jms-starter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-features-logging</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.ibm.mq</groupId>

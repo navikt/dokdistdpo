@@ -3,10 +3,13 @@ package no.nav.dokdistdpo.qdist015.dokdistforsendelse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.DokdistAdminConsumer;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfo;
 import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfoService;
 import no.nav.dokdistdpo.consumer.dpo.serviceregistry.ServiceRegistryRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 import static java.lang.Enum.valueOf;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_PROCESS_IDENTIFIER;
@@ -49,5 +52,14 @@ public class DokdistadminService {
 			case DPO_ARKIVMELDING -> ARKIVMELDING_PROCESS_IDENTIFIER;
 			case DPO_AVTALEMELDING -> AVTALTMELDING_PROCESS_IDENTIFIER;
 		};
+	}
+
+	public String generereOgOppdaterKonversasjonsId(HentForsendelseResponse hentForsendelseResponse) {
+		String konversasjonId = UUID.randomUUID().toString();
+		dokdistAdminConsumer.oppdaterForsendelse(OppdaterForsendelseRequest.builder()
+				.forsendelseId(hentForsendelseResponse.forsendelseId())
+				.konversasjonId(konversasjonId)
+				.build());
+		return konversasjonId;
 	}
 }
