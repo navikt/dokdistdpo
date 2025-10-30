@@ -1,0 +1,19 @@
+{
+  "forsendelseId": "333333",
+  "bestillingsId": "insertCallIdHere",
+  "konversasjonId": "16d2f5aa-7bea-48f9-ac70-27b2634bad13",
+  "forsendelseStatus": "OVERSENDT",
+  "forsendelseTittel": "forsendelseTittel",
+  "forsendelseMetadataType": "DPO_AVTALEMELDING",
+  "bestillendeFagsystem": "FS22",
+  "tema": "FOR",
+  "mottaker": {
+    "mottakerId": "974761084",
+    "mottakerNavn": "mottakerNavn",
+    "mottakerType": "ORGANISASJON"
+  },
+  "arkivInformasjon": {
+    "arkivSystem": "JOARK",
+    "arkivId": "123"
+  }
+}
