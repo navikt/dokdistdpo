@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +13,14 @@ import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVER
 
 @Data
 @Builder
+@JsonSerialize(using = StandardBusinessDocumentSerializer.class)
 public class StandardBusinessDocument {
 
 	@NotNull
 	StandardBusinessDocumentHeader standardBusinessDocumentHeader;
 
 	@NotNull
-	@JsonAlias({"arkivmelding_kvittering", "avtalt", "status"})
+	@JsonAlias({"arkivmelding_kvittering", "avtalt", "arkivmelding", "status"})
 	Object any;
 
 	public Set<Scope> getScopes() {
