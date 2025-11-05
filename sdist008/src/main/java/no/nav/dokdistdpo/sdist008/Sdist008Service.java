@@ -21,8 +21,9 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Component
 public class Sdist008Service {
 
-	private static final String HENT_KVITTERING = "sdist008 hentet dpo kvittering med kvitteringStatus={}";
+	private static final String HENT_KVITTERING = "sdist008 hentet dpo kvittering med kvitteringStatus={}. ";
 	private static final String AVSLUTTET_BEHANDLING = "Sdist008 hentet kvittering med kvitteringStatus={}, jobben avsluttes uten videre handling for forsendelse:{}.";
+
 	private final AltinnEformidlingKvitteringClient eformidling;
 	private final DokdistForsendelseService dokdistForsendelseService;
 

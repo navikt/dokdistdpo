@@ -1,0 +1,48 @@
+{
+  "forsendelser": [
+    {
+      "forsendelseId": 1230,
+      "forsendelseStatus": "BEKREFTET",
+      "distribusjonKanal": "DPO",
+      "konversasjonId": "f1b3002b-1dea-4c14-8072-8c191183d04c",
+      "mottaker": {
+        "mottakerId": "974761085",
+        "mottakerNavn": "mottakerNavn",
+        "mottakerType": "ORGANISASJON"
+      }
+    },
+    {
+      "forsendelseId": 1231,
+      "forsendelseStatus": "OVERSENDT",
+      "distribusjonKanal": "DPO",
+      "konversasjonId": "f1b3002b-1dea-4c14-8072-8c191183d04e",
+      "mottaker": {
+        "mottakerId": "974761085",
+        "mottakerNavn": "mottakerNavn",
+        "mottakerType": "ORGANISASJON"
+      }
+    },
+    {
+      "forsendelseId": 1232,
+      "forsendelseStatus": "OVERSENDT",
+      "distribusjonKanal": "DPO",
+      "konversasjonId": "f1b3002b-1dea-4c14-8072-8c191183d04f",
+      "mottaker": {
+        "mottakerId": "974761085",
+        "mottakerNavn": "mottakerNavn",
+        "mottakerType": "ORGANISASJON"
+      }
+    },
+    {
+      "forsendelseId": 1233,
+      "forsendelseStatus": "KLAR_FOR_DIST",
+      "distribusjonKanal": "DPO",
+      "konversasjonId": "f1b3002b-1dea-4c14-8072-8c191183d04g",
+      "mottaker": {
+        "mottakerId": "974761085",
+        "mottakerNavn": "Tregdretten",
+        "mottakerType": "ORGANISASJON"
+      }
+    }
+  ]
+}

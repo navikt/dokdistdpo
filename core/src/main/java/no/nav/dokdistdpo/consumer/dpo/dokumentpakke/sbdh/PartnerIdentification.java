@@ -1,13 +1,13 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
 @Builder
-public class PartnerIdentification implements Serializable {
+public class PartnerIdentification {
+	@JsonIgnore
 	private Partner partner;
 	private String authority;
 	private String value;

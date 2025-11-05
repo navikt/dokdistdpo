@@ -8,11 +8,6 @@ import java.util.Set;
 @Data
 @Builder
 public class Partner {
-
 	PartnerIdentification identifier;
 	Set<ContactInformation> contactInformation;
-
-	public Set<ContactInformation> getContactInformation() {
-		return contactInformation != null ? contactInformation : Set.of();
-	}
 }

@@ -1,0 +1,32 @@
+{
+  "forsendelser": [
+    {
+      "bestillingsId": "12345",
+      "forsendelseStatus": "BEKREFTET",
+      "forsendelseTittel": "Vedtaksbrev",
+      "mottaker": {
+        "mottakerId": "974761085",
+        "mottakerNavn": "mottakerNavn",
+        "mottakerType": "ORGANISASJON"
+      },
+      "arkivInformasjon": {
+        "arkivSystem": "JOARK",
+        "arkivId": "123"
+      }
+    },
+    {
+      "bestillingsId": "12340",
+      "forsendelseStatus": "OVERSENDT",
+      "tema": "FOR",
+      "forsendelseTittel": "Ekspedisjonsbrev",
+      "mottaker": {
+        "mottakerId": "974761084",
+        "mottakerNavn": "Org As",
+        "mottakerType": "ORGANISASJON"
+      },
+      "arkivInformasjon": {
+        "arkivId": "429436507"
+      }
+    }
+  ]
+}
