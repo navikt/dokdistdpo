@@ -22,7 +22,6 @@ public class StatusovergangValidator {
 
 
 	public static void validerForsendelseOgDpoKvitteringStatus(Forsendelse forsendelse, String forsendelseStatus, String kvitteringStatus) {
-
 		if (isBlank(kvitteringStatus)) {
 			log.error("forsendelse med forsendelseId={} mottatt kvittering med kvitteringStatus=null", forsendelse.forsendelseId());
 			return;
@@ -45,7 +44,9 @@ public class StatusovergangValidator {
 	}
 
 	private static boolean isUlovligStatusovergang(String forsendelseStatus, String kvitteringStatus) {
-		return (OVERSENDT_BEKREFTET_STATUS.contains(forsendelseStatus) && MOTTATT.name().equals(kvitteringStatus))
-				|| BEKREFTET.name().equals(forsendelseStatus) && OPPRETTET.name().equals(kvitteringStatus);
+		return BEKREFTET.name().equals(forsendelseStatus) && OPPRETTET.name().equals(kvitteringStatus);
+	}
+
+	private StatusovergangValidator() {
 	}
 }

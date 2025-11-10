@@ -8,9 +8,13 @@ import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerSe
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerServiceStreamed;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.SearchCriteria;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.ServiceCode;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.KvitteringStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static no.altinn.brokerserviceexternal.BrokerServiceAvailableFileStatus.UPLOADED;
 
@@ -56,6 +60,8 @@ public class AltinnEformidlingKvitteringClient {
 								String.format("referanse=%s:MessageChannel=%s", altinndokument.fileReference(), altinndokument.dpoKvitteringMelding().getMessageChannelName()))
 						.toList());
 
+		hentetKvitteringerLog(altinnDokuments);
+
 		List<DownloadResponse> downloadResponses = getDownloadResponses(altinnDokuments);
 		log.info("Meldinger fra Altinn:  {}", downloadResponses);
 
@@ -80,4 +86,16 @@ public class AltinnEformidlingKvitteringClient {
 		return altinnDokuments.stream().map(DownloadResponse::from).toList();
 	}
 
+	private void hentetKvitteringerLog(List<AltinnDokument> altinnDokuments) {
+		Map<String, List<String>> groupedByStatus = altinnDokuments.stream()
+				.map(AltinnDokument::dpoKvitteringMelding)
+				.collect(Collectors.groupingBy(
+						DpoKvitteringMelding::getKvitteringStatus,
+						Collectors.mapping(DpoKvitteringMelding::getConversationId,
+								Collectors.toList())
+				));
+
+		groupedByStatus.forEach((status, conversationIds) ->
+				log.info("Hentet {} kvitteringer med status={} og conversationIds={}", conversationIds.size(), status, conversationIds));
+	}
 }

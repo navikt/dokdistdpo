@@ -5,7 +5,10 @@ import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.BusinessScope;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.CorrelationInformation;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.DocumentIdentification;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.PartnerIdentification;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.Receiver;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.Scope;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.Sender;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocumentHeader;
 
@@ -15,12 +18,14 @@ import java.util.Set;
 
 import static java.time.Duration.ofDays;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_DOCUMENT_IDENTIFICATOR;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.asIso6523;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVERSATION_ID;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.MESSAGE_CHANNEL;
+import static no.nav.dokdistdpo.consumer.dpo.maskinporten.Authority.ISO_6523_ACTORID_UPIS;
 
 public class AvtaltStandardBusinessDocumentMapper {
 
@@ -33,8 +38,6 @@ public class AvtaltStandardBusinessDocumentMapper {
 
 
 	public StandardBusinessDocument mapAvtaltMeldingEnvelope(AltinnDpoRequest.Forsendelse forsendelse) {
-
-
 		BusinessScope businessScope = BusinessScope.builder()
 				.scope(Set.of(createAvtaltConversationIdScope(forsendelse.konversjonsId()),
 						createMessageChannelScope()))
@@ -45,13 +48,31 @@ public class AvtaltStandardBusinessDocumentMapper {
 				.businessScope(businessScope)
 				.build();
 
-		sbdh.addReceiver(sbdh.createPartner(forsendelse.mottakerId()));
-		sbdh.addSender(sbdh.createPartner(NAV_ORGNUMMER));
+		sbdh.addSender(createSender());
+		sbdh.addReceiver(createReceiver(forsendelse.mottakerId()));
 
 		return StandardBusinessDocument.builder()
 				.standardBusinessDocumentHeader(sbdh)
 				.any(createAvtaltMelding(forsendelse.forsendelseMetadata()))
 				.build();
+	}
+
+	private Receiver createReceiver(String mottakerOrgnummer) {
+		final Receiver receiver = new Receiver();
+		final PartnerIdentification receiverIdentification = new PartnerIdentification();
+		receiverIdentification.setAuthority(ISO_6523_ACTORID_UPIS.getValue());
+		receiverIdentification.setValue(asIso6523(mottakerOrgnummer));
+		receiver.setIdentifier(receiverIdentification);
+		return receiver;
+	}
+
+	private Sender createSender() {
+		final Sender sender = new Sender();
+		final PartnerIdentification receiverIdentification = new PartnerIdentification();
+		receiverIdentification.setAuthority(ISO_6523_ACTORID_UPIS.getValue());
+		receiverIdentification.setValue(asIso6523(NAV_ORGNUMMER));
+		sender.setIdentifier(receiverIdentification);
+		return sender;
 	}
 
 	private DocumentIdentification createDocumentIdentification(String bestillingsId) {
@@ -71,7 +92,7 @@ public class AvtaltStandardBusinessDocumentMapper {
 				.build();
 
 		Scope conversationIdScope = Scope.builder()
-				.type(CONVERSATION_ID.name())
+				.type(CONVERSATION_ID.getFullname())
 				.instanceIdentifier(conversationId)
 				.identifier(AVTALTMELDING_PROCESS_IDENTIFIER)
 				.build();
@@ -82,7 +103,7 @@ public class AvtaltStandardBusinessDocumentMapper {
 
 	private Scope createMessageChannelScope() {
 		return Scope.builder()
-				.type(MESSAGE_CHANNEL.name())
+				.type(MESSAGE_CHANNEL.getFullname())
 				.instanceIdentifier(MESSAGE_CHANNEL_INSTANCE_IDENTIFIER.toString())
 				.identifier(SCOPE_MESSAGECHANELL_IDENTIFIER)
 				.build();

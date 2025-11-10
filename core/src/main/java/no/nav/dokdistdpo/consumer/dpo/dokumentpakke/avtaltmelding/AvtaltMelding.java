@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@XmlRootElement(name = "avtalt")
+@XmlRootElement(name = "avtalt", namespace = "urn:no:difi:meldingsutveksling:2.0")
 public class AvtaltMelding extends BusinessMessage<AvtaltMelding> {
 	String identifier;
 	Object content;

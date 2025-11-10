@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@XmlRootElement(name = "arkivmelding")
+@XmlRootElement(name = "arkivmelding", namespace = "urn:no:difi:meldingsutveksling:2.0")
 public class Arkivmelding extends BusinessMessage<Arkivmelding> {
 	String identifier;
 	Object content;
