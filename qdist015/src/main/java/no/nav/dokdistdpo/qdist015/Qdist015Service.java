@@ -92,9 +92,7 @@ public class Qdist015Service {
 		List<GCSForsendelseDokument> gcsForsendelseDokumenter = gStorageDokumentService.hentDokumentFromGCStorage(forsendelse);
 
 		return NavDokumentpakke.builder()
-				.navDokument(NavDokument.fromDpoMelding(
-						forsendelse.forsendelseMetadataType(), new ByteArrayInputStream(forsendelse.forsendelseMetadata())
-				))
+				.navDokument(NavDokument.fromDpoMelding(new ByteArrayInputStream(forsendelse.forsendelseMetadata())))
 				.navDokumenter(gcsForsendelseDokumenter.stream()
 						.map(dok ->
 								NavDokument.fromVedlegg(dok.getDokumentObjektReferanse(), new ByteArrayInputStream(dok.getPdf())))

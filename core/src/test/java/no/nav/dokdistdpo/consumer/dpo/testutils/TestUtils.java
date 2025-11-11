@@ -21,7 +21,6 @@ import static org.apache.commons.io.IOUtils.toByteArray;
 
 public final class TestUtils {
 
-	public static final String AVTALTMELDING_CONTENTS = "avtalt";
 	public static final String MOTTAKER_ID = "974761084";
 	public static final UUID CONVERSATION_ID = UUID.fromString("5cc73a11-7991-449f-8a65-978f61b8d171");
 	public static final UUID BESTILLINGS_ID = UUID.fromString("d710340a-ddec-4bfa-bdfc-745016bbeb33");

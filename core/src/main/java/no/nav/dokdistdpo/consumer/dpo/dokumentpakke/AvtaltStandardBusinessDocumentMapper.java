@@ -17,9 +17,9 @@ import java.time.OffsetDateTime;
 import java.util.Set;
 
 import static java.time.Duration.ofDays;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.ARKIVMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_DOCUMENT_IDENTIFICATOR;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INSTANCE_IDENTIFIER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.asIso6523;
@@ -113,7 +113,7 @@ public class AvtaltStandardBusinessDocumentMapper {
 		final AvtaltMelding avtaltMelding = new AvtaltMelding();
 		avtaltMelding.setIdentifier(AVTALTMELDING_PROCESS_IDENTIFIER);
 		avtaltMelding.setSikkerhetsnivaa(SIKKERHETSNIVAA);
-		avtaltMelding.setHoveddokument(AVTALTMELDING_XML);
+		avtaltMelding.setHoveddokument(ARKIVMELDING_XML);
 		avtaltMelding.setContent(avtaltmelding);
 		return avtaltMelding;
 	}
