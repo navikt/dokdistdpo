@@ -24,7 +24,8 @@ public class GStorageDokumentService {
 				.map(dokument -> {
 					String jsonPayload = encryptedBucketStorage.downloadObject(dokument.dokumentObjektReferanse(), response.bestillingsId());
 					GCSForsendelseDokument dokumentFromStorage = deserializeJsonPayloadToDokument(jsonPayload, dokument.dokumentObjektReferanse());
-					dokumentFromStorage.setDokumentInfoId(dokumentFromStorage.getDokumentInfoId());
+					dokumentFromStorage.setDokumentInfoId(dokument.arkivDokumentInfoId());
+					dokumentFromStorage.setJournalpostId(response.arkivInformasjon().arkivId());
 					return dokumentFromStorage;
 				}).toList();
 	}
