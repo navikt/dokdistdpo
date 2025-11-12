@@ -74,7 +74,7 @@ public class AltinnEformidlingKvitteringClient {
 	}
 
 	private ServiceCode getServiceCode() {
-		return new ServiceCode(altinnProperties.serviceCode(), altinnProperties.serviceEditionCode());
+		return new ServiceCode(altinnProperties.serviceCode(), parseInt(altinnProperties.serviceEditionCode()));
 	}
 
 	private SearchCriteria getSearchCriteria() {
