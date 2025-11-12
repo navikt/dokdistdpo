@@ -1,7 +1,5 @@
 package no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.xml;
 
-
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -77,8 +75,6 @@ public class BrokerServiceManifest {
 		}
 
 	}
-
-
 
 	@XmlAccessorType(XmlAccessType.FIELD)
 	@XmlType(name = "", propOrder = {

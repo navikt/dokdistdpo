@@ -7,6 +7,8 @@
   "DOKDISTDPO_JURIDISKLOGG_URL": "https://app-q1.adeo.no/juridisklogg",
   "DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNAL_ENDPOINTURL": "https://www.altinn.no/ServiceEngineExternal/BrokerServiceExternal.svc",
   "DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNALSTREAMED_ENDPOINTURL": "https://www.altinn.no/ServiceEngineExternal/BrokerServiceExternalStreamed.svc",
+  "DOKDISTDPO_ALTINN_SERVICE_CODE": "4192",
+  "DOKDISTDPO_ALTINN_SERVICE_EDITION_CODE": "270815",
   "DOKDISTDPO_MQ_GATEWAY_MANAGER_NAME": "MQLS01",
   "DOKDISTDPO_MQ_GATEWAY_HOSTNAME": "mqls01.preprod.local",
   "DOKDISTDPO_MQ_GATEWAY_PORT": "1413",
