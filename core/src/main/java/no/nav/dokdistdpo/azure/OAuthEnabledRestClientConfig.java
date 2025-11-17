@@ -38,13 +38,14 @@ public class OAuthEnabledRestClientConfig {
 		return RestClient.builder()
 				.baseUrl(dokdistdpoProperties.endpoints().dokdistadmin().url())
 				.requestInterceptor(oauth2Interceptor)
+				.requestFactory(jdkClientHttpRequestFactory(30))
 				.build();
 	}
 
 	@Bean
 	public RestClient maskinportenAuthorizedRestClient(MaskinportenConsumer maskinportenConsumer) {
 		return RestClient.builder()
-				.requestFactory(jdkClientHttpRequestFactory())
+				.requestFactory(jdkClientHttpRequestFactory(20))
 				.requestInterceptor(new MaskinportenRequestInterceptor(maskinportenConsumer))
 				.build();
 	}
@@ -103,10 +104,10 @@ public class OAuthEnabledRestClientConfig {
 		return new RequestAttributeClientRegistrationIdResolver();
 	}
 
-	private static JdkClientHttpRequestFactory jdkClientHttpRequestFactory() {
+	private static JdkClientHttpRequestFactory jdkClientHttpRequestFactory(int readTimeoutSeconds) {
 		return ClientHttpRequestFactoryBuilder.jdk()
 				.withCustomizer(jdkClientHttpRequestFactory ->
-						jdkClientHttpRequestFactory.setReadTimeout(Duration.ofSeconds(20)))
+						jdkClientHttpRequestFactory.setReadTimeout(Duration.ofSeconds(readTimeoutSeconds)))
 				.build();
 	}
 }
