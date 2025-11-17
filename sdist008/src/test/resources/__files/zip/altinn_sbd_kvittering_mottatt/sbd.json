@@ -1,0 +1,44 @@
+{
+  "standardBusinessDocumentHeader" : {
+    "headerVersion" : "1.0",
+    "sender" : [ {
+      "identifier" : {
+        "value" : "0192:974761084",
+        "authority" : "iso6523-actorid-upis"
+      },
+      "contactInformation" : [ ]
+    } ],
+    "receiver" : [ {
+      "identifier" : {
+        "value" : "0192:889640782",
+        "authority" : "iso6523-actorid-upis"
+      },
+      "contactInformation" : [ ]
+    } ],
+    "documentIdentification" : {
+      "standard" : "urn:no:difi:eformidling:xsd::status",
+      "typeVersion" : "2.0",
+      "instanceIdentifier" : "6205a3bb-e12a-4913-99db-877339e14496",
+      "type" : "status",
+      "creationDateAndTime" : "2020-02-10T14:57:33.646+01:00"
+    },
+    "businessScope" : {
+      "scope" : [ {
+        "type" : "ConversationId",
+        "instanceIdentifier" : "f1b3002b-1dea-4c14-8072-8c191183d04g",
+        "identifier" : "urn:no:difi:profile:arkivmelding:response:ver1.0",
+        "scopeInformation" : [ ]
+      },
+      {
+        "type" : "MessageChannel",
+        "instanceIdentifier" : "f1b3002b-1dea-4c14-8072-8c191183d04c",
+        "identifier" : "dokdistdpo",
+        "scopeInformation" : [ ]
+      } 
+     ]
+    }
+  },
+  "status" : {
+    "status" : "MOTTATT"
+  }
+}

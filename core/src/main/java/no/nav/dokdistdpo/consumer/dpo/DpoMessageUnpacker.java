@@ -6,7 +6,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.AltinnDokument;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.BrokerServiceManifest;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.xml.BrokerServiceManifest;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.MessageFromAltinn;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
 import no.nav.dokdistdpo.exception.functional.DokumentUnpackingException;

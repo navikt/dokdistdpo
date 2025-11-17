@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
+import static java.lang.String.format;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_BESTILLINGS_ID;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_KONVERSASJON_ID;
@@ -28,6 +29,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Slf4j
 @Component
 public class Qdist015Service {
+
+	private static final String FILE_NAME_WITH_EXTENSION = "%s-%s.pdf";
 
 	private final GStorageDokumentService gStorageDokumentService;
 	private final SendTilPrintService sendTilPrintService;
@@ -92,12 +95,10 @@ public class Qdist015Service {
 		List<GCSForsendelseDokument> gcsForsendelseDokumenter = gStorageDokumentService.hentDokumentFromGCStorage(forsendelse);
 
 		return NavDokumentpakke.builder()
-				.navDokument(NavDokument.fromDpoMelding(
-						forsendelse.forsendelseMetadataType(), new ByteArrayInputStream(forsendelse.forsendelseMetadata())
-				))
+				.navDokument(NavDokument.fromDpoMelding(new ByteArrayInputStream(forsendelse.forsendelseMetadata())))
 				.navDokumenter(gcsForsendelseDokumenter.stream()
 						.map(dok ->
-								NavDokument.fromVedlegg(dok.getDokumentObjektReferanse(), new ByteArrayInputStream(dok.getPdf())))
+								NavDokument.fromVedlegg(format(FILE_NAME_WITH_EXTENSION, dok.getJournalpostId(), dok.getDokumentInfoId()), new ByteArrayInputStream(dok.getPdf())))
 						.toList())
 				.build();
 	}

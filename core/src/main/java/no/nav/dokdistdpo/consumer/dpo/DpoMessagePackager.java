@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.certificate.AppCertificate;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
@@ -9,6 +10,8 @@ import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.AvtaltMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -27,6 +30,8 @@ public class DpoMessagePackager {
 
 	public static final String DPO_SBD = "sbd.json";
 	public static final String DPO_ASIC = "asic.zip";
+	private static final Logger secureLog = LoggerFactory.getLogger("secureLog");
+
 
 	private final ObjectMapper objectMapper;
 	private final DpoContentPackager dpoContentPackager;
@@ -35,6 +40,7 @@ public class DpoMessagePackager {
 							  DpoContentPackager dpoContentPackager) {
 		this.objectMapper = dpoObjectMapper;
 		this.dpoContentPackager = dpoContentPackager;
+		objectMapper.registerModule(new JavaTimeModule());
 	}
 
 	/**
@@ -45,8 +51,6 @@ public class DpoMessagePackager {
 	public InputStream packageMessage(AltinnDpoRequest altinnDpoRequest,
 									  AppCertificate appCertificate,
 									  X509Certificate mottakerSertifikat) {
-
-
 		InputStream content = dpoContentPackager.packageContent(altinnDpoRequest, appCertificate, mottakerSertifikat);
 		final ByteArrayOutputStream zipFile = new ByteArrayOutputStream();
 		writeZip(altinnDpoRequest.businessDocument(), content, zipFile);
@@ -67,7 +71,9 @@ public class DpoMessagePackager {
 						// Noop — for å forhindre at datastrømmen avsluttes for tidlig
 					}
 				};
-				objectMapper.writeValue(nonClosingStream, konvolutt);
+				String sdbd = objectMapper.writeValueAsString(konvolutt);
+				secureLog.info("SBD payload: {}", sdbd);
+				nonClosingStream.write(sdbd.getBytes());
 				zipOutputStream.closeEntry();
 				nonClosingStream.close();
 			}
@@ -79,6 +85,5 @@ public class DpoMessagePackager {
 		} catch (IOException e) {
 			throw new DokumentpakkingException("Klarte ikke lage sbd.zip", e);
 		}
-
 	}
 }

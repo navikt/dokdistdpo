@@ -43,7 +43,10 @@ public record DokdistdpoProperties(
 
 	public record AltinnProperties(
 			AltinnBrokerProperties brokerserviceexternal,
-			AltinnBrokerProperties brokerserviceexternalstreamed) {
+			AltinnBrokerProperties brokerserviceexternalstreamed,
+			@NotBlank String serviceCode,
+			@NotBlank String serviceEditionCode
+	) {
 	}
 
 	public record AltinnBrokerProperties(

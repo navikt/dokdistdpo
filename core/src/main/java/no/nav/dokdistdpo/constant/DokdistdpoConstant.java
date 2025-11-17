@@ -15,7 +15,6 @@ public final class DokdistdpoConstant {
 	public static final String PROPERTY_BESTILLINGS_ID = "bestillingsId";
 	public static final String PROPERTY_FORSENDELSE_ID = "forsendelseId";
 
-	public static final String AVTALTMELDING_XML = "avtaltmelding.xml";
 	public static final String AVTALTMELDING_DOCUMENT_IDENTIFICATOR = "urn:no:difi:avtalt:xsd::avtalt";
 	public static final String AVTALTMELDING_PROCESS_IDENTIFIER = "urn:no:difi:profile:avtalt:avtalt:ver1.0";
 

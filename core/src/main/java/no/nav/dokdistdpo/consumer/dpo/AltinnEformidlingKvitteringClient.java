@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.AltinnDokument;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.DownloadResponse;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.MessageFromAltinn;
@@ -8,10 +9,14 @@ import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerSe
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.service.AltinnBrokerServiceStreamed;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.SearchCriteria;
 import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.to.ServiceCode;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static java.lang.Integer.parseInt;
 import static no.altinn.brokerserviceexternal.BrokerServiceAvailableFileStatus.UPLOADED;
 
 @Slf4j
@@ -21,16 +26,16 @@ public class AltinnEformidlingKvitteringClient {
 	private final AltinnBrokerServiceExternal altinnBrokerServiceExternal;
 	private final AltinnBrokerServiceStreamed altinnBrokerServiceStreamed;
 	private final DpoMessageUnpacker dpoMessageUnpacker;
-
-	private static final String DPO_SERVICE_CODE = "4192";
-	private static final int DPO_SERVICE_EDITION_CODE = 270815;
+	private final DokdistdpoProperties.AltinnProperties altinnProperties;
 
 	public AltinnEformidlingKvitteringClient(AltinnBrokerServiceExternal altinnBrokerServiceExternal,
 											 AltinnBrokerServiceStreamed altinnBrokerServiceStreamed,
-											 DpoMessageUnpacker dpoMessageUnpacker) {
+											 DpoMessageUnpacker dpoMessageUnpacker,
+											 DokdistdpoProperties dokdistdpoProperties) {
 		this.altinnBrokerServiceExternal = altinnBrokerServiceExternal;
 		this.altinnBrokerServiceStreamed = altinnBrokerServiceStreamed;
 		this.dpoMessageUnpacker = dpoMessageUnpacker;
+		this.altinnProperties = dokdistdpoProperties.altinn();
 	}
 
 	public List<DownloadResponse> hentKvitteringer() {
@@ -53,8 +58,10 @@ public class AltinnEformidlingKvitteringClient {
 				altinnDokuments.size(),
 				altinnDokuments.stream()
 						.map(altinndokument ->
-								String.format("referanse=%s:MessageChannel=%s", altinndokument.fileReference(), altinndokument.dpoKvitteringMelding().getMessageChannelName()))
+								String.format("[referanse=%s: messageChannel=%s]", altinndokument.fileReference(), altinndokument.dpoKvitteringMelding().getMessageChannelName()))
 						.toList());
+
+		hentetKvitteringerLog(altinnDokuments);
 
 		List<DownloadResponse> downloadResponses = getDownloadResponses(altinnDokuments);
 		log.info("Meldinger fra Altinn:  {}", downloadResponses);
@@ -67,7 +74,7 @@ public class AltinnEformidlingKvitteringClient {
 	}
 
 	private ServiceCode getServiceCode() {
-		return new ServiceCode(DPO_SERVICE_CODE, DPO_SERVICE_EDITION_CODE);
+		return new ServiceCode(altinnProperties.serviceCode(), parseInt(altinnProperties.serviceEditionCode()));
 	}
 
 	private SearchCriteria getSearchCriteria() {
@@ -80,4 +87,16 @@ public class AltinnEformidlingKvitteringClient {
 		return altinnDokuments.stream().map(DownloadResponse::from).toList();
 	}
 
+	private void hentetKvitteringerLog(List<AltinnDokument> altinnDokuments) {
+		Map<String, List<String>> groupedByStatus = altinnDokuments.stream()
+				.map(AltinnDokument::dpoKvitteringMelding)
+				.collect(Collectors.groupingBy(
+						DpoKvitteringMelding::getKvitteringStatus,
+						Collectors.mapping(DpoKvitteringMelding::getConversationId,
+								Collectors.toList())
+				));
+
+		groupedByStatus.forEach((status, conversationIds) ->
+				log.info("Hentet {} kvitteringer med status={} og conversationIds={}", conversationIds.size(), status, conversationIds));
+	}
 }

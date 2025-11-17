@@ -6,6 +6,11 @@ metadata:
   labels:
     team: teamdokumenthandtering
 spec:
+  filesFrom:
+    - secret: {{ DOKDISTDPO_SECRET }}
+      mountPath: /var/run/secrets/nais_secrets
+  envFrom:
+    - secret: {{ DOKDISTDPO_SECRET }}
   env:
     - name: DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL
       value: {{ DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL }}
@@ -47,6 +52,8 @@ spec:
       value: {{ DOKDISTDPO_QDIST015_FUNK_FEIL_QUEUENAME }}
     - name: DOKDISTSENTRALPRINT_QDIST009_DIST_S_PRINT_QUEUENAME
       value: {{ DOKDISTSENTRALPRINT_QDIST009_DIST_S_PRINT_QUEUENAME }}
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/var/run/secrets/nais_secrets/gcloud_serviceaccount.json"
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
@@ -95,16 +102,11 @@ spec:
   azure:
     application:
       enabled: true
-  filesFrom:
-    - secret: {{ DOKDISTDPO_SECRET }}
-      mountPath: /var/run/secrets/nais.io/dokdistdpo
   vault:
     enabled: true
     paths:
       - kvPath: {{ NAV_VIRKSOMHETSSERTIFIKAT_VAULT }}
         mountPath: "/secrets/virksomhetssertifikat"
-      - kvPath: {{ SRVDOKDISTDPO }}
-        mountPath: "/secrets/serviceuser/srvdokdistdpo"
   accessPolicy:
     outbound:
       rules:

@@ -1,9 +1,9 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.asice;
 
 import no.nav.dokdistdpo.certificate.AppCertificate;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
+import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils;
 import no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.ZipFile;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_ARKIVMELDING;
 import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_AVTALEMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.NavDokument.fromVedlegg;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.asice.AsiceCreator.MANIFEST_XML;
@@ -35,7 +34,7 @@ class AsiceCreatorTest {
 	private final AsiceCreator asiceCreator = new AsiceCreator();
 
 	@Test
-	public void shouldCreateAndSignAsiceDocument() throws IOException {
+	void shouldCreateAndSignAsiceDocument() throws IOException {
 		ByteArrayOutputStream asiceStreamed = asiceCreator.createAsiceStreamed(createAltinnDpoRequest(),
 				new AppCertificate(itestVirksomhetssertifikatProperties())
 		);
@@ -73,7 +72,7 @@ class AsiceCreatorTest {
 	}
 
 	private NavDokument createNavDokument() {
-		return NavDokument.fromDpoMelding(DPO_ARKIVMELDING.name(), new ByteArrayInputStream(AVTALTMELDING_CONTENTS.getBytes()));
+		return NavDokument.fromDpoMelding(new ByteArrayInputStream(AVTALTMELDING_CONTENTS.getBytes()));
 	}
 
 	private List<NavDokument> createVedlegg() {

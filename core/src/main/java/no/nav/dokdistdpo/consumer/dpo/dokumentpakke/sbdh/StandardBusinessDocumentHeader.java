@@ -1,48 +1,92 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
-import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.asIso6523;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "StandardBusinessDocumentHeader", propOrder = {
+		"headerVersion",
+		"sender",
+		"receiver",
+		"documentIdentification",
+		"manifest",
+		"businessScope"
+})
 @Data
 @Builder
 public class StandardBusinessDocumentHeader {
+
+	@XmlElement(name = "HeaderVersion", required = true)
 	private String headerVersion;
-	private Set<Partner> sender;
-	private Set<Partner> receiver;
+
+	@Setter
+	@XmlElement(name = "Sender", required = true)
+	private Set<Sender> sender;
+
+	@XmlElement(name = "Receiver", required = true)
+	private Set<Receiver> receiver;
+
+	@XmlElement(name = "DocumentIdentification", required = true)
 	private DocumentIdentification documentIdentification;
+
+	@XmlElement(name = "BusinessScope")
 	private BusinessScope businessScope;
 
-	public void addSender(Partner partner) {
+	public Set<Sender> getSender() {
 		if (sender == null) {
 			sender = new HashSet<>();
 		}
-		sender.add(partner);
+		return this.sender;
 	}
 
-	public void addReceiver(Partner partner) {
+	public StandardBusinessDocumentHeader addSender(Sender partner) {
+		getSender().add(partner);
+		return this;
+	}
+
+	public Set<Receiver> getReceiver() {
 		if (receiver == null) {
 			receiver = new HashSet<>();
 		}
-		receiver.add(partner);
+		return this.receiver;
 	}
 
-	public Partner createPartner(String orgnummer) {
-		PartnerIdentification identification = PartnerIdentification.builder()
-				.authority(ISO6523_AUTHORITY)
-				.value(asIso6523(orgnummer))
-				.build();
-		return Partner.builder()
-				.identifier(identification)
-				.build();
+	public StandardBusinessDocumentHeader addReceiver(Receiver partner) {
+		getReceiver().add(partner);
+		return this;
+	}
+
+	@JsonIgnore
+	Optional<Sender> getFirstSender() {
+		if (sender == null) {
+			return Optional.empty();
+		}
+		return sender.stream().findFirst();
+	}
+
+	@JsonIgnore
+	Optional<Receiver> getFirstReceiver() {
+		if (receiver == null) {
+			return Optional.empty();
+		}
+		return receiver.stream().findFirst();
+	}
+
+	@JsonIgnore
+	public String getDocumentType() {
+		return this.getDocumentIdentification().getStandard();
 	}
 
 	@JsonIgnore
@@ -52,11 +96,6 @@ public class StandardBusinessDocumentHeader {
 
 	@JsonIgnore
 	public Optional<Scope> getScope(ScopeType scopeType) {
-		return this.getScopes().stream().filter(scopeType).findAny();
-	}
-
-	@JsonIgnore
-	public String getDocumentType() {
-		return this.getDocumentIdentification().getType();
+		return this.getScopes().stream().filter(scope -> scopeType.name().equals(scope.getType()) || scopeType.getFullname().equals(scope.getType())).findAny();
 	}
 }

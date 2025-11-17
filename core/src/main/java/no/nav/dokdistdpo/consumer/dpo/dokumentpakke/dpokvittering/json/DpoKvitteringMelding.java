@@ -39,4 +39,8 @@ public class DpoKvitteringMelding {
 		return Optional.ofNullable(this.standardBusinessDocumentHeader).flatMap(p -> p.getScope(scopeType));
 	}
 
+	public String getKvitteringStatus() {
+		return this.status.getStatus();
+	}
+
 }
