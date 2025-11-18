@@ -2,9 +2,14 @@ package no.nav.dokdistdpo.azure;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dpo.maskinporten.MaskinportenConsumer;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.util.Timeout;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
@@ -32,14 +37,36 @@ public class OAuthEnabledRestClientConfig {
 	@Bean
 	public RestClient dokdistadminRestClient(DokdistdpoProperties dokdistdpoProperties,
 											 OAuth2AuthorizedClientManager authorizedClientManager) {
+
 		var oauth2Interceptor =
 				new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
 
 		return RestClient.builder()
 				.baseUrl(dokdistdpoProperties.endpoints().dokdistadmin().url())
 				.requestInterceptor(oauth2Interceptor)
+				.requestFactory(httpComponentsClientHttpRequestFactory())
 				.build();
 	}
+
+	@Bean
+	public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory() {
+		RequestConfig requestConfig = RequestConfig.custom()
+				.setConnectionRequestTimeout(Timeout.ofSeconds(15))
+				.setResponseTimeout(Timeout.ofSeconds(30))
+				.build();
+
+		CloseableHttpClient httpClient = HttpClients.custom()
+				.setDefaultRequestConfig(requestConfig)
+				.build();
+
+		HttpComponentsClientHttpRequestFactory requestFactory =
+				new HttpComponentsClientHttpRequestFactory(httpClient);
+
+		requestFactory.setConnectionRequestTimeout(Duration.ofSeconds(15));
+		requestFactory.setReadTimeout(Duration.ofSeconds(30));
+		return requestFactory;
+	}
+
 
 	@Bean
 	public RestClient maskinportenAuthorizedRestClient(MaskinportenConsumer maskinportenConsumer) {

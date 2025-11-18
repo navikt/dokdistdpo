@@ -67,6 +67,7 @@ class Sdist008RouteIT {
 
 		sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
 
+		verify(1, getRequestedFor(urlEqualTo(BASE_DOKDISTADMIN_PATH + "/henteformidlingforsendelser?distribusjonKanal=DPO")));
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")).withRequestBody(matchingXPath(XPATH_GET_AVAILABLE_FILES)));
 		verify(1, postRequestedFor(urlMatching("/brokerserviceexternalstreamed/download")));
 		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse")));
