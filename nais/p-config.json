@@ -1,7 +1,7 @@
 {
   "APP_NAME": "dokdistdpo",
   "DOKDISTDPO_SECRET": "dokdistdpo",
-  "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL": "https://dokdistadmin.teamdokumenthandtering.svc.nais.local/rest/v1/administrerforsendelse",
+  "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL": "http://dokdistadmin.teamdokumenthandtering.svc.nais.local/rest/v1/administrerforsendelse",
   "DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_SCOPE": "api://prod-fss.teamdokumenthandtering.dokdistadmin/.default",
   "DOKDISTDPO_SERVICEREGISTRY_URL": "https://meldingsutveksling.difi.no/serviceregistry",
   "DOKDISTDPO_JURIDISKLOGG_URL": "https://app.adeo.no/juridisklogg",

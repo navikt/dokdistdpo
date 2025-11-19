@@ -35,7 +35,8 @@ public class OAuthEnabledRestClientConfig {
 
 	@Bean
 	public RestClient dokdistadminRestClient(DokdistdpoProperties dokdistdpoProperties,
-											 OAuth2AuthorizedClientManager authorizedClientManager) {
+											 OAuth2AuthorizedClientManager authorizedClientManager,
+											 HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory) {
 
 		var oauth2Interceptor =
 				new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
@@ -43,12 +44,12 @@ public class OAuthEnabledRestClientConfig {
 		return RestClient.builder()
 				.baseUrl(dokdistdpoProperties.endpoints().dokdistadmin().url())
 				.requestInterceptor(oauth2Interceptor)
-				.requestFactory(httpRequestFactory())
+				.requestFactory(httpComponentsClientHttpRequestFactory)
 				.build();
 	}
 
 	@Bean
-	public HttpComponentsClientHttpRequestFactory httpRequestFactory() {
+	public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory() {
 		return ClientHttpRequestFactoryBuilder.httpComponents()
 				.withConnectionManagerCustomizer(connectionManager -> {
 					var requestConfig = ConnectionConfig.custom()
