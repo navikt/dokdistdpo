@@ -53,14 +53,12 @@ public class OAuthEnabledRestClientConfig {
 				.withConnectionManagerCustomizer(connectionManager -> {
 					var requestConfig = ConnectionConfig.custom()
 							.setConnectTimeout(Timeout.ofSeconds(15))
-							.setSocketTimeout(Timeout.ofSeconds(30))
 							.build();
 					var readTimeout = SocketConfig.custom().setSoTimeout(Timeout.ofSeconds(30)).build();
 					connectionManager.setMaxConnTotal(400);
 					connectionManager.setMaxConnPerRoute(100);
 					connectionManager.setDefaultSocketConfig(readTimeout);
 					connectionManager.setDefaultConnectionConfig(requestConfig);
-
 				}).build();
 	}
 
