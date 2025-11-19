@@ -2,13 +2,9 @@ package no.nav.dokdistdpo.azure;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dpo.maskinporten.MaskinportenConsumer;
-import org.apache.hc.client5.http.config.ConnectionConfig;
-import org.apache.hc.core5.http.io.SocketConfig;
-import org.apache.hc.core5.util.Timeout;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
@@ -43,25 +39,9 @@ public class OAuthEnabledRestClientConfig {
 		return RestClient.builder()
 				.baseUrl(dokdistdpoProperties.endpoints().dokdistadmin().url())
 				.requestInterceptor(oauth2Interceptor)
-				.requestFactory(httpRequestFactory())
+				.requestFactory(jdkClientHttpRequestFactory())
 				.build();
 	}
-
-	@Bean
-	public HttpComponentsClientHttpRequestFactory httpRequestFactory() {
-		return ClientHttpRequestFactoryBuilder.httpComponents()
-				.withConnectionManagerCustomizer(connectionManager -> {
-					var requestConfig = ConnectionConfig.custom()
-							.setConnectTimeout(Timeout.ofSeconds(15))
-							.build();
-					var readTimeout = SocketConfig.custom().setSoTimeout(Timeout.ofSeconds(30)).build();
-					connectionManager.setMaxConnTotal(400);
-					connectionManager.setMaxConnPerRoute(100);
-					connectionManager.setDefaultSocketConfig(readTimeout);
-					connectionManager.setDefaultConnectionConfig(requestConfig);
-				}).build();
-	}
-
 
 	@Bean
 	public RestClient maskinportenAuthorizedRestClient(MaskinportenConsumer maskinportenConsumer) {
