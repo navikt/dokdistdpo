@@ -2,9 +2,8 @@ package no.nav.dokdistdpo.azure;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dpo.maskinporten.MaskinportenConsumer;
-import org.apache.hc.client5.http.config.RequestConfig;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.util.Timeout;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -44,27 +43,23 @@ public class OAuthEnabledRestClientConfig {
 		return RestClient.builder()
 				.baseUrl(dokdistdpoProperties.endpoints().dokdistadmin().url())
 				.requestInterceptor(oauth2Interceptor)
-				.requestFactory(httpComponentsClientHttpRequestFactory())
+				.requestFactory(httpRequestFactory())
 				.build();
 	}
 
 	@Bean
-	public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory() {
-		RequestConfig requestConfig = RequestConfig.custom()
-				.setConnectionRequestTimeout(Timeout.ofSeconds(15))
-				.setResponseTimeout(Timeout.ofSeconds(30))
-				.build();
-
-		CloseableHttpClient httpClient = HttpClients.custom()
-				.setDefaultRequestConfig(requestConfig)
-				.build();
-
-		HttpComponentsClientHttpRequestFactory requestFactory =
-				new HttpComponentsClientHttpRequestFactory(httpClient);
-
-		requestFactory.setConnectionRequestTimeout(Duration.ofSeconds(15));
-		requestFactory.setReadTimeout(Duration.ofSeconds(30));
-		return requestFactory;
+	public HttpComponentsClientHttpRequestFactory httpRequestFactory() {
+		return ClientHttpRequestFactoryBuilder.httpComponents()
+				.withConnectionManagerCustomizer(connectionManager -> {
+					var requestConfig = ConnectionConfig.custom()
+							.setConnectTimeout(Timeout.ofSeconds(15))
+							.build();
+					var readTimeout = SocketConfig.custom().setSoTimeout(Timeout.ofSeconds(30)).build();
+					connectionManager.setMaxConnTotal(400);
+					connectionManager.setMaxConnPerRoute(100);
+					connectionManager.setDefaultSocketConfig(readTimeout);
+					connectionManager.setDefaultConnectionConfig(requestConfig);
+				}).build();
 	}
 
 
