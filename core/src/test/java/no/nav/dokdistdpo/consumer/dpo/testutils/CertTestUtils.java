@@ -1,5 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.testutils;
 
+import no.nav.dokdistdpo.certificate.AppCertificate;
+import no.nav.dokdistdpo.certificate.KeyStoreCredentials;
 import no.nav.dokdistdpo.certificate.KeyStoreProperties;
 import org.springframework.core.io.ClassPathResource;
 
@@ -16,8 +18,9 @@ public final class CertTestUtils {
 		// noop
 	}
 
-	public static KeyStoreProperties itestVirksomhetssertifikatProperties() throws IOException {
-		return new KeyStoreProperties(PKCS_12, SELF_SIGNED_PKCS12_ALIAS, SELF_SIGNED_PKCS12_PASSWORD,
-				new ClassPathResource(SELF_SIGNED_PKCS12).getFile().getAbsolutePath());
+	public static AppCertificate itestVirksomhetssertifikatProperties() throws IOException {
+		return new AppCertificate(
+				new KeyStoreProperties("", new ClassPathResource(SELF_SIGNED_PKCS12).getFile().getAbsolutePath()),
+				new KeyStoreCredentials(PKCS_12, SELF_SIGNED_PKCS12_ALIAS, SELF_SIGNED_PKCS12_PASSWORD));
 	}
 }

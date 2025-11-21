@@ -36,7 +36,7 @@ class AsiceCreatorTest {
 	@Test
 	void shouldCreateAndSignAsiceDocument() throws IOException {
 		ByteArrayOutputStream asiceStreamed = asiceCreator.createAsiceStreamed(createAltinnDpoRequest(),
-				new AppCertificate(itestVirksomhetssertifikatProperties())
+				itestVirksomhetssertifikatProperties()
 		);
 
 		ByteArrayInputStream asice = new ByteArrayInputStream(asiceStreamed.toByteArray());
