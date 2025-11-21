@@ -12,6 +12,17 @@ spec:
   envFrom:
     - secret: {{ DOKDISTDPO_SECRET }}
   env:
+    - name: JAVA_TRUSTSTORE_OPTIONS
+      value: "-Djavax.net.ssl.trustStore=$(NAV_TRUSTSTORE_PATH)
+              -Djavax.net.ssl.trustStorePassword=$(NAV_TRUSTSTORE_PASSWORD)"
+    - name: JDK_JAVA_OPTIONS
+      value: "-Djavax.net.ssl.keyStore=$(NAV_TRUSTSTORE_PATH)
+              -Djavax.net.ssl.keyStorePassword=$(NAV_TRUSTSTORE_PASSWORD)
+              -Djavax.net.ssl.keyStoreType=jks
+              -XX:MaxRAMPercentage=75
+              -XX:MaxHeapFreeRatio=55
+              -XX:HeapDumpPath=/tmp
+              $(JAVA_PROXY_OPTIONS) $(JAVA_TRUSTSTORE_OPTIONS)"
     - name: DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL
       value: {{ DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL }}
     - name: DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_SCOPE

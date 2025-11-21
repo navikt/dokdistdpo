@@ -3,6 +3,7 @@ package no.nav.dokdistdpo.qdist015.itest.config;
 import no.nav.dokdistdpo.CoreConfig;
 import no.nav.dokdistdpo.azure.AzureProperties;
 import no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig;
+import no.nav.dokdistdpo.certificate.AppCertificateConfig;
 import no.nav.dokdistdpo.certificate.KeyStoreProperties;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.config.properties.DokdistmellomlagerProperties;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.mock;
 		CoreConfig.class,
 		JmsItestConfig.class,
 		OAuthEnabledRestClientConfig.class,
+		AppCertificateConfig.class,
 		BrokerServiceExternalTestConfig.class,
 		BrokerServiceExternalStreamedConfigTest.class,
 		CacheTestConfig.class

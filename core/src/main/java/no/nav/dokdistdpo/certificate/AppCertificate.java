@@ -7,6 +7,8 @@ import no.nav.dokdistdpo.exception.technical.CertificateConversionException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.openssl.PEMParser;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -20,12 +22,13 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
+import java.util.Objects;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Getter
-@Component
 public class AppCertificate {
 
 	private static final String ERR_MISSING_PRIVATE_KEY_OR_PASS = "Feil ved tilgang til PrivateKey med alias \"%s\": tilgang nektet eller feil passord";
@@ -34,25 +37,41 @@ public class AppCertificate {
 	private static final String ERR_GENERAL = "Uventet feil oppstod ved operasjon på KeyStore.";
 
 	private final KeyStoreProperties properties;
+	private final KeyStoreCredentials credentials;
 	private final KeyStore keyStore;
 	private final PrivateKey privateKey;
 	private final X509Certificate x509Certificate;
 
-	public AppCertificate(KeyStoreProperties properties) {
+	public AppCertificate(KeyStoreProperties properties, KeyStoreCredentials credentials) {
 		this.properties = properties;
+		this.credentials = credentials;
 		try {
-			this.keyStore = KeystoreProvider.loadKeyStoreData(properties);
-		} catch (KeystoreProviderException e) {
+			this.keyStore = loadKeyStoreData();
+			this.privateKey = loadPrivateKey();
+			this.x509Certificate = loadX509Certificate();
+		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
-		this.privateKey = loadPrivateKey();
-		this.x509Certificate = loadX509Certificate();
+	}
+
+	private KeyStore loadKeyStoreData() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+		String type = credentials.type();
+		char[] password = credentials.password().toCharArray();
+		Resource path = new FileSystemResource(properties.key());
+
+		KeyStore keyStore = KeyStore.getInstance(type);
+
+		try (var inputStream = path.getInputStream()) {
+			keyStore.load(isBase64(properties) ? Base64.getDecoder().wrap(inputStream) : inputStream, password);
+		}
+
+		return keyStore;
 	}
 
 	public PrivateKey loadPrivateKey() {
-		String alias = properties.alias();
+		String alias = credentials.alias();
 		try {
-			char[] password = properties.password().toCharArray();
+			char[] password = credentials.password().toCharArray();
 
 			PrivateKey key = (PrivateKey) keyStore.getKey(alias, password);
 			if (key == null) {
@@ -67,7 +86,7 @@ public class AppCertificate {
 	}
 
 	public X509Certificate loadX509Certificate() {
-		String alias = properties.alias();
+		String alias = credentials.alias();
 
 		try {
 			X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
@@ -94,7 +113,7 @@ public class AppCertificate {
 
 			}
 		} catch (IOException e) {
-			throw new CertificateConversionException("Klarter ikke konvertere PEM til X.509 sertifikat", e);
+			throw new CertificateConversionException("Klarte ikke konvertere PEM til X.509 sertifikat", e);
 		} catch (CertificateException e) {
 			throw new CertificateConversionException("Klarte ikke lese PEM data.", e);
 		}
@@ -104,5 +123,9 @@ public class AppCertificate {
 		if (isBlank(pemCertificate)) {
 			throw new MottakerInfoIkkeFunnetException("Fant ikke PEM sertifikat.");
 		}
+	}
+
+	private static boolean isBase64(KeyStoreProperties properties) {
+		return properties.key().endsWith(".b64");
 	}
 }
