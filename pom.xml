@@ -31,7 +31,7 @@
 		<camel-spring-boot-bom.version>4.16.0</camel-spring-boot-bom.version>
 		<cxf-bom.version>4.1.4</cxf-bom.version>
 		<jaxws-ri.version>4.0.3</jaxws-ri.version>
-		<commons-lang3.version>3.19.0</commons-lang3.version>
+		<commons-lang3.version>3.20.0</commons-lang3.version>
 		<commons-io.version>2.21.0</commons-io.version>
 		<bouncycastle.version>1.82</bouncycastle.version>
 		<dok-common-util.version>1.6.0</dok-common-util.version>
