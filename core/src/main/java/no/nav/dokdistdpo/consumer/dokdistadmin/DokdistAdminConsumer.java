@@ -1,5 +1,6 @@
 package no.nav.dokdistdpo.consumer.dokdistadmin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.FeilregistrerForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.Forsendelse;
@@ -26,7 +27,6 @@ import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGIST
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
 import static no.nav.dokdistdpo.constant.NavHeaders.NAV_CALLID;
-import static no.nav.dokdistdpo.utils.DokdistdpoUtils.getProblemDetail;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @Slf4j
@@ -36,9 +36,12 @@ public class DokdistAdminConsumer {
 	private static final String DISTRIBUSJONSKANAL_DPO = "DPO";
 
 	private final RestClient dokdistadminRestClient;
+	private final ObjectMapper objectMapper;
 
-	public DokdistAdminConsumer(RestClient dokdistadminRestClient) {
+	public DokdistAdminConsumer(RestClient dokdistadminRestClient,
+								ObjectMapper objectMapper) {
 		this.dokdistadminRestClient = dokdistadminRestClient;
+		this.objectMapper = objectMapper;
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
@@ -117,7 +120,7 @@ public class DokdistAdminConsumer {
 	}
 
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste, String feltnavn, String feltVerdi) throws IOException {
-		ProblemDetail problemDetail = getProblemDetail(response);
+		ProblemDetail problemDetail = objectMapper.readValue(response.getBody(), ProblemDetail.class);
 		if (response.getStatusCode().is4xxClientError()) {
 			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt med %s=%s. Feilmelding=%s",
 					tjeneste, feltnavn, feltVerdi, problemDetail.getDetail()), problemDetail);
@@ -127,7 +130,7 @@ public class DokdistAdminConsumer {
 	}
 
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste) throws IOException {
-		ProblemDetail problemDetail = getProblemDetail(response);
+		ProblemDetail problemDetail = objectMapper.readValue(response.getBody(), ProblemDetail.class);
 		if (response.getStatusCode().is4xxClientError()) {
 			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt. Feilmelding=%s",
 					tjeneste, problemDetail.getDetail()), problemDetail);

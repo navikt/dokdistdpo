@@ -1,15 +1,14 @@
 package no.nav.dokdistdpo.consumer.dpo.serviceregistry;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.exception.technical.ServiceRegistryTechnicalException;
-import no.nav.dokdistdpo.utils.DokdistdpoUtils;
 import org.springframework.http.ProblemDetail;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import static java.lang.String.format;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -17,13 +16,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Component
 public class ServiceRegistryConsumer {
 
-	public static final String TEKNISK_FEIL_ERROR_MESSAGE = "Klarte ikke hente mottakerInfo fra service registry. Teknisk feil: ";
-	public static final String FUNKSJONELL_FEIL_ERROR_MESSAGE = "Klarte ikke hente mottakerInfo fra service registry. Funksjonell feil: ";
-
 	private final RestClient maskinportenAuthorizedRestClient;
+	private final ObjectMapper objectMapper;
 
 	public ServiceRegistryConsumer(RestClient maskinportenAuthorizedRestClient,
-								   DokdistdpoProperties dokdistdpoProperties) {
+								   DokdistdpoProperties dokdistdpoProperties,
+								   ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
 		this.maskinportenAuthorizedRestClient = maskinportenAuthorizedRestClient.mutate()
 				.baseUrl(dokdistdpoProperties.serviceRegistry().url())
 				.defaultHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -36,19 +35,17 @@ public class ServiceRegistryConsumer {
 				.uri(uriBuilder -> uriBuilder
 						.path("/identifier/{orgnummer}/process/" + processIdentifier)
 						.build(orgnummer))
-				.exchange((req, res) -> {
-					if (res.getStatusCode().isError()) {
-						ProblemDetail problemDetail = DokdistdpoUtils.getProblemDetail(res);
+				.exchange((request, response) -> {
+					if (response.getStatusCode().isError()) {
+						ProblemDetail problemDetail = objectMapper.readValue(response.getBody(), ProblemDetail.class);
 
-						if (res.getStatusCode().is4xxClientError()) {
-							log.warn(FUNKSJONELL_FEIL_ERROR_MESSAGE + "{}", problemDetail.getDetail());
-							return null;
+						if (response.getStatusCode().isError()) {
+							final String errorMessage = String.format("Serviceregistry feilet med statuskode=%s og feilmelding=%s", problemDetail.getStatus(), problemDetail.getDetail());
+							log.error(errorMessage);
+							throw new ServiceRegistryTechnicalException(errorMessage);
 						}
-						final String errorMessage = TEKNISK_FEIL_ERROR_MESSAGE + problemDetail.getDetail();
-						log.error(errorMessage);
-						throw new ServiceRegistryTechnicalException(format("hentForsendelse feilet teknisk med feilmelding=%s", problemDetail));
 					}
-					return res.bodyTo(IdentifierResource.class);
+					return response.bodyTo(IdentifierResource.class);
 				});
 	}
 }
