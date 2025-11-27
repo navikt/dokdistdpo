@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Configuration
 @EnableCaching
@@ -27,7 +27,7 @@ public class LocalCacheConfig {
 		SimpleCacheManager cacheManager = new SimpleCacheManager();
 		cacheManager.setCaches(List.of(
 				new CaffeineCache(MASKINPORTEN_CACHE, Caffeine.newBuilder()
-						.expireAfterWrite(50, MINUTES)
+						.expireAfterWrite(100, SECONDS)
 						.recordStats()
 						.build())
 		));

@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 
 @ActiveProfiles("itest")
@@ -104,21 +104,20 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	}
 
 	@Test
-	void shouldSendForsendelseTilPrintIfOrganisasjonNotFoundInServiceRegistry() {
+	void shouldThrowTechnicalExceptionAndToBackoutQueueWhenServiceRegistryFailsWithNotFound() {
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
 		stubPostMaskinporten();
-		stubGetServiceRegistry(NOT_FOUND);
+		stubGetServiceRegistry();
 		stubPostOpprettForsendelse(OK);
-		stubPutFeilregistrerforsendelse(OK.value());
 		stubPutOppdaterForsendelse(OK);
 
 		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));
 
-		await().atMost(10, SECONDS).untilAsserted(this::verifySendToPrint);
+		await().atMost(10, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
 	}
 
 	@Test
-	void shouldThrowFileDownloadFromBucketTechnicalException() {
+	void shouldThrowTechnicalExceptionWhenFileDownloadFromBucketFails() {
 		when(encryptedBucketStorage.downloadObject(eq(DOKUMENT_OBJEKT_REFERANSE_HOVEDDOK), anyString())).thenThrow(FileDownloadFromBucketTechnicalException.class);
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
 		stubPutOppdaterForsendelse(OK);
@@ -130,16 +129,18 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	}
 
 	@Test
-	void shouldThrowTechnicalExceptionWhenUploadFileToAltinnFeil() {
-		stubPostOpprettForsendelse(OK);
+	void shouldThrowTechnicalExceptionWhenUploadFileToAltinnFails() {
+		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
+		stubPostMaskinporten();
+		stubGetServiceRegistry(OK);
+		stubPostIntiateBrokerService();
+		stubUploadBrokerServiceStreamed(INTERNAL_SERVER_ERROR);
+		stubPostJuridisklogg(OK);
+		stubPutOppdaterForsendelse(OK);
 
-	}
+		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));
 
-	private void verifySendToPrint() {
-		verifyGetForsendelse();
-		verifyServiceRegistry();
-		verifyPostOpprettForsendelse();
-		verifyFeilregistrerForsendelse();
+		await().atMost(10, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
 	}
 
 	private void verifyAltinnUploadWithPostProcessing() {
@@ -169,14 +170,6 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 
 	private void verifyPutAdministrerforsendelse() {
 		verify(putRequestedFor(urlMatching(OPPDATERFORSENDELSE_URL)));
-	}
-
-	private void verifyFeilregistrerForsendelse() {
-		verify(putRequestedFor(urlMatching(AbstractQdist015ITest.FEILREGISTRERFORSENDELSE_URL)));
-	}
-
-	private void verifyPostOpprettForsendelse() {
-		verify(postRequestedFor(urlEqualTo(BASE_DOKDISTADMIN_PATH)));
 	}
 
 	private void verifyGetForsendelse() {

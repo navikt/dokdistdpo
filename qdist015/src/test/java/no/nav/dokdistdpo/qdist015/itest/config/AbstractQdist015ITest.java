@@ -27,6 +27,7 @@ import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -77,6 +78,15 @@ public abstract class AbstractQdist015ITest {
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
 						.withBodyFile("altinn/brokerserviceupload_happy_response.xml")));
+	}
+
+	protected static void stubUploadBrokerServiceStreamed(HttpStatus status) {
+		stubFor(post(urlMatching("/brokerserviceexternalstreamed/upload"))
+				.withHeader("Content-Type", WireMock.containing("application/soap+xml"))
+				.willReturn(aResponse()
+						.withStatus(status.value())
+						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
+						.withBodyFile("altinn/brokerserviceuploadfile_fault_response.xml")));
 	}
 
 	protected static void stubPutOppdaterForsendelse(HttpStatus status) {
@@ -139,6 +149,14 @@ public abstract class AbstractQdist015ITest {
 						.withStatus(status.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 						.withBodyFile("serviceregistry/serviceregistry_happy_response.json")));
+	}
+
+	public static void stubGetServiceRegistry() {
+		stubFor(get(urlMatching("/serviceregistry/identifier/974761084/process/urn:no:difi:profile:avtalt:avtalt:ver1.0"))
+				.willReturn(aResponse()
+						.withStatus(NOT_FOUND.value())
+						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+						.withBodyFile("serviceregistry/serviceregistry_feil_response.json")));
 	}
 
 	protected static void stubAzure() {
