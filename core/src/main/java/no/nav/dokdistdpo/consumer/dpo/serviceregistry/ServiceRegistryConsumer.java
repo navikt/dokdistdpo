@@ -39,11 +39,9 @@ public class ServiceRegistryConsumer {
 					if (response.getStatusCode().isError()) {
 						ProblemDetail problemDetail = objectMapper.readValue(response.getBody(), ProblemDetail.class);
 
-						if (response.getStatusCode().isError()) {
-							final String errorMessage = String.format("Serviceregistry feilet med statuskode=%s og feilmelding=%s", problemDetail.getStatus(), problemDetail.getDetail());
-							log.error(errorMessage);
-							throw new ServiceRegistryTechnicalException(errorMessage);
-						}
+						final String errorMessage = String.format("Serviceregistry feilet med statuskode=%s og feilmelding=%s", problemDetail.getStatus(), problemDetail.getDetail());
+						log.error(errorMessage);
+						throw new ServiceRegistryTechnicalException(errorMessage);
 					}
 					return response.bodyTo(IdentifierResource.class);
 				});

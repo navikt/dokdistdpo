@@ -104,7 +104,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	}
 
 	@Test
-	void shouldThrowFunctionalExceptionAndToBackoutQueueWhenServiceRegistryFails() {
+	void shouldThrowTechnicalExceptionAndToBackoutQueueWhenServiceRegistryFailsWithNotFound() {
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
 		stubPostMaskinporten();
 		stubGetServiceRegistry();
@@ -140,7 +140,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 
 		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));
 
-		await().atMost(100, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
+		await().atMost(10, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
 	}
 
 	private void verifyAltinnUploadWithPostProcessing() {
