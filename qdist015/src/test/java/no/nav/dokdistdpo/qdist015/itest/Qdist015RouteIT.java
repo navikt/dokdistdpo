@@ -117,7 +117,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	}
 
 	@Test
-	void shouldThrowFileDownloadFromBucketTechnicalException() {
+	void shouldThrowTechnicalExceptionWhenFileDownloadFromBucketFails() {
 		when(encryptedBucketStorage.downloadObject(eq(DOKUMENT_OBJEKT_REFERANSE_HOVEDDOK), anyString())).thenThrow(FileDownloadFromBucketTechnicalException.class);
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
 		stubPutOppdaterForsendelse(OK);
@@ -129,7 +129,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	}
 
 	@Test
-	void shouldThrowTechnicalExceptionWhenUploadFileToAltinnFeil() {
+	void shouldThrowTechnicalExceptionWhenUploadFileToAltinnFails() {
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
 		stubPostMaskinporten();
 		stubGetServiceRegistry(OK);
