@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingXPath;
@@ -70,7 +71,8 @@ class Sdist008RouteIT {
 		verify(1, getRequestedFor(urlEqualTo(BASE_DOKDISTADMIN_PATH + "/henteformidlingforsendelser?distribusjonKanal=DPO")));
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")).withRequestBody(matchingXPath(XPATH_GET_AVAILABLE_FILES)));
 		verify(1, postRequestedFor(urlMatching("/brokerserviceexternalstreamed/download")));
-		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse")));
+		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse"))
+				.withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE)));
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")).withRequestBody(matchingXPath(XPATH_CONFIRM_DOWNLOADED)));
 
 	}
@@ -91,7 +93,8 @@ class Sdist008RouteIT {
 		verify(1, postRequestedFor(urlMatching("/brokerserviceexternalstreamed/download")));
 		verify(1, getRequestedFor(urlMatching("/administrerforsendelse/1231")));
 		verify(1, postRequestedFor(urlMatching("/juridisklogg/api/rest/logg")));
-		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse")));
+		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse"))
+				.withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE)));
 	}
 
 	@Test
