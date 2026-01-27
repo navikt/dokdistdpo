@@ -27,6 +27,7 @@ import static no.nav.dokdistdpo.azure.OAuthEnabledRestClientConfig.CLIENT_REGIST
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.PROPERTY_FORSENDELSE_ID;
 import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
 import static no.nav.dokdistdpo.constant.NavHeaders.NAV_CALLID;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @Slf4j
@@ -61,6 +62,7 @@ public class DokdistAdminConsumer {
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public Forsendelse opprettForsendelse(OpprettForsendelseRequest opprettForsendelseRequest) {
 		return dokdistadminRestClient.post()
+				.contentType(APPLICATION_JSON)
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.body(opprettForsendelseRequest)
@@ -77,6 +79,7 @@ public class DokdistAdminConsumer {
 
 		dokdistadminRestClient.put()
 				.uri("/feilregistrerforsendelse")
+				.contentType(APPLICATION_JSON)
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.body(feilregistrerForsendelse)
@@ -94,6 +97,7 @@ public class DokdistAdminConsumer {
 
 		dokdistadminRestClient.put()
 				.uri("/oppdaterforsendelse")
+				.contentType(APPLICATION_JSON)
 				.header(NAV_CALLID, MDC.get(CALL_ID))
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.body(oppdaterForsendelse)

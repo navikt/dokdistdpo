@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
@@ -33,8 +34,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @ActiveProfiles("itest")
 class Qdist015RouteIT extends AbstractQdist015ITest {
@@ -169,7 +172,8 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	}
 
 	private void verifyPutAdministrerforsendelse() {
-		verify(putRequestedFor(urlMatching(OPPDATERFORSENDELSE_URL)));
+		verify(putRequestedFor(urlMatching(OPPDATERFORSENDELSE_URL))
+				.withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE)));
 	}
 
 	private void verifyGetForsendelse() {
