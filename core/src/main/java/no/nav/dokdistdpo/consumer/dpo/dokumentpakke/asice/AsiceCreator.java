@@ -58,7 +58,8 @@ public class AsiceCreator {
 			}
 			asicWriter.add(inputStream, dokument.filnavn(), forString(dokument.mimeType()));
 		} catch (IOException e) {
-			throw new DokumentpakkingException("Kunne ikke pakke navDokument: " + dokument.filnavn(), e);
+			log.error("addDocumentToAsic", e);
+			throw new DokumentpakkingException("Kunne ikke pakke filnavn=" + dokument.filnavn() + " i asice. " + e.getMessage(), e);
 		}
 	}
 
