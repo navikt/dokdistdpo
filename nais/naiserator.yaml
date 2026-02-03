@@ -92,15 +92,14 @@ spec:
     cpuThresholdPercentage: 50
   resources:
     limits:
-      memory: 3Gi
+      memory: {{ MEMORY_LIMITS }}
     requests:
-      memory: 1Gi
+      cpu: 60m
+      memory: {{ MEMORY_REQUESTS }}
   observability:
     autoInstrumentation:
       enabled: true
       runtime: java
-      destinations:
-        - id: "elastic-apm"
     logging:
       destinations:
         - id: elastic
