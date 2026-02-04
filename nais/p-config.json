@@ -22,8 +22,10 @@
   "DOKDISTMELLOMLAGER_KEYRING": "dokdistmellomlager-keyring",
   "DOKDISTMELLOMLAGER_KEYID": "dokdistmellomlager-symmetric",
   "ENVIRONMENT": "p",
-  "MIN_REPLICAS": "2",
-  "MAX_REPLICAS": "4",
+  "MIN_REPLICAS": "1",
+  "MAX_REPLICAS": "2",
+  "MEMORY_LIMITS": "12Gi",
+  "MEMORY_REQUESTS": "6Gi",
   "INGRESSES": [
     "https://dokdistdpo.intern.nav.no"
   ]

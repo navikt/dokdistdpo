@@ -23,7 +23,9 @@
   "DOKDISTMELLOMLAGER_KEYID": "dokdistmellomlager-symmetric-dev",
   "ENVIRONMENT": "q2",
   "MIN_REPLICAS": "1",
-  "MAX_REPLICAS": "2",
+  "MAX_REPLICAS": "1",
+  "MEMORY_LIMITS": "5Gi",
+  "MEMORY_REQUESTS": "2Gi",
   "INGRESSES": [
     "https://dokdistdpo.dev.intern.nav.no"
   ]
