@@ -104,11 +104,6 @@ spec:
       destinations:
         - id: elastic
         - id: loki
-  maskinporten:
-    enabled: true
-    scopes:
-      consumes:
-        - name: move/dpo.read
   azure:
     application:
       enabled: true
