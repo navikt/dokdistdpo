@@ -65,6 +65,10 @@ spec:
       value: {{ DOKDISTSENTRALPRINT_QDIST009_DIST_S_PRINT_QUEUENAME }}
     - name: GOOGLE_APPLICATION_CREDENTIALS
       value: "/var/run/secrets/nais_secrets/gcloud_serviceaccount.json"
+    - name: MASKINPORTEN_TOKEN_ENDPOINT
+      value: {{ MASKINPORTEN_TOKEN_ENDPOINT }}
+    - name: MASKINPORTEN_ISSUER
+      value: {{ MASKINPORTEN_ISSUER }}
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
