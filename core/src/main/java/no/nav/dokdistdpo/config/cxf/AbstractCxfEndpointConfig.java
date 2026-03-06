@@ -4,7 +4,6 @@ import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.ext.logging.LoggingInInterceptor;
-import org.apache.cxf.ext.logging.LoggingOutInterceptor;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -81,11 +80,6 @@ public abstract class AbstractCxfEndpointConfig {
 		client.getRequestContext().put("org.apache.cxf.message.Message.MAINTAIN_SESSION", TRUE);
 		client.getRequestContext().put("jakarta.xml.ws.session.maintain", TRUE);
 		client.getRequestContext().put("org.apache.cxf.logging.enable", true);
-		LoggingOutInterceptor outInterceptor = new LoggingOutInterceptor();
-		outInterceptor.setPrettyLogging(true);
-		outInterceptor.setLimit(1024 * 1024 * 100);
-		client.getEndpoint().getOutInterceptors().add(outInterceptor);
-		client.getEndpoint().getInInterceptors().add(new LoggingInInterceptor());
 		client.getEndpoint().getInFaultInterceptors().add(new LoggingInInterceptor());
 
 	}
