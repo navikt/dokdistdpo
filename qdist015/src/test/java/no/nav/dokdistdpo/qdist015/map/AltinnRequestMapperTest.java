@@ -3,7 +3,7 @@ package no.nav.dokdistdpo.qdist015.map;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ArkivInformasjon;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.Mottaker;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest.Forsendelse;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest.Forsendelse;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

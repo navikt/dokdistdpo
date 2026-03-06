@@ -1,6 +1,6 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke;
 
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.manifest.Avsender;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.manifest.HovedDokument;
