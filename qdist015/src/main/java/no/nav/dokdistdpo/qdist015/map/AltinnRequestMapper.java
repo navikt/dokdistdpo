@@ -2,10 +2,10 @@ package no.nav.dokdistdpo.qdist015.map;
 
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest.Forsendelse;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.ArkivmeldingStandardBusinessDocumentMapper;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.AvtaltStandardBusinessDocumentMapper;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest.Forsendelse;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.map.ArkivmeldingStandardBusinessDocumentMapper;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.map.AvtaltStandardBusinessDocumentMapper;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.StandardBusinessDocument;
 import org.springframework.stereotype.Component;
 
 import static java.lang.Enum.valueOf;

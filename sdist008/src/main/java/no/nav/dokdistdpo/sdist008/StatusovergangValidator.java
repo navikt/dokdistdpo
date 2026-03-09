@@ -2,13 +2,12 @@ package no.nav.dokdistdpo.sdist008;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse.Forsendelse;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.DownloadResponse;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
 import no.nav.dokdistdpo.sdist008.domain.DpoKvitteringStatus;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static no.nav.dokdistdpo.sdist008.domain.DpoKvitteringStatus.MOTTATT;
 import static no.nav.dokdistdpo.sdist008.domain.DpoKvitteringStatus.OPPRETTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.EKSPEDERT;
@@ -19,7 +18,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class StatusovergangValidator {
 
 	static Set<String> OVERSENDT_BEKREFTET_STATUS = Set.of(OVERSENDT.name(), BEKREFTET.name());
-
 
 	public static void validerForsendelseOgDpoKvitteringStatus(Forsendelse forsendelse, String forsendelseStatus, String kvitteringStatus) {
 		if (isBlank(kvitteringStatus)) {

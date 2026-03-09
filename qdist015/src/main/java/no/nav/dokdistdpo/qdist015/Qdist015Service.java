@@ -2,11 +2,11 @@ package no.nav.dokdistdpo.qdist015;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
-import no.nav.dokdistdpo.consumer.dpo.AltinnEformidlingClient;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.Altinn2EformidlingClient;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocument;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.StandardBusinessDocument;
 import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfo;
 import no.nav.dokdistdpo.qdist015.dokdistforsendelse.DokdistadminService;
 import no.nav.dokdistdpo.qdist015.dokdistforsendelse.OppdaterForsendelseService;
@@ -36,16 +36,16 @@ public class Qdist015Service {
 	private final SendTilPrintService sendTilPrintService;
 	private final AltinnRequestMapper altinnRequestMapper;
 	private final DokdistadminService dokdistadminService;
-	private final AltinnEformidlingClient eformidling;
+	private final Altinn2EformidlingClient eformidling;
 	private final OppdaterForsendelseService oppdaterForsendelseService;
-	private final LagreJuridiskloggService juridiskloggService;
+	private final JuridiskloggService juridiskloggService;
 
 	public Qdist015Service(GStorageDokumentService gStorageDokumentService,
 						   SendTilPrintService sendTilPrintService,
 						   AltinnRequestMapper altinnRequestMapper,
 						   DokdistadminService dokdistadminService,
-						   AltinnEformidlingClient eformidling,
-						   LagreJuridiskloggService juridiskloggService,
+						   Altinn2EformidlingClient eformidling,
+						   JuridiskloggService juridiskloggService,
 						   OppdaterForsendelseService oppdaterForsendelseService) {
 		this.gStorageDokumentService = gStorageDokumentService;
 		this.sendTilPrintService = sendTilPrintService;

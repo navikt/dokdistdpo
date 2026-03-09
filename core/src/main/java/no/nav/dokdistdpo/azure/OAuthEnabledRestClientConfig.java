@@ -37,7 +37,6 @@ public class OAuthEnabledRestClientConfig {
 	public RestClient dokdistadminRestClient(DokdistdpoProperties dokdistdpoProperties,
 											 OAuth2AuthorizedClientManager authorizedClientManager,
 											 HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory) {
-
 		var oauth2Interceptor =
 				new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
 
@@ -85,11 +84,9 @@ public class OAuthEnabledRestClientConfig {
 	@Bean
 	public OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistrationRepository clientRegistrationRepository,
 																 OAuth2AuthorizedClientService auth2AuthorizedClientService) {
-
 		var authorizedClientManager =
 				new AuthorizedClientServiceOAuth2AuthorizedClientManager(
 						clientRegistrationRepository, auth2AuthorizedClientService);
-
 
 		authorizedClientManager.setAuthorizedClientProvider(OAuth2AuthorizedClientProviderBuilder.builder()
 				.authorizationCode()

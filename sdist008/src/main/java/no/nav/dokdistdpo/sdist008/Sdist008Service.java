@@ -2,8 +2,8 @@ package no.nav.dokdistdpo.sdist008;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse.Forsendelse;
-import no.nav.dokdistdpo.consumer.dpo.AltinnEformidlingKvitteringClient;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.from.DownloadResponse;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.AltinnEformidlingKvitteringClient;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.KvitteringStatus;
 import no.nav.dokdistdpo.sdist008.domain.DpoKvitteringStatus;
 import org.springframework.stereotype.Component;

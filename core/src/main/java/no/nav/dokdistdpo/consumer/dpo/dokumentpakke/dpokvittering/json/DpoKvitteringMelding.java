@@ -2,14 +2,14 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json;
 
 import lombok.Data;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.Scope;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.StandardBusinessDocumentHeader;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.Scope;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.ScopeType;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.StandardBusinessDocumentHeader;
 
 import java.util.Optional;
 
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.CONVERSATION_ID;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.ScopeType.MESSAGE_CHANNEL;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.ScopeType.CONVERSATION_ID;
+import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.ScopeType.MESSAGE_CHANNEL;
 
 @Data
 public class DpoKvitteringMelding {

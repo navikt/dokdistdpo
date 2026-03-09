@@ -1,9 +1,9 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.asice;
 
-import no.nav.dokdistdpo.certificate.AppCertificate;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
-import no.nav.dokdistdpo.consumer.dpo.altinnbrokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.packaging.asice.AsiceCreator;
 import no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils;
 import no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.ZipFile;
 import org.junit.jupiter.api.Test;
@@ -13,9 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MANIFEST_XML;
 import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_AVTALEMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.NavDokument.fromVedlegg;
-import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.asice.AsiceCreator.MANIFEST_XML;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.CertTestUtils.itestVirksomhetssertifikatProperties;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.classpathToString;
 import static no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.createForsendelse;
