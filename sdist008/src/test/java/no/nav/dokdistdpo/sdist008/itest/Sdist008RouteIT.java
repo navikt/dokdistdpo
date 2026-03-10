@@ -121,7 +121,7 @@ class Sdist008RouteIT {
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_XML_VALUE)
-						.withBodyFile("altinn/brokerserviceexternal/getavailablefiles_happy_response.xml")));
+						.withBodyFile("altinn2/brokerserviceexternal/getavailablefiles_happy_response.xml")));
 	}
 
 	private void stubPostBrokerserviceExternalConfirmDownloaded() {
@@ -130,7 +130,7 @@ class Sdist008RouteIT {
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_XML_VALUE)
-						.withBodyFile("altinn/brokerserviceexternal/confirmdownloaded_happy_response.xml")));
+						.withBodyFile("altinn2/brokerserviceexternal/confirmdownloaded_happy_response.xml")));
 	}
 
 	private void stubPostBrokerServiceExternalStreamedDownloadFileStreamed(String path) throws IOException {

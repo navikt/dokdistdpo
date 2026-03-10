@@ -27,7 +27,7 @@ public class AltinnEformidlingKvitteringClient {
 	private final AltinnBrokerServiceExternal altinnBrokerServiceExternal;
 	private final AltinnBrokerServiceStreamed altinnBrokerServiceStreamed;
 	private final DpoMessageUnpacker dpoMessageUnpacker;
-	private final DokdistdpoProperties.AltinnProperties altinnProperties;
+	private final DokdistdpoProperties.Altinn2Properties altinn2Properties;
 
 	public AltinnEformidlingKvitteringClient(AltinnBrokerServiceExternal altinnBrokerServiceExternal,
 											 AltinnBrokerServiceStreamed altinnBrokerServiceStreamed,
@@ -36,7 +36,7 @@ public class AltinnEformidlingKvitteringClient {
 		this.altinnBrokerServiceExternal = altinnBrokerServiceExternal;
 		this.altinnBrokerServiceStreamed = altinnBrokerServiceStreamed;
 		this.dpoMessageUnpacker = dpoMessageUnpacker;
-		this.altinnProperties = dokdistdpoProperties.altinn();
+		this.altinn2Properties = dokdistdpoProperties.altinn2();
 	}
 
 	public List<DownloadResponse> hentKvitteringer() {
@@ -75,7 +75,7 @@ public class AltinnEformidlingKvitteringClient {
 	}
 
 	private ServiceCode getServiceCode() {
-		return new ServiceCode(altinnProperties.serviceCode(), parseInt(altinnProperties.serviceEditionCode()));
+		return new ServiceCode(altinn2Properties.serviceCode(), parseInt(altinn2Properties.serviceEditionCode()));
 	}
 
 	private SearchCriteria getSearchCriteria() {

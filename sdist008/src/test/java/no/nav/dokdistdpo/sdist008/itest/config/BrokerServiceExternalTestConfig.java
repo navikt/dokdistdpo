@@ -2,11 +2,11 @@ package no.nav.dokdistdpo.sdist008.itest.config;
 
 import no.altinn.brokerserviceexternal.BrokerServiceExternalSF;
 import no.altinn.brokerserviceexternal.IBrokerServiceExternal;
-import no.nav.dokdistdpo.config.cxf.AbstractCxfEndpointConfig;
-import no.nav.dokdistdpo.config.cxf.ClientCallbackHandler;
-import no.nav.dokdistdpo.config.cxf.interceptor.CookiesInInterceptor;
-import no.nav.dokdistdpo.config.cxf.interceptor.CookiesOutInterceptor;
-import no.nav.dokdistdpo.config.cxf.interceptor.HeaderOutInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.AbstractCxfEndpointConfig;
+import no.nav.dokdistdpo.config.altinn2.cxf.ClientCallbackHandler;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.CookiesInInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.CookiesOutInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.HeaderOutInterceptor;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
@@ -28,7 +28,7 @@ public class BrokerServiceExternalTestConfig extends AbstractCxfEndpointConfig {
 		setAddress("wsdl/BrokerServiceExternalTest.wsdl");
 		setServiceName(BrokerServiceExternalSF.SERVICE);
 		setEndpointName(BrokerServiceExternalSF.CustomBindingIBrokerServiceExternal);
-		setAddress(dokdistdpoProperties.altinn().brokerserviceexternal().endpointurl());
+		setAddress(dokdistdpoProperties.altinn2().brokerserviceexternal().endpointurl());
 
 		// Bruker kun http 1.1 for å unngå problemer med WireMock og streams
 		addFeature(new Http11OnlyFeature());

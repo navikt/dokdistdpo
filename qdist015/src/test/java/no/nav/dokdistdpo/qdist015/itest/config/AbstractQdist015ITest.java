@@ -67,8 +67,8 @@ public abstract class AbstractQdist015ITest {
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_XML_VALUE)
-						.withBody(classpathToString("__files/altinn/brokerserviceinit_happy_response.xml").replace("localurl",
-								dokdistdpoProperties.altinn().brokerserviceexternal().endpointurl()))));
+						.withBody(classpathToString("__files/altinn2/brokerserviceinit_happy_response.xml").replace("localurl",
+								dokdistdpoProperties.altinn2().brokerserviceexternal().endpointurl()))));
 	}
 
 	protected static void stubUploadBrokerServiceStreamed() {
@@ -77,7 +77,7 @@ public abstract class AbstractQdist015ITest {
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
-						.withBodyFile("altinn/brokerserviceupload_happy_response.xml")));
+						.withBodyFile("altinn2/brokerserviceupload_happy_response.xml")));
 	}
 
 	protected static void stubUploadBrokerServiceStreamed(HttpStatus status) {
@@ -86,7 +86,7 @@ public abstract class AbstractQdist015ITest {
 				.willReturn(aResponse()
 						.withStatus(status.value())
 						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
-						.withBodyFile("altinn/brokerserviceuploadfile_fault_response.xml")));
+						.withBodyFile("altinn2/brokerserviceuploadfile_fault_response.xml")));
 	}
 
 	protected static void stubPutOppdaterForsendelse(HttpStatus status) {

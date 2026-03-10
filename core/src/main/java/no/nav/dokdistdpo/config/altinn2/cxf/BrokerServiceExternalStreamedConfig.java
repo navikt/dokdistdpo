@@ -1,9 +1,9 @@
-package no.nav.dokdistdpo.config.cxf;
+package no.nav.dokdistdpo.config.altinn2.cxf;
 
 import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamed;
-import no.nav.dokdistdpo.config.cxf.interceptor.CookiesInInterceptor;
-import no.nav.dokdistdpo.config.cxf.interceptor.CookiesOutInterceptor;
-import no.nav.dokdistdpo.config.cxf.interceptor.HeaderOutInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.CookiesInInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.CookiesOutInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.HeaderOutInterceptor;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
@@ -28,7 +28,7 @@ public class BrokerServiceExternalStreamedConfig extends AbstractCxfEndpointConf
 		setWsdlUrl("wsdl/BrokerServiceExternalStreamed.wsdl");
 		setServiceName(SERVICE);
 		setEndpointName(CustomBindingIBrokerServiceExternalStreamed);
-		setAddress(dokdistdpoProperties.altinn().brokerserviceexternalstreamed().endpointurl());
+		setAddress(dokdistdpoProperties.altinn2().brokerserviceexternalstreamed().endpointurl());
 
 		addInInterceptor(new CookiesInInterceptor());
 		addOutInterceptor(new CookiesOutInterceptor());

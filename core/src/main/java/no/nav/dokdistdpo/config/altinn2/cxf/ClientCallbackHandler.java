@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.config.cxf;
+package no.nav.dokdistdpo.config.altinn2.cxf;
 
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 

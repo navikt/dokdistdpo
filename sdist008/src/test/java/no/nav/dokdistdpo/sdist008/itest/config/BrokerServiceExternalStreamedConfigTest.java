@@ -1,11 +1,11 @@
 package no.nav.dokdistdpo.sdist008.itest.config;
 
 import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamed;
-import no.nav.dokdistdpo.config.cxf.AbstractCxfEndpointConfig;
-import no.nav.dokdistdpo.config.cxf.ClientCallbackHandler;
-import no.nav.dokdistdpo.config.cxf.interceptor.CookiesInInterceptor;
-import no.nav.dokdistdpo.config.cxf.interceptor.CookiesOutInterceptor;
-import no.nav.dokdistdpo.config.cxf.interceptor.HeaderOutInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.AbstractCxfEndpointConfig;
+import no.nav.dokdistdpo.config.altinn2.cxf.ClientCallbackHandler;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.CookiesInInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.CookiesOutInterceptor;
+import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.HeaderOutInterceptor;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
@@ -30,7 +30,7 @@ public class BrokerServiceExternalStreamedConfigTest extends AbstractCxfEndpoint
 		setAddress("wsdl/BrokerServiceExternalStreamedTest.wsdl");
 		setServiceName(SERVICE);
 		setEndpointName(CustomBindingIBrokerServiceExternalStreamed);
-		setAddress(dokdistdpoProperties.altinn().brokerserviceexternalstreamed().endpointurl());
+		setAddress(dokdistdpoProperties.altinn2().brokerserviceexternalstreamed().endpointurl());
 
 		addFeature(new Http11OnlyFeature());
 
