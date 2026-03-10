@@ -32,9 +32,9 @@ spec:
     - name: DOKDISTDPO_JURIDISKLOGG_URL
       value: {{ DOKDISTDPO_JURIDISKLOGG_URL }}
     - name: DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNAL_ENDPOINTURL
-      value: {{ DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNAL_ENDPOINTURL }}
-    - name: DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNALSTREAMED_ENDPOINTURL
-      value: {{ DOKDISTDPO_ALTINN_BROKERSERVICEEXTERNALSTREAMED_ENDPOINTURL }}
+      value: {{ DOKDISTDPO_ALTINN2_BROKERSERVICEEXTERNAL_ENDPOINTURL }}
+    - name: DOKDISTDPO_ALTINN2_BROKERSERVICEEXTERNALSTREAMED_ENDPOINTURL
+      value: {{ DOKDISTDPO_ALTINN2_BROKERSERVICEEXTERNALSTREAMED_ENDPOINTURL }}
     - name: NAV_VIRKSOMHETSSERTIFIKAT_CREDENTIALS
       value: {{ NAV_VIRKSOMHETSSERTIFIKAT_CREDENTIALS }}
     - name: NAV_VIRKSOMHETSSERTIFIKAT_KEY
@@ -121,3 +121,10 @@ spec:
       rules:
         - application: logging
           namespace: nais-system
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: altinn:broker.write
+        - name: altinn:serviceowner
+        - name: altinn:authentication/systemregister.write
