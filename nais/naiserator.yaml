@@ -121,3 +121,10 @@ spec:
       rules:
         - application: logging
           namespace: nais-system
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: altinn:broker.write
+        - name: altinn:serviceowner
+        - name: altinn:authentication/systemregister.write
