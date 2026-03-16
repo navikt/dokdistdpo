@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.config.cxf.interceptor;
+package no.nav.dokdistdpo.config.altinn2.cxf.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.cxf.binding.soap.saaj.SAAJOutInterceptor;

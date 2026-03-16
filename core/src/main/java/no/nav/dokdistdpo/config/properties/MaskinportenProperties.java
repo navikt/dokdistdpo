@@ -1,5 +1,6 @@
 package no.nav.dokdistdpo.config.properties;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -9,5 +10,7 @@ import org.springframework.validation.annotation.Validated;
 public record MaskinportenProperties(@NotEmpty
 									 String issuer,
 									 @NotEmpty
-									 String tokenEndpoint) {
+									 String tokenEndpoint,
+									 @NotBlank
+									 String scopes) {
 }

@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.config.cxf;
+package no.nav.dokdistdpo.config.altinn2.cxf;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;

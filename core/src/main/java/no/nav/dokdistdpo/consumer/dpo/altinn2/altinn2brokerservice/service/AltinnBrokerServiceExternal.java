@@ -35,7 +35,7 @@ public class AltinnBrokerServiceExternal {
 
 	private static final String INITIATE_BROKER_SERVICE_FEILET = "Kall til IBrokerServiceExternal.initiateBrokerService feilet.";
 	private static final String GET_AVAILABLE_FILES_FEILET = "Kall til IBrokerServiceExternal.getAvailableFiles feilet.";
-	private static final String ALTINN_TESTKALL_FEILET = "Testkall mot altinn feilet.";
+	private static final String ALTINN_TESTKALL_FEILET = "Testkall mot altinn2 feilet.";
 	private static final String CONFIRM_DOWNLOADED_FEILET = "Kall til IBrokerServiceExternal.confirmDownloaded feilet";
 
 

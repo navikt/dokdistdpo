@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.config.cxf.interceptor;
+package no.nav.dokdistdpo.config.altinn2.cxf.interceptor;
 
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;

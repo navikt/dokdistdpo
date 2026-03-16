@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.config.cxf;
+package no.nav.dokdistdpo.config.altinn2.cxf;
 
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import org.apache.cxf.Bus;
@@ -56,12 +56,12 @@ public abstract class AbstractCxfEndpointConfig {
 
 	protected <T> T createPort(Class<T> portType, boolean isStreamed) {
 		factoryBean.setBindingId(SOAP12HTTP_BINDING);
-		DokdistdpoProperties.AltinnProperties altinnProperties = dokdistdpoProperties.altinn();
+		DokdistdpoProperties.Altinn2Properties altinn2Properties = dokdistdpoProperties.altinn2();
 		factoryBean.getFeatures().add(new TimeoutFeature(
-				isStreamed ? altinnProperties.brokerserviceexternalstreamed().connecttimeoutms() :
-						altinnProperties.brokerserviceexternal().connecttimeoutms(),
-				isStreamed ? altinnProperties.brokerserviceexternalstreamed().readtimeoutms() :
-						altinnProperties.brokerserviceexternal().readtimeoutms()));
+				isStreamed ? altinn2Properties.brokerserviceexternalstreamed().connecttimeoutms() :
+						altinn2Properties.brokerserviceexternal().connecttimeoutms(),
+				isStreamed ? altinn2Properties.brokerserviceexternalstreamed().readtimeoutms() :
+						altinn2Properties.brokerserviceexternal().readtimeoutms()));
 		return factoryBean.create(portType);
 	}
 

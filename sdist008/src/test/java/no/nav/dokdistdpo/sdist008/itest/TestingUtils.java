@@ -46,7 +46,7 @@ public final class TestingUtils {
         IOUtils.write("Content-Transfer-Encoding: 8bit\r\n", bos, utf8);
         IOUtils.write("Content-Type: application/xop+xml; charset=UTF-8; type=\"text/xml\"\r\n", bos, utf8);
         IOUtils.write("\r\n", bos, utf8);
-        IOUtils.write(classpathToString("__files/altinn/brokerserviceexternalstreamed/downloadfilestreamed_happy_response.xml"), bos, utf8);
+        IOUtils.write(classpathToString("__files/altinn2/brokerserviceexternalstreamed/downloadfilestreamed_happy_response.xml"), bos, utf8);
         IOUtils.write("\r\n", bos, utf8);
         IOUtils.write("--" + boundary + "\r\n", bos, utf8);
         IOUtils.write("Content-ID: <http://tempuri.org/1/637169441367559832>\r\n", bos, utf8);

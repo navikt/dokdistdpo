@@ -17,7 +17,9 @@ public record DokdistdpoProperties(
 		@Valid
 		ServiceRegistryConfig serviceRegistry,
 		@Valid
-		AltinnProperties altinn,
+		Altinn2Properties altinn2,
+		@Valid
+		Altinn3Properties altinn3,
 		@Valid
 		DpoUserProperties dpo,
 		@Valid
@@ -41,15 +43,21 @@ public record DokdistdpoProperties(
 								@NotBlank String scope) {
 	}
 
-	public record AltinnProperties(
-			AltinnBrokerProperties brokerserviceexternal,
-			AltinnBrokerProperties brokerserviceexternalstreamed,
+	public record Altinn2Properties(
+			Altinn2BrokerProperties brokerserviceexternal,
+			Altinn2BrokerProperties brokerserviceexternalstreamed,
 			@NotBlank String serviceCode,
 			@NotBlank String serviceEditionCode
 	) {
 	}
 
-	public record AltinnBrokerProperties(
+	public record Altinn3Properties(
+			String url,
+			String apiSubscriptionKey
+	) {
+	}
+
+	public record Altinn2BrokerProperties(
 			@NotBlank
 			String endpointurl,
 			@Min(1)
