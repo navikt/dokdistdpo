@@ -1,0 +1,9 @@
+{
+  "id": 101954,
+  "endPoint": "https://dokdigdirhendelser.ekstern.dev.nav.no/webhook/altinn/events",
+  "resourceFilter": "urn:altinn:resource:nav_dokumentdistribusjon_taushetsbelagtpost",
+  "consumer": "/org/nav",
+  "createdBy": "/org/nav",
+  "created": "2026-02-23T12:46:52.519656Z",
+  "validated": false
+}
