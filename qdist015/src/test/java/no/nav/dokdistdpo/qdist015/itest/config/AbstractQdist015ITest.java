@@ -130,7 +130,7 @@ public abstract class AbstractQdist015ITest {
 						.withBodyFile("serviceregistry/serviceregistry_happy_response.json")));
 	}
 
-	public static void stubGetServiceRegistry() {
+	public static void stubGetNotFoundServiceRegistry() {
 		stubFor(get(urlMatching("/serviceregistry/identifier/974761084/process/urn:no:difi:profile:avtalt:avtalt:ver1.0"))
 				.willReturn(aResponse()
 						.withStatus(NOT_FOUND.value())

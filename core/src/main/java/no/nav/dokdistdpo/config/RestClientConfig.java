@@ -2,7 +2,7 @@ package no.nav.dokdistdpo.config;
 
 import no.nav.dokdistdpo.consumer.token.altinn3.Altinn3TokenExchangeConsumer;
 import no.nav.dokdistdpo.consumer.token.altinn3.Altinn3TokenInterceptor;
-import no.nav.dokdistdpo.consumer.token.naistexas.NaisTexasInteceptor;
+import no.nav.dokdistdpo.consumer.token.naistexas.NaisTexasInterceptor;
 import no.nav.dokdistdpo.consumer.token.naistexas.NaisTexasTokenConsumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ public class RestClientConfig {
 	public RestClient texasAuthorizeRestClient(NaisTexasTokenConsumer naisTexasTokenConsumer) {
 		return RestClient.builder()
 				.requestFactory(jdkClientHttpRequestFactory())
-				.requestInterceptor(new NaisTexasInteceptor(naisTexasTokenConsumer))
+				.requestInterceptor(new NaisTexasInterceptor(naisTexasTokenConsumer))
 				.build();
 	}
 

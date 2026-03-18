@@ -1,6 +1,5 @@
 package no.nav.dokdistdpo.qdist015.itest;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dokdistdpo.exception.technical.FileDownloadFromBucketTechnicalException;
 import no.nav.dokdistdpo.qdist015.GCSForsendelseDokument;
 import no.nav.dokdistdpo.qdist015.itest.config.AbstractQdist015ITest;
@@ -18,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
@@ -42,6 +42,9 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("itest")
 class Qdist015RouteIT extends AbstractQdist015ITest {
+
+	private static final String MEDIA_TYPE_SOAP_XML = "application/soap+xml";
+	private static final String MEDIA_TYPE_SOAP_XML_UTF_8 = "application/soap+xml; charset=utf-8";
 
 	@BeforeEach
 	void setUp() {
@@ -97,7 +100,7 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 	void shouldThrowTechnicalExceptionAndToBackoutQueueWhenServiceRegistryFailsWithNotFound() {
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
 		stubPostMaskinporten();
-		stubGetServiceRegistry();
+		stubGetNotFoundServiceRegistry();
 		stubPostOpprettForsendelse(OK);
 		stubPutOppdaterForsendelse(OK);
 
@@ -144,19 +147,19 @@ class Qdist015RouteIT extends AbstractQdist015ITest {
 
 	static void stubUploadBrokerServiceStreamed() {
 		stubFor(post(urlMatching("/brokerserviceexternalstreamed/upload"))
-				.withHeader("Content-Type", WireMock.containing("application/soap+xml"))
+				.withHeader(CONTENT_TYPE, containing(MEDIA_TYPE_SOAP_XML))
 				.willReturn(aResponse()
 						.withStatus(OK.value())
-						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
+						.withHeader(CONTENT_TYPE, MEDIA_TYPE_SOAP_XML_UTF_8)
 						.withBodyFile("altinn2/brokerserviceupload_happy_response.xml")));
 	}
 
 	static void stubUploadBrokerServiceStreamed(HttpStatus status) {
 		stubFor(post(urlMatching("/brokerserviceexternalstreamed/upload"))
-				.withHeader("Content-Type", WireMock.containing("application/soap+xml"))
+				.withHeader(CONTENT_TYPE, containing(MEDIA_TYPE_SOAP_XML))
 				.willReturn(aResponse()
 						.withStatus(status.value())
-						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
+						.withHeader(CONTENT_TYPE, MEDIA_TYPE_SOAP_XML_UTF_8)
 						.withBodyFile("altinn2/brokerserviceuploadfile_fault_response.xml")));
 	}
 

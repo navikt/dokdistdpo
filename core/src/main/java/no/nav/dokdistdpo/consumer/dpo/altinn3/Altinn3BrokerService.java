@@ -40,13 +40,10 @@ public class Altinn3BrokerService {
 		final InputStream sbdZip = dpoMessagePackager.packageMessage(altinnDpoRequest,
 				appCertificate, altinnDpoRequest.dpoMottakerInfo().x509Certificate());
 
-		log.info("Initialiserer Altinn3 broker med konversjonsId={}", forsendelse.konversjonsId());
 		FileTransferInitializeResponseExt fileTransferInitializeResponse = altinn3BrokerClient.intiateFileTransfer(altinn3BrokerMapper.mapInitiateFileTransfer(altinnDpoRequest, sbdZip));
-		log.info("Altinn3 broker initialisert OK. fileTransferId={}, konversjonsId={}", fileTransferInitializeResponse.getFileTransferId(),
-				forsendelse.konversjonsId());
+		log.info("Altinn3 broker initialisert OK. fileTransferId={}", fileTransferInitializeResponse.getFileTransferId());
 
-		log.info("Laster opp til Altinn3 fileTransferId={}, konversjonsId={}", fileTransferInitializeResponse.getFileTransferId(), forsendelse.konversjonsId());
 		FileTransferUploadResponseExt fileTransferUploadResponse = altinn3BrokerClient.uploadFileTransfer(fileTransferInitializeResponse.getFileTransferId(), sbdZip);
-		log.info("Lastet opp OK. fileTransferId={}, konversjonsId={}", fileTransferUploadResponse.getFileTransferId(), forsendelse.konversjonsId());
+		log.info("Lastet opp attachment til Altinn3 med fileTransferId={}", fileTransferUploadResponse.getFileTransferId());
 	}
 }

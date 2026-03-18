@@ -6,7 +6,8 @@ import no.altinn.services.altinn3.domain.FileTransferInitializeResponseExt;
 import no.altinn.services.altinn3.domain.FileTransferUploadResponseExt;
 import no.altinn.services.altinn3.domain.ProblemDetails;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
-import no.nav.dokdistdpo.exception.functional.Altinn3BrokerException;
+import no.nav.dokdistdpo.exception.functional.Altinn3BrokerFunctionalException;
+import no.nav.dokdistdpo.exception.technical.Altinn3BrokerTechnicalException;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
@@ -68,7 +69,7 @@ public class Altinn3BrokerClient {
 					)
 					.body(FileTransferUploadResponseExt.class);
 		} catch (IOException e) {
-			throw new DokdistdpoTechnicalException("Feil ved lesing av inputstream for uploadFileTransfer", e);
+			throw new Altinn3BrokerTechnicalException("Feil ved lesing av inputstream for uploadFileTransfer", e);
 		}
 
 	}
@@ -76,8 +77,8 @@ public class Altinn3BrokerClient {
 	private void handleError(ClientHttpResponse response, String feilmelding) throws IOException {
 		ProblemDetails problemDetails = objectMapper.readValue(response.getBody(), ProblemDetails.class);
 		if (response.getStatusCode().is4xxClientError()) {
-			throw new Altinn3BrokerException(feilmelding.formatted(problemDetails));
+			throw new Altinn3BrokerFunctionalException(feilmelding.formatted(problemDetails));
 		}
-		throw new DokdistdpoTechnicalException(feilmelding.formatted(problemDetails));
+		throw new Altinn3BrokerTechnicalException(feilmelding.formatted(problemDetails));
 	}
 }

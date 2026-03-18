@@ -43,7 +43,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 )
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles({"itest", "altinn3"})
-public class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
+class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 
 	@BeforeEach
 	void setUp() {
@@ -100,7 +100,7 @@ public class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 	void shouldThrowTechnicalExceptionAndSendToBackoutQueueWhenServiceRegistryReturnsNotFound() {
 		stubGetForsendelse("__files/dokdistadmin/hentforsendelse-happy.json");
 		stubPostMaskinporten();
-		stubGetServiceRegistry();
+		stubGetNotFoundServiceRegistry();
 		stubPostOpprettForsendelse(OK);
 		stubPutOppdaterForsendelse(OK);
 

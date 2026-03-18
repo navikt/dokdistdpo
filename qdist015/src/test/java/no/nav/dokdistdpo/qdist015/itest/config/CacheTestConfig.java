@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static no.nav.dokdistdpo.config.cache.LocalCacheConfig.ALTINN3_TOKEN_CACHE;
 import static no.nav.dokdistdpo.config.cache.LocalCacheConfig.MASKINPORTEN_CACHE;
 
 @Configuration
@@ -26,6 +27,10 @@ public class CacheTestConfig {
 				new CaffeineCache(MASKINPORTEN_CACHE, Caffeine.newBuilder()
 						.expireAfterWrite(0, MINUTES)
 						.maximumSize(0)
+						.build()),
+				new CaffeineCache(ALTINN3_TOKEN_CACHE, Caffeine.newBuilder()
+						.expireAfterWrite(0, MINUTES)
+						.recordStats()
 						.build())
 		));
 		return manager;
