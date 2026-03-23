@@ -26,7 +26,7 @@
 	<properties>
 		<java.version>25</java.version>
 
-		<nimbus-jose-jwt.version>10.7</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
 		<com.ibm.mq.jakarta.client.version>9.4.5.0</com.ibm.mq.jakarta.client.version>
 		<camel-spring-boot-bom.version>4.18.0</camel-spring-boot-bom.version>
 		<cxf-bom.version>4.2.0</cxf-bom.version>
