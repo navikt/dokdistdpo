@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.altinn3;
 
 import lombok.extern.slf4j.Slf4j;
+import no.altinn.services.altinn3.domain.FileTransferInitalizeExt;
 import no.altinn.services.altinn3.domain.FileTransferInitializeResponseExt;
 import no.altinn.services.altinn3.domain.FileTransferUploadResponseExt;
 import no.nav.dokdistdpo.certificate.AppCertificate;
@@ -10,6 +11,7 @@ import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
@@ -37,13 +39,28 @@ public class Altinn3BrokerService {
 		log.info("Hentet mottakerNavn={} for {}. konversjonsId={}", forsendelse.organisasjonsnavn(),
 				forsendelse.mottakerId(), forsendelse.konversjonsId());
 
-		final InputStream sbdZip = dpoMessagePackager.packageMessage(altinnDpoRequest,
-				appCertificate, altinnDpoRequest.dpoMottakerInfo().x509Certificate());
+		final byte[] sbdZip = packageMessageAsBytes(altinnDpoRequest);
 
-		FileTransferInitializeResponseExt fileTransferInitializeResponse = altinn3BrokerClient.intiateFileTransfer(altinn3BrokerMapper.mapInitiateFileTransfer(altinnDpoRequest, sbdZip));
+		FileTransferInitalizeExt fileTransferInitalizeExt = altinn3BrokerMapper.mapInitiateFileTransfer(altinnDpoRequest, sbdZip);
+
+		FileTransferInitializeResponseExt fileTransferInitializeResponse = altinn3BrokerClient.intiateFileTransfer(fileTransferInitalizeExt);
 		log.info("Altinn3 broker initialisert OK. fileTransferId={}", fileTransferInitializeResponse.getFileTransferId());
 
-		FileTransferUploadResponseExt fileTransferUploadResponse = altinn3BrokerClient.uploadFileTransfer(fileTransferInitializeResponse.getFileTransferId(), sbdZip);
+		FileTransferUploadResponseExt fileTransferUploadResponse = altinn3BrokerClient.uploadFileTransfer(
+				fileTransferInitializeResponse.getFileTransferId(),
+				sbdZip);
 		log.info("Lastet opp attachment til Altinn3 med fileTransferId={}", fileTransferUploadResponse.getFileTransferId());
 	}
+
+	private byte[] packageMessageAsBytes(AltinnDpoRequest altinnDpoRequest) {
+		try (InputStream sbdZip = dpoMessagePackager.packageMessage(
+				altinnDpoRequest,
+				appCertificate,
+				altinnDpoRequest.dpoMottakerInfo().x509Certificate())) {
+			return sbdZip.readAllBytes();
+		} catch (IOException e) {
+			throw new DokdistdpoTechnicalException("Kunne ikke pakke melding for Altinn3", e);
+		}
+	}
+
 }

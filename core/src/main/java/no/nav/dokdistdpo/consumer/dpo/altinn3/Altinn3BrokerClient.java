@@ -16,12 +16,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
-import static org.springframework.util.StreamUtils.copyToByteArray;
 
 @Component
 public class Altinn3BrokerClient {
@@ -56,21 +54,19 @@ public class Altinn3BrokerClient {
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public FileTransferUploadResponseExt uploadFileTransfer(UUID fileTransferId, InputStream inputStream) {
-		try {
-			return altinn3AuthorizeRestClient.post()
-					.uri("/broker/api/v1/filetransfer/{fileTransferId}/upload", fileTransferId)
-					.accept(APPLICATION_JSON)
-					.contentType(APPLICATION_OCTET_STREAM)
-					.body(copyToByteArray(inputStream))
-					.retrieve()
-					.onStatus(HttpStatusCode::isError, (reg, res) ->
-							handleError(res, "uploadFileTransfer feilet med feilmelding=%s")
-					)
-					.body(FileTransferUploadResponseExt.class);
-		} catch (IOException e) {
-			throw new Altinn3BrokerTechnicalException("Feil ved lesing av inputstream for uploadFileTransfer", e);
-		}
+	public FileTransferUploadResponseExt uploadFileTransfer(UUID fileTransferId,
+															byte[] sbdZipAsBytes) {
+
+		return altinn3AuthorizeRestClient.post()
+				.uri("/broker/api/v1/filetransfer/{fileTransferId}/upload", fileTransferId)
+				.accept(APPLICATION_JSON)
+				.contentType(APPLICATION_OCTET_STREAM)
+				.body(sbdZipAsBytes)
+				.retrieve()
+				.onStatus(HttpStatusCode::isError, (reg, res) ->
+						handleError(res, "uploadFileTransfer feilet med feilmelding=%s")
+				)
+				.body(FileTransferUploadResponseExt.class);
 
 	}
 
