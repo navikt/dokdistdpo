@@ -4,8 +4,8 @@ import java.util.regex.Pattern;
 
 public final class Organisasjonsnummer {
 
-	static final Pattern ISO6523_PATTERN = Pattern.compile("^([0-9]{4}:)([0-9]{9})$");
-	public static final String ISO6523_AUTHORITY = "iso6523-actorid-upis";
+	static final Pattern ISO6523_PATTERN = Pattern.compile("^(\\d{4}:)(\\d{9})$");
+	public static final String ISO6523_ORG_AUTHORITY = "iso6523-actorid-upis";
 	public static final String ISO6523_PREFIX = "0192:";
 
 	public static String asIso6523(final String orgNummer) {

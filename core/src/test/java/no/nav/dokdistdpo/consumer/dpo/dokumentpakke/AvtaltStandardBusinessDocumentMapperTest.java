@@ -16,7 +16,7 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MESSAGE_CHANNEL_INST
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType.DPO_AVTALEMELDING;
-import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
+import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_ORG_AUTHORITY;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.map.AvtaltStandardBusinessDocumentMapper.DOKUMENTIDENTIFICATION_TYPE_AVTALTMELDING;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.map.AvtaltStandardBusinessDocumentMapper.SCOPE_MESSAGECHANELL_IDENTIFIER;
 import static no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.map.AvtaltStandardBusinessDocumentMapper.TYPE_VERSION;
@@ -40,12 +40,12 @@ class AvtaltStandardBusinessDocumentMapperTest {
 		assertThat(sbdh.getHeaderVersion()).isEqualTo(AvtaltStandardBusinessDocumentMapper.HEADER_VERSION);
 
 		assertThat(sbdh.getSender()).extracting(Partner::getIdentifier)
-				.extracting(PartnerIdentification::getAuthority).contains(ISO6523_AUTHORITY);
+				.extracting(PartnerIdentification::getAuthority).contains(ISO6523_ORG_AUTHORITY);
 		assertThat(sbdh.getSender()).extracting(Partner::getIdentifier)
 				.extracting(PartnerIdentification::getValue).contains(Organisasjonsnummer.asIso6523(NAV_ORGNUMMER));
 
 		assertThat(sbdh.getReceiver()).extracting(Partner::getIdentifier)
-				.extracting(PartnerIdentification::getAuthority).contains(ISO6523_AUTHORITY);
+				.extracting(PartnerIdentification::getAuthority).contains(ISO6523_ORG_AUTHORITY);
 		assertThat(sbdh.getReceiver()).extracting(Partner::getIdentifier)
 				.extracting(PartnerIdentification::getValue)
 				.contains(Organisasjonsnummer.asIso6523(MOTTAKER_ID));
