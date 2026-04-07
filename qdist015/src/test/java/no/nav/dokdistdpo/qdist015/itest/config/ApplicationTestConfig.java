@@ -8,6 +8,7 @@ import no.nav.dokdistdpo.certificate.KeyStoreProperties;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.config.properties.DokdistmellomlagerProperties;
 import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
+import no.nav.dokdistdpo.config.properties.NaisTexasProperties;
 import no.nav.dokdistdpo.consumer.gcloudstorage.EncryptedBucketStorage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,8 @@ import static org.mockito.Mockito.mock;
 		DokdistmellomlagerProperties.class,
 		AzureProperties.class,
 		KeyStoreProperties.class,
-		MaskinportenProperties.class
+		MaskinportenProperties.class,
+		NaisTexasProperties.class
 })
 @Import({
 		CoreConfig.class,
