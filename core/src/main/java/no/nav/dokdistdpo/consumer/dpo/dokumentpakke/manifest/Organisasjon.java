@@ -9,7 +9,7 @@ import jakarta.xml.bind.annotation.XmlValue;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_AUTHORITY;
+import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_ORG_AUTHORITY;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_PREFIX;
 
 @Data
@@ -26,7 +26,7 @@ public class Organisasjon {
 	private String orgnummer;
 
 	public Organisasjon(String orgnummer) {
-		this.authority = ISO6523_AUTHORITY;
+		this.authority = ISO6523_ORG_AUTHORITY;
 		this.orgnummer = ISO6523_PREFIX + orgnummer;
 	}
 }

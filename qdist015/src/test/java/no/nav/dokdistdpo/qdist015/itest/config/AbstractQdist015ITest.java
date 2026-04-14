@@ -1,49 +1,52 @@
 package no.nav.dokdistdpo.qdist015.itest.config;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
+import jakarta.xml.bind.JAXBElement;
 import lombok.SneakyThrows;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
+import no.nav.dokdistdpo.consumer.gcloudstorage.EncryptedBucketStorage;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeEach;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.jms.core.JmsTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static no.nav.dokdistdpo.constant.DokdistdpoConstant.AVTALTMELDING_PROCESS_IDENTIFIER;
+import static no.nav.dokdistdpo.constant.MDCConstant.CALL_ID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
-@ActiveProfiles("itest")
-@EnableAutoConfiguration
-@AutoConfigureWireMock(port = 0)
-@SpringBootTest(
-		classes = {ApplicationTestConfig.class},
-		webEnvironment = RANDOM_PORT)
+@Profile("itest")
 public abstract class AbstractQdist015ITest {
 
 	protected static final String FORSENDELSE_ID = "333333";
 	protected static final String BASE_DOKDISTADMIN_PATH = "/administrerforsendelse";
 	protected static final String OPPDATERFORSENDELSE_URL = BASE_DOKDISTADMIN_PATH + "/oppdaterforsendelse";
-	public static final String FEILREGISTRERFORSENDELSE_URL = BASE_DOKDISTADMIN_PATH + "/feilregistrerforsendelse";
 	public static final String DOKUMENT_OBJEKT_REFERANSE_HOVEDDOK = "dokumentObjektReferanseHoveddok";
 	public static final String DOKUMENT_OBJEKT_REFERANSE_VEDLEGG1 = "dokumentObjektReferanseVedlegg1";
 	public static final String DOKUMENT_OBJEKT_REFERANSE_VEDLEGG2 = "dokumentObjektReferanseVedlegg2";
@@ -52,42 +55,24 @@ public abstract class AbstractQdist015ITest {
 	public static final String VEDLEGG2_TEST_CONTENT = "VEDLEGG2_TEST_CONTENT";
 	public static final String TRYGDERETTEN_ORGNUMMER = "974761084";
 
-	protected static String callId;
+	protected static String callId = UUID.randomUUID().toString();
 
 	@Autowired
-	private DokdistdpoProperties dokdistdpoProperties;
+	protected DokdistdpoProperties dokdistdpoProperties;
 
-	@BeforeEach
-	void setUp() {
-		callId = UUID.randomUUID().toString();
-	}
+	@Autowired
+	protected EncryptedBucketStorage encryptedBucketStorage;
 
-	protected void stubPostIntiateBrokerService() {
-		stubFor(post(urlMatching("/brokerserviceexternal"))
-				.willReturn(aResponse()
-						.withStatus(OK.value())
-						.withHeader(CONTENT_TYPE, APPLICATION_XML_VALUE)
-						.withBody(classpathToString("__files/altinn2/brokerserviceinit_happy_response.xml").replace("localurl",
-								dokdistdpoProperties.altinn2().brokerserviceexternal().endpointurl()))));
-	}
-
-	protected static void stubUploadBrokerServiceStreamed() {
-		stubFor(post(urlMatching("/brokerserviceexternalstreamed/upload"))
-				.withHeader("Content-Type", WireMock.containing("application/soap+xml"))
-				.willReturn(aResponse()
-						.withStatus(OK.value())
-						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
-						.withBodyFile("altinn2/brokerserviceupload_happy_response.xml")));
-	}
-
-	protected static void stubUploadBrokerServiceStreamed(HttpStatus status) {
-		stubFor(post(urlMatching("/brokerserviceexternalstreamed/upload"))
-				.withHeader("Content-Type", WireMock.containing("application/soap+xml"))
-				.willReturn(aResponse()
-						.withStatus(status.value())
-						.withHeader(CONTENT_TYPE, "application/soap+xml; charset=utf-8")
-						.withBodyFile("altinn2/brokerserviceuploadfile_fault_response.xml")));
-	}
+	@Autowired
+	protected Queue qdist015;
+	@Autowired
+	protected Queue qdist015FunksjonellFeil;
+	@Autowired
+	protected Queue qdist009;
+	@Autowired
+	protected Queue backoutQueue;
+	@Autowired
+	protected JmsTemplate jmsTemplate;
 
 	protected static void stubPutOppdaterForsendelse(HttpStatus status) {
 		stubFor(put(urlMatching(OPPDATERFORSENDELSE_URL))
@@ -137,12 +122,6 @@ public abstract class AbstractQdist015ITest {
 								.replace("insertCallIdHere", callId).replace("forsendelseStatus", forsendelseStatus))));
 	}
 
-	public void stubPutFeilregistrerforsendelse(int httpStatusValue) {
-		stubFor(put(FEILREGISTRERFORSENDELSE_URL)
-				.willReturn(aResponse()
-						.withStatus(httpStatusValue)));
-	}
-
 	public static void stubGetServiceRegistry(HttpStatus status) {
 		stubFor(get(urlMatching("/serviceregistry/identifier/974761084/process/urn:no:difi:profile:avtalt:avtalt:ver1.0"))
 				.willReturn(aResponse()
@@ -151,7 +130,7 @@ public abstract class AbstractQdist015ITest {
 						.withBodyFile("serviceregistry/serviceregistry_happy_response.json")));
 	}
 
-	public static void stubGetServiceRegistry() {
+	public static void stubGetNotFoundServiceRegistry() {
 		stubFor(get(urlMatching("/serviceregistry/identifier/974761084/process/urn:no:difi:profile:avtalt:avtalt:ver1.0"))
 				.willReturn(aResponse()
 						.withStatus(NOT_FOUND.value())
@@ -172,7 +151,7 @@ public abstract class AbstractQdist015ITest {
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-						.withBody(classpathToString("__files/maskinporten/maskinporten_happy_response.json"))));
+						.withBodyFile("maskinporten/maskinporten_happy_response.json")));
 	}
 
 	@SneakyThrows
@@ -185,5 +164,66 @@ public abstract class AbstractQdist015ITest {
 		} catch (IOException e) {
 			throw new IOException(format("Kunne ikke åpne classpath-ressurs %s", classpathResource), e);
 		}
+	}
+
+	public void sendStringMessage(Queue queue, final String message) {
+		jmsTemplate.send(queue, session -> {
+			TextMessage msg = session.createTextMessage();
+			msg.setText(message);
+			if (MDC.get(CALL_ID) != null) {
+				msg.setStringProperty(CALL_ID, callId);
+			}
+			return msg;
+		});
+	}
+
+	protected void verifyAltinnUploadWithPostProcessing() {
+		verifyGetForsendelse();
+		verifyServiceRegistry();
+		verifyPostIntiateBrokerService();
+		verifyPostUploadBrokerServiceStreamed();
+		verifyPostJuridiskLoggLagre();
+		verifyPutAdministrerforsendelse();
+	}
+
+	protected void verifyPostIntiateBrokerService() {
+		verify(postRequestedFor(urlMatching("/brokerserviceexternal")));
+	}
+
+	protected void verifyPostUploadBrokerServiceStreamed() {
+		verify(postRequestedFor(urlEqualTo("/brokerserviceexternalstreamed/upload")));
+	}
+
+	protected void verifyPostJuridiskLoggLagre() {
+		verify(postRequestedFor(urlEqualTo("/juridisklogg/api/rest/logg")));
+	}
+
+	protected void verifyServiceRegistry() {
+		verify(getRequestedFor(urlMatching("/serviceregistry/identifier/" + TRYGDERETTEN_ORGNUMMER + "/process/" + AVTALTMELDING_PROCESS_IDENTIFIER)));
+	}
+
+	protected void verifyPutAdministrerforsendelse() {
+		verify(putRequestedFor(urlMatching(OPPDATERFORSENDELSE_URL))
+				.withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE)));
+	}
+
+	protected void verifyGetForsendelse() {
+		verify(getRequestedFor(urlMatching(BASE_DOKDISTADMIN_PATH + "/" + FORSENDELSE_ID)));
+	}
+
+	protected void assertMessageOnQueue(Queue queue) {
+		String message = receive(queue);
+		assertNotNull(message);
+		assertEquals(message, classpathToString("__files/qdist015/qdist015-happy.xml"));
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private <T> T receive(Queue queue) {
+		Object response = jmsTemplate.receiveAndConvert(queue);
+		if (response instanceof JAXBElement) {
+			response = ((JAXBElement) response).getValue();
+		}
+		return (T) response;
 	}
 }

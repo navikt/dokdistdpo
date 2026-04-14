@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Configuration
@@ -20,6 +21,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class LocalCacheConfig {
 
 	public static final String MASKINPORTEN_CACHE = "maskinportenCache";
+	public static final String ALTINN3_TOKEN_CACHE = "altinn3TokenCache";
 
 	@Bean
 	@Primary
@@ -28,6 +30,10 @@ public class LocalCacheConfig {
 		cacheManager.setCaches(List.of(
 				new CaffeineCache(MASKINPORTEN_CACHE, Caffeine.newBuilder()
 						.expireAfterWrite(100, SECONDS)
+						.recordStats()
+						.build()),
+				new CaffeineCache(ALTINN3_TOKEN_CACHE, Caffeine.newBuilder()
+						.expireAfterWrite(25, MINUTES)
 						.recordStats()
 						.build())
 		));

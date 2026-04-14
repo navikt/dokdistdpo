@@ -26,19 +26,20 @@
 	<properties>
 		<java.version>25</java.version>
 
-		<nimbus-jose-jwt.version>10.7</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
 		<com.ibm.mq.jakarta.client.version>9.4.5.0</com.ibm.mq.jakarta.client.version>
 		<camel-spring-boot-bom.version>4.18.0</camel-spring-boot-bom.version>
 		<cxf-bom.version>4.2.0</cxf-bom.version>
-		<jaxws-ri.version>4.0.3</jaxws-ri.version>
+		<jaxws-ri.version>4.0.4</jaxws-ri.version>
 		<commons-lang3.version>3.20.0</commons-lang3.version>
 		<commons-io.version>2.21.0</commons-io.version>
 		<bouncycastle.version>1.82</bouncycastle.version>
 		<dok-common-util.version>1.6.0</dok-common-util.version>
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
-		<libraries-bom.version>26.77.0</libraries-bom.version>
+		<libraries-bom.version>26.78.0</libraries-bom.version>
 		<tink.version>1.20.0</tink.version>
 		<tink-gcpkms.version>1.10.0</tink-gcpkms.version>
+		<jackson-databind-nullable.version>0.2.9</jackson-databind-nullable.version>
 
 		<commons-asic.version>1.0.2</commons-asic.version>
 		<dok-legacy-tjenestespesifikasjoner.version>41-d282678</dok-legacy-tjenestespesifikasjoner.version>
@@ -47,6 +48,7 @@
 		<spring-cloud-contract-wiremock.version>4.3.0</spring-cloud-contract-wiremock.version>
 
 		<!-- Plugins -->
+		<openapi-generator-maven-plugin.version>7.19.0</openapi-generator-maven-plugin.version>
 		<maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
 	</properties>
 
@@ -177,6 +179,12 @@
 				<version>${bouncycastle.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.openapitools</groupId>
+				<artifactId>jackson-databind-nullable</artifactId>
+				<version>${jackson-databind-nullable.version}</version>
+			</dependency>
+
 			<!-- test -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
@@ -195,6 +203,15 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.openapitools</groupId>
+					<artifactId>openapi-generator-maven-plugin</artifactId>
+					<version>${openapi-generator-maven-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

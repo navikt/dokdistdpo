@@ -52,8 +52,11 @@ public record DokdistdpoProperties(
 	}
 
 	public record Altinn3Properties(
+			@NotBlank
 			String url,
-			String apiSubscriptionKey
+			@NotBlank
+			String apiSubscriptionKey,
+			boolean enabled
 	) {
 	}
 
