@@ -130,3 +130,4 @@ spec:
         - name: altinn:broker.write
         - name: altinn:serviceowner
         - name: altinn:authentication/systemregister.write
+        - name: altinn:authentication/systemuser.request.write

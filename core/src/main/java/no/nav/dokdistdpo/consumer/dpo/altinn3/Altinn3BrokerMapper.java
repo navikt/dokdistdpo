@@ -14,7 +14,7 @@ public class Altinn3BrokerMapper {
 
 	private static final String FILE_NAME = "sbd.zip";
 	private static final String ALTINN3_ORGANISASJON_IDENTIFIER = "urn:altinn:organization:identifier-no:";
-	private static final String RESOURCE_ID = "eformidling-dpo-meldingsutveksling";
+	public static final String RESOURCE_ID = "eformidling-dpo-meldingsutveksling";
 
 	public FileTransferInitalizeExt mapInitiateFileTransfer(AltinnDpoRequest altinnDpoRequest, byte[] sbdZip) {
 		return FileTransferInitalizeExt.builder()

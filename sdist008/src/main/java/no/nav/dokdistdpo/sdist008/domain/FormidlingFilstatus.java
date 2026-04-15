@@ -1,6 +1,6 @@
 package no.nav.dokdistdpo.sdist008.domain;
 
-public enum DpoKvitteringStatus {
+public enum FormidlingFilstatus {
 	OPPRETTET,
 	SENDT,
 	MOTTATT,

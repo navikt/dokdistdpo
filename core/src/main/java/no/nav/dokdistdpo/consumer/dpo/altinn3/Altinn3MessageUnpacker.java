@@ -1,14 +1,10 @@
-package no.nav.dokdistdpo.consumer.dpo.packaging;
+package no.nav.dokdistdpo.consumer.dpo.altinn3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.AltinnDokument;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.xml.BrokerServiceManifest;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.AltinnDokument;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn;
 import no.nav.dokdistdpo.exception.functional.DokumentUnpackingException;
 import no.nav.dokdistdpo.utils.AutoCloseableTempFile;
 import org.apache.commons.io.FileUtils;
@@ -23,20 +19,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dokdistdpo.constant.DokdistdpoConstant.MANIFEST_XML;
 import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SBD_JSON;
 
 @Slf4j
 @Component
-public class DpoMessageUnpacker {
+public class Altinn3MessageUnpacker {
 
 	private static final String TEMPFILE_EXCEPTION = "Feil ved innlesing/kopiering av inputStream til temporær fil";
-	private static final String UNMARSHALLING_EXCEPTION = "Feil ved unmarshalling av fil med filreferanse: ";
+	private static final String DESERIALISERE_EXCEPTION = "Kunne ikke deserialisere fil med filreferanse: ";
 	private static final String MESSAGE_CHANNEL = "dokdistdpo";
 
 	private final ObjectMapper objectMapper;
 
-	public DpoMessageUnpacker(ObjectMapper objectMapper) {
+	public Altinn3MessageUnpacker(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
@@ -64,36 +59,25 @@ public class DpoMessageUnpacker {
 	}
 
 	private AltinnDokument buildAltinnDokumentFromTempFile(File tempFile, String fileReference) {
-		BrokerServiceManifest manifest = null;
-		DpoKvitteringMelding dpoKvitteringMelding = null;
-
 		try (ZipFile zipFile = new ZipFile(tempFile)) {
+			DpoKvitteringMelding dpoKvitteringMelding = null;
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();  // entries = manifest.xml || sbd.json
 			while (entries.hasMoreElements()) {
 				ZipEntry zipEntry = entries.nextElement();
 				final InputStream inputStream = zipFile.getInputStream(zipEntry);
-				if (MANIFEST_XML.equals(zipEntry.getName())) {
-					manifest = unmarshalXmlObject(inputStream);
-				} else if (SBD_JSON.equals(zipEntry.getName())) {
+				if (SBD_JSON.equals(zipEntry.getName())) {
 					dpoKvitteringMelding = objectMapper.readValue(inputStream, DpoKvitteringMelding.class);
 				} else {
 					log.info("Hopper over fil: {}", zipFile.getName());
 				}
 			}
-		} catch (JAXBException | IOException e) {
-			log.error(UNMARSHALLING_EXCEPTION + "{}", fileReference, e);
-			throw new DokumentUnpackingException(UNMARSHALLING_EXCEPTION + fileReference, e);
+			return AltinnDokument.builder()
+					.fileReference(fileReference)
+					.dpoKvitteringMelding(dpoKvitteringMelding)
+					.build();
+		} catch (IOException e) {
+			log.error(DESERIALISERE_EXCEPTION + "{}", fileReference, e);
+			throw new DokumentUnpackingException(DESERIALISERE_EXCEPTION + fileReference, e);
 		}
-		return AltinnDokument.builder()
-				.fileReference(fileReference)
-				.manifest(manifest)
-				.dpoKvitteringMelding(dpoKvitteringMelding)
-				.build();
-	}
-
-	private static BrokerServiceManifest unmarshalXmlObject(InputStream inputStream) throws JAXBException {
-		JAXBContext context = JAXBContext.newInstance(BrokerServiceManifest.class);
-		Unmarshaller unmarshal = context.createUnmarshaller();
-		return  (BrokerServiceManifest) unmarshal.unmarshal(inputStream);
 	}
 }

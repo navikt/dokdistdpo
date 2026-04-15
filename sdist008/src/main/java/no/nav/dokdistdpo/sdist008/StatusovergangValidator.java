@@ -3,12 +3,12 @@ package no.nav.dokdistdpo.sdist008;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse.Forsendelse;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
-import no.nav.dokdistdpo.sdist008.domain.DpoKvitteringStatus;
+import no.nav.dokdistdpo.sdist008.domain.FormidlingFilstatus;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static no.nav.dokdistdpo.sdist008.domain.DpoKvitteringStatus.OPPRETTET;
+import static no.nav.dokdistdpo.sdist008.domain.FormidlingFilstatus.OPPRETTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.EKSPEDERT;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.OVERSENDT;
@@ -31,13 +31,13 @@ public class StatusovergangValidator {
 		}
 	}
 
-	public static boolean isForsendelseIkkeEkspedert(Forsendelse forsendelse, DownloadResponse downloadResponse) {
+	public static boolean isForsendelseEkspedert(Forsendelse forsendelse, DownloadResponse downloadResponse) {
 		return downloadResponse.conversationId().equals(forsendelse.konversasjonId()) &&
-				!EKSPEDERT.name().equals(forsendelse.forsendelseStatus());
+				EKSPEDERT.name().equals(forsendelse.forsendelseStatus());
 	}
 
 	private static boolean isUkjentKvitteringStatus(String forsendelseStatus, String kvitteringStatus) {
-		return OVERSENDT_BEKREFTET_STATUS.contains(forsendelseStatus) && Stream.of(DpoKvitteringStatus.values())
+		return OVERSENDT_BEKREFTET_STATUS.contains(forsendelseStatus) && Stream.of(FormidlingFilstatus.values())
 				.noneMatch(k -> k.name().equals(kvitteringStatus));
 	}
 

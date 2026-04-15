@@ -1,0 +1,143 @@
+package no.nav.dokdistdpo.sdist008.altinn3;
+
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse;
+import no.nav.dokdistdpo.consumer.dpo.altinn3.Altinn3BrokerClient;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.KvitteringStatus;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
+import no.nav.dokdistdpo.sdist008.DokdistForsendelseService;
+import no.nav.dokdistdpo.sdist008.ForsendelseStatusEndringer;
+import no.nav.dokdistdpo.sdist008.domain.FormidlingFilstatus;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseEkspedert;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.validerForsendelseOgDpoKvitteringStatus;
+import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
+import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+@Slf4j
+@Component
+public class Sdist008Altinn3Service {
+
+	private static final String HENT_KVITTERING = "sdist008 hentet filstatus status med status={}. ";
+	private static final String AVSLUTTET_BEHANDLING = "Sdist008 hentet filstatus fra altinn3 med status={}, jobben avsluttes uten videre handling for forsendelse:{}.";
+
+	private final Altinn3BrokerClient altinn3BrokerClient;
+	private final Altinn3FileStatusService altinn3FileStatusService;
+	private final DokdistForsendelseService dokdistForsendelseService;
+
+	public Sdist008Altinn3Service(Altinn3BrokerClient altinn3BrokerClient,
+								  Altinn3FileStatusService altinn3FileStatusService,
+								  DokdistForsendelseService dokdistForsendelseService) {
+		this.altinn3BrokerClient = altinn3BrokerClient;
+		this.altinn3FileStatusService = altinn3FileStatusService;
+		this.dokdistForsendelseService = dokdistForsendelseService;
+	}
+
+	public void oppdaterForsendelseMedFilstatusFraAltinn3Formidling() {
+		ForsendelseStatusEndringer forsendelseStatusEndringer = new ForsendelseStatusEndringer();
+
+		List<HentEformidlingforsendelserResponse.Forsendelse> forsendelser = dokdistForsendelseService.hentUekspederteDpoForsendelser();
+		Map<String, HentEformidlingforsendelserResponse.Forsendelse> uekspederteDpoForsendelser = dokdistForsendelseService.mapUekspederteDpoForsendelse(forsendelser);
+		log.info("Sdist008 hentet antall={} uekspederte DPO forsendelser fra dokdistadmin", uekspederteDpoForsendelser.size());
+
+		if (isEmpty(uekspederteDpoForsendelser)) {
+			log.info("Ingen uekspederte forsendelser funnet for avstemming. Avstemming av DPO forsendelser avsluttes.");
+			return;
+		}
+
+		for (DownloadResponse downloadResponse : altinn3FileStatusService.hentAltinn3FormidlingFilStatus()) {
+			behandleForsendelseOgFilstatusFraAltinn3Formidling(downloadResponse, uekspederteDpoForsendelser, forsendelseStatusEndringer);
+		}
+		log.info("Sdist008 har oppdatert forsendelser med statusEndringer: {}", forsendelseStatusEndringer);
+	}
+
+	private void behandleForsendelseOgFilstatusFraAltinn3Formidling(DownloadResponse downloadResponse,
+																	Map<String, HentEformidlingforsendelserResponse.Forsendelse> uekspederteDpoForsendelser,
+																	ForsendelseStatusEndringer forsendelseStatusEndringer) {
+		String konversasjonId = downloadResponse.conversationId();
+		log.info("Hentet formidling filstatus fra Altinn3 med konversasjonsId={}, filstatus={}",
+				konversasjonId, downloadResponse.kvitteringStatus());
+
+		HentEformidlingforsendelserResponse.Forsendelse forsendelse = uekspederteDpoForsendelser.get(konversasjonId);
+		if (forsendelse == null) {
+			log.warn("Altinn3 formidling kvitteringen finnnes ikke i oversikten over uekspederte forsendelser. konversasjonsId={}, downloadResponse={}",
+					konversasjonId, downloadResponse);
+			return;
+		}
+
+		behandleForsendelse(forsendelse, downloadResponse, forsendelseStatusEndringer);
+	}
+
+	private void behandleForsendelse(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
+		try {
+			if (isForsendelseEkspedert(forsendelse, downloadResponse)) {
+				log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse={}. Ingen handling foretas.",
+						downloadResponse.conversationId(), forsendelse);
+				return;
+			}
+
+			log.info("Sdist008 behandler forsendelse={}", forsendelse);
+			KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
+
+			if (kvitteringStatus == null) {
+				log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
+				altinn3BrokerClient.confirmDownload(downloadResponse.fileReference());
+				return;
+			}
+
+			String kvitteringStatusKode = kvitteringStatus.getStatus();
+			validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatusKode);
+
+			Optional<FormidlingFilstatus> dpoKvitteringStatus = parseKvitteringStatus(kvitteringStatusKode, forsendelse);
+			dpoKvitteringStatus.ifPresent(status -> mapFraDpoOgOppdaterForsendelseStatus(status, forsendelse, endringer));
+
+			altinn3BrokerClient.confirmDownload(downloadResponse.fileReference());
+		} catch (Exception e) {
+			log.error("sdist008 avvik har oppstått ved behandling av forsendelse={}. Ingen statusoppdatering er gjort. Feilmelding={}",
+					forsendelse, e.getMessage(), e);
+		}
+	}
+
+	private Optional<FormidlingFilstatus> parseKvitteringStatus(String kvitteringStatus,
+																HentEformidlingforsendelserResponse.Forsendelse forsendelse) {
+		try {
+			return Optional.of(FormidlingFilstatus.valueOf(kvitteringStatus));
+		} catch (IllegalArgumentException _) {
+			log.warn("Ukjent kvitteringsstatus mottatt. forsendelseId={}, kvitteringStatus={}", forsendelse.forsendelseId(), kvitteringStatus);
+			return Optional.empty();
+		}
+	}
+
+	private void mapFraDpoOgOppdaterForsendelseStatus(FormidlingFilstatus formidlingFilStatus,
+													  HentEformidlingforsendelserResponse.Forsendelse forsendelse,
+													  ForsendelseStatusEndringer forsendelseStatusEndringer) {
+
+		Long forsendelseId = Long.valueOf(forsendelse.forsendelseId());
+		String kvitteringStatus = formidlingFilStatus.name();
+
+		switch (formidlingFilStatus) {
+			case OPPRETTET, MOTTATT, FAIL -> log.info(AVSLUTTET_BEHANDLING, kvitteringStatus, forsendelse);
+			case SENDT -> {
+				log.info("sdist008 hentet DPO-kvitteringer med filstatus={}. Forsendelser med forsendelseIder: ({}) oppdateres til BEKREFTET", kvitteringStatus, forsendelse);
+				dokdistForsendelseService.oppdaterForsendelse(forsendelseId, BEKREFTET.name());
+				forsendelseStatusEndringer.bekreftet().add(forsendelseId);
+			}
+			case LEVERT, LEST -> {
+				log.info(HENT_KVITTERING + "Forsendelse med ({}) oppdateres til EKSPEDERT", kvitteringStatus, forsendelse);
+				dokdistForsendelseService.oppdatereForsendelseTilEkspedert(forsendelseId, kvitteringStatus);
+				forsendelseStatusEndringer.ekspedert().add(forsendelseId);
+			}
+			case LEVETID_UTLOPT -> {
+				log.info("sdist008 avvik har oppstått med filstatus={}. Forsendelse med ({}) settes til FEILET", kvitteringStatus, forsendelse);
+				dokdistForsendelseService.oppdaterForsendelse(forsendelseId, FEILET.name());
+				forsendelseStatusEndringer.feilet().add(forsendelseId);
+			}
+		}
+	}
+}

@@ -41,7 +41,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 		classes = {ApplicationTestConfig.class},
 		webEnvironment = RANDOM_PORT)
 @ActiveProfiles("itest")
-class Sdist008RouteIT {
+class Sdist008Altinn2RouteIT {
 
 	private static final Integer FORSENDELSE_ID = 1231;
 	protected static final String BASE_DOKDISTADMIN_PATH = "/administrerforsendelse";

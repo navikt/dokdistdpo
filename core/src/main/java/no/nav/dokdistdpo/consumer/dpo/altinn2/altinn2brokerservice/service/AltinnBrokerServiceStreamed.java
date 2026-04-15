@@ -11,7 +11,7 @@ import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamedUpl
 import no.altinn.brokerserviceexternalstreamed.ObjectFactory;
 import no.altinn.brokerserviceexternalstreamed.ReceiptExternalStreamedBE;
 import no.altinn.brokerserviceexternalstreamed.StreamedPayloadExternalBE;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn2;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.to.AltinnReasonFactory;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.to.ReceiptTo;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
@@ -76,16 +76,16 @@ public class AltinnBrokerServiceStreamed {
 		}
 	}
 
-	public List<MessageFromAltinn2> downloadFilesFromAltinn(List<String> filreferanser) {
+	public List<MessageFromAltinn> downloadFilesFromAltinn(List<String> filreferanser) {
 		return filreferanser.stream()
 				.map(filreferanse -> mapReferenceToDownloadedFile(filreferanse, downloadFile(filreferanse)))
 				.toList();
 	}
 
-	private MessageFromAltinn2 mapReferenceToDownloadedFile(String filreferanse, DataHandler dataHandler) {
+	private MessageFromAltinn mapReferenceToDownloadedFile(String filreferanse, DataHandler dataHandler) {
 		try {
 			InputStream inputStream = dataHandler.getInputStream();
-			return new MessageFromAltinn2(filreferanse, inputStream);
+			return new MessageFromAltinn(filreferanse, inputStream);
 
 		} catch (IOException | IllegalStateException e) {
 			log.error(ALTINN_AVLESING_AV_MELDING_FEILET, e);

@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.sdist008.itest.config;
+package no.nav.dokdistdpo.sdist008.itest.config.altinn2;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;

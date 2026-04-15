@@ -3,15 +3,15 @@ package no.nav.dokdistdpo.sdist008;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse.Forsendelse;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.AltinnEformidlingKvitteringClient;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.KvitteringStatus;
-import no.nav.dokdistdpo.sdist008.domain.DpoKvitteringStatus;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
+import no.nav.dokdistdpo.sdist008.domain.FormidlingFilstatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseIkkeEkspedert;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseEkspedert;
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.validerForsendelseOgDpoKvitteringStatus;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
@@ -61,7 +61,7 @@ public class Sdist008Service {
 
 	private void behandleForsendelse(Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
 		try {
-			if (isForsendelseIkkeEkspedert(forsendelse, downloadResponse)) {
+			if (!isForsendelseEkspedert(forsendelse, downloadResponse)) {
 				log.info("Sdist008 behandler forsendelse={}", forsendelse);
 				KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
 
@@ -72,7 +72,6 @@ public class Sdist008Service {
 					mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.getStatus(), forsendelse, endringer);
 				}
 				eformidling.bekreftMottattKvittering(downloadResponse.fileReference());
-
 			} else {
 				log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse={}. Ingen handling foretas.",
 						downloadResponse.conversationId(), forsendelse);
@@ -86,9 +85,9 @@ public class Sdist008Service {
 	private void mapFraDpoOgOppdaterForsendelseStatus(String kvitteringStatus, Forsendelse forsendelse, ForsendelseStatusEndringer forsendelseStatusEndringer) {
 
 		Long forsendelseId = Long.valueOf(forsendelse.forsendelseId());
-		DpoKvitteringStatus dpoKvitteringStatus = DpoKvitteringStatus.valueOf(kvitteringStatus);
+		FormidlingFilstatus formidlingFilStatus = FormidlingFilstatus.valueOf(kvitteringStatus);
 
-		switch (dpoKvitteringStatus) {
+		switch (formidlingFilStatus) {
 			case OPPRETTET, MOTTATT, FAIL -> log.info(AVSLUTTET_BEHANDLING, kvitteringStatus, forsendelse);
 			case SENDT -> {
 				log.info("sdist008 hentet DPO-kvitteringer med kvitteringStatus={}. Forsendelser med forsendelseIder: ({}) oppdateres til BEKREFTET", kvitteringStatus, forsendelse);
