@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseEkspedert;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isKonversasjonIdMatch;
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.validerForsendelseOgDpoKvitteringStatus;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
@@ -61,21 +62,26 @@ public class Sdist008Service {
 
 	private void behandleForsendelse(Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
 		try {
-			if (!isForsendelseEkspedert(forsendelse, downloadResponse)) {
-				log.info("Sdist008 behandler forsendelse={}", forsendelse);
-				KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
-
-				if (kvitteringStatus == null) {
-					log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
-				} else {
-					validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatus.getStatus());
-					mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.getStatus(), forsendelse, endringer);
-				}
-				eformidling.bekreftMottattKvittering(downloadResponse.fileReference());
-			} else {
+			if (!isKonversasjonIdMatch(forsendelse, downloadResponse)) {
 				log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse={}. Ingen handling foretas.",
 						downloadResponse.conversationId(), forsendelse);
+				return;
 			}
+			if (isForsendelseEkspedert(forsendelse)) {
+				log.warn("sdist008 forsendelse={} er allerede ekspedert. Ingen handling foretas.", forsendelse);
+				return;
+			}
+
+			log.info("Sdist008 behandler forsendelse={}", forsendelse);
+			KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
+
+			if (kvitteringStatus == null) {
+				log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
+			} else {
+				validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatus.getStatus());
+				mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.getStatus(), forsendelse, endringer);
+			}
+			eformidling.bekreftMottattKvittering(downloadResponse.fileReference());
 		} catch (Exception e) {
 			log.error("sdist008 avvik har oppstått ved behandling av forsendelse={}. Ingen statusoppdatering er gjort. Feilmelding={}",
 					forsendelse, e.getMessage(), e);

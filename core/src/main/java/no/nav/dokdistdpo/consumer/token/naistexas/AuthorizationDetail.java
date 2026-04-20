@@ -9,23 +9,21 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.ISO6523_ORG_AUTHORITY;
 import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.asIso6523;
 
-public record AutorizationDetail(
+public record AuthorizationDetail(
 		String type,
 		@JsonProperty("systemuser_org")
 		Consumer consumer,
 		@JsonProperty("system_id")
 		String systemId) {
 
-	private static final String NAV_SYSTEM_REGISTER = NAV_ORGNUMMER + "_dokdistdpo";
-
-	public static List<AutorizationDetail> authorizationDetails() {
-		AutorizationDetail authorizationDetail = new AutorizationDetail(
+	public static List<AuthorizationDetail> authorizationDetails(String systemId) {
+		AuthorizationDetail authorizationDetail = new AuthorizationDetail(
 				"urn:altinn:systemuser",
 				Consumer.builder()
 						.authority(ISO6523_ORG_AUTHORITY)
 						.id(asIso6523(NAV_ORGNUMMER))
 						.build(),
-				NAV_SYSTEM_REGISTER
+				systemId
 		);
 
 		return List.of(authorizationDetail);

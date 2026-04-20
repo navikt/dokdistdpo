@@ -30,7 +30,6 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 public class Altinn3BrokerClient {
 
 	private static final String ALTINN3_SUBSCRIPTION_KEY_HEADER = "Ocp-Apim-Subscription-Key";
-	private static final String ALTINN3_PATH = "/broker/api/v1/filetransfer";
 
 	private final RestClient altinn3AuthorizeRestClient;
 	private final ObjectMapper objectMapper;
@@ -48,7 +47,7 @@ public class Altinn3BrokerClient {
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public FileTransferInitializeResponseExt intiateFileTransfer(FileTransferInitalizeExt fileTransferInitalizeExt) {
 		return altinn3AuthorizeRestClient.post()
-				.uri(ALTINN3_PATH)
+				.uri("/broker/api/v1/filetransfer")
 				.accept(APPLICATION_JSON)
 				.contentType(APPLICATION_JSON)
 				.body(fileTransferInitalizeExt)
@@ -64,7 +63,7 @@ public class Altinn3BrokerClient {
 															byte[] sbdZipAsBytes) {
 		return altinn3AuthorizeRestClient.post()
 				.uri(uriBuilder -> uriBuilder
-						.path(ALTINN3_PATH + "/{fileTransferId}/upload")
+						.path("/broker/api/v1/filetransfer/{fileTransferId}/upload")
 						.build(fileTransferId))
 				.accept(APPLICATION_JSON)
 				.contentType(APPLICATION_OCTET_STREAM)
@@ -77,10 +76,10 @@ public class Altinn3BrokerClient {
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public List<UUID> getPublishedFileTransferIder() {
+	public List<String> getPublishedFileTransferIder() {
 		return altinn3AuthorizeRestClient.get()
 				.uri(uriBuilder -> uriBuilder
-						.path(ALTINN3_PATH)
+						.path("/broker/api/v1/filetransfer")
 						.queryParam("resourceId", RESOURCE_ID)
 						.queryParam("status", PUBLISHED)
 						.queryParam("recipientStatus", INITIALIZED)
@@ -90,15 +89,15 @@ public class Altinn3BrokerClient {
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
 						handleError(res, "hentKvitteringStatus feilet med feilmelding=%s")
 				)
-				.body(new ParameterizedTypeReference<List<UUID>>() {
+				.body(new ParameterizedTypeReference<>() {
 				});
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public byte[] downloadFilStatus(UUID fileTransferId) {
+	public byte[] downloadFilStatus(String fileTransferId) {
 		return altinn3AuthorizeRestClient.get()
 				.uri(uriBuilder -> uriBuilder
-						.path(ALTINN3_PATH + "/{fileTransferId}/download")
+						.path("/broker/api/v1/filetransfer/{fileTransferId}/download")
 						.build(fileTransferId))
 				.accept(APPLICATION_OCTET_STREAM)
 				.retrieve()
@@ -108,10 +107,11 @@ public class Altinn3BrokerClient {
 				.body(byte[].class);
 	}
 
+	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public void confirmDownload(String fileTransferId) {
 		altinn3AuthorizeRestClient.post()
 				.uri(uriBuilder -> uriBuilder
-						.path(ALTINN3_PATH + "/{fileTransferId}/confirmdownload")
+						.path("/broker/api/v1/filetransfer/{fileTransferId}/confirmdownload")
 						.build(fileTransferId))
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->

@@ -64,11 +64,12 @@ public class Altinn3MessageUnpacker {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();  // entries = manifest.xml || sbd.json
 			while (entries.hasMoreElements()) {
 				ZipEntry zipEntry = entries.nextElement();
-				final InputStream inputStream = zipFile.getInputStream(zipEntry);
-				if (SBD_JSON.equals(zipEntry.getName())) {
-					dpoKvitteringMelding = objectMapper.readValue(inputStream, DpoKvitteringMelding.class);
-				} else {
-					log.info("Hopper over fil: {}", zipFile.getName());
+				try (InputStream inputStream = zipFile.getInputStream(zipEntry)) {
+					if (SBD_JSON.equals(zipEntry.getName())) {
+						dpoKvitteringMelding = objectMapper.readValue(inputStream, DpoKvitteringMelding.class);
+					} else {
+						log.info("Hopper over fil: {}", zipFile.getName());
+					}
 				}
 			}
 			return AltinnDokument.builder()

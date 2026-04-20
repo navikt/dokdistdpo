@@ -33,7 +33,7 @@ public class Sdist008Scheduler {
 			generateNewCallId();
 			try {
 				if (altinn3Properties.enabled()) {
-					sdist008Altinn3Service.oppdaterForsendelseMedFilstatusFraAltinn3Formidling();
+					sdist008Altinn3Service.oppdaterForsendelse();
 				} else {
 					sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
 				}

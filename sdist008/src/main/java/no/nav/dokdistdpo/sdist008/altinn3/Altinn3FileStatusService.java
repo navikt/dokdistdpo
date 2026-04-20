@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Component
@@ -25,7 +24,7 @@ public class Altinn3FileStatusService {
 		this.altinn3MessageUnpacker = altinn3MessageUnpacker;
 	}
 
-	public List<DownloadResponse> hentAltinn3FormidlingFilStatus() {
+	public List<DownloadResponse> getAltinn3DpoFileStatuses() {
 		List<AltinnDokument> altinnDokuments = altinn3MessageUnpacker.unpackMessageFromAltinn(fileTransferStatusFraAltinn3());
 
 		log.info("Pakket ut {} meldinger fra Altinn: {}",
@@ -45,14 +44,14 @@ public class Altinn3FileStatusService {
 		return altinnDokuments.stream().map(DownloadResponse::from).toList();
 	}
 
-	public List<MessageFromAltinn> fileTransferStatusFraAltinn3() {
+	private List<MessageFromAltinn> fileTransferStatusFraAltinn3() {
 		return altinn3BrokerClient.getPublishedFileTransferIder().stream()
 				.map(this::mapMessageFromAltinn)
 				.toList();
 	}
 
-	private MessageFromAltinn mapMessageFromAltinn(UUID fileTransferId) {
+	private MessageFromAltinn mapMessageFromAltinn(String fileTransferId) {
 		byte[] streamstatus = altinn3BrokerClient.downloadFilStatus(fileTransferId);
-		return new MessageFromAltinn(fileTransferId.toString(), new ByteArrayInputStream(streamstatus));
+		return new MessageFromAltinn(fileTransferId, new ByteArrayInputStream(streamstatus));
 	}
 }

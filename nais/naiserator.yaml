@@ -131,3 +131,4 @@ spec:
         - name: altinn:serviceowner
         - name: altinn:authentication/systemregister.write
         - name: altinn:authentication/systemuser.request.write
+        - name: altinn:authentication/systemuser.request.read
