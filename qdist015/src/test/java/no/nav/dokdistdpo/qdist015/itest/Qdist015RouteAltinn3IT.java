@@ -128,7 +128,6 @@ class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 		verifyGetForsendelse();
 		verifyPostMaskinporten();
 		verifyServiceRegistry();
-		verifyPostNaisToken();
 		verifyPostAltinnToken();
 		verifyPostAltinn3InitiateFileTransfer();
 		verifyPostAltinn3Upload();
@@ -146,10 +145,6 @@ class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 
 	void verifyPostMaskinporten() {
 		verify(postRequestedFor(urlEqualTo("/maskinporten")));
-	}
-
-	void verifyPostNaisToken() {
-		verify(postRequestedFor(urlEqualTo("/nais")));
 	}
 
 	void verifyPostAltinn3InitiateFileTransfer() {

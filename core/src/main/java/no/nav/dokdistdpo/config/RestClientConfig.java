@@ -24,7 +24,7 @@ public class RestClientConfig {
 	}
 
 	@Bean
-	public RestClient texasAuthorizeRestClient(NaisTexasTokenConsumer naisTexasTokenConsumer) {
+	public RestClient maskinportenAuthDetailsRestClient(NaisTexasTokenConsumer naisTexasTokenConsumer) {
 		return RestClient.builder()
 				.requestFactory(jdkClientHttpRequestFactory())
 				.requestInterceptor(new NaisTexasInterceptor(naisTexasTokenConsumer))

@@ -2,6 +2,7 @@ package no.nav.dokdistdpo.consumer.token.naistexas;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
+import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
 import no.nav.dokdistdpo.config.properties.NaisTexasProperties;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,12 @@ public class NaisTexasTokenConsumer {
 
 	private final RestClient restClient;
 	private final JsonMapper jsonMapper;
+	private final MaskinportenProperties maskinportenProperties;
 	private final DokdistdpoProperties.Altinn3Properties altinn3Properties;
 
 	public NaisTexasTokenConsumer(RestClient.Builder restClientBuilder,
 								  NaisTexasProperties naistexasProperties,
+								  MaskinportenProperties maskinportenProperties,
 								  DokdistdpoProperties dokdistdpoProperties) {
 		this.jsonMapper = new JsonMapper();
 		this.restClient = restClientBuilder
@@ -31,12 +34,13 @@ public class NaisTexasTokenConsumer {
 				.defaultHeader(CONTENT_TYPE, APPLICATION_FORM_URLENCODED_VALUE)
 				.build();
 		this.altinn3Properties = dokdistdpoProperties.altinn3();
+		this.maskinportenProperties = maskinportenProperties;
 	}
 
-	public String getMaskinportenToken(String targetScope) {
+	public String getMaskinportenMedAuthorizationDetails() {
 		MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
 		formData.add("identity_provider", "maskinporten");
-		formData.add("target", targetScope);
+		formData.add("target", maskinportenProperties.scopes());
 
 		formData.add("authorization_details", serializeAuthorizationDetails());
 
