@@ -87,7 +87,7 @@ public class WiremockStub {
 
 
 	public static void stubAltinn3Token() {
-		stubFor(post("/altinn3/authentication/api/v1/exchange/maskinporten")
+		stubFor(get("/altinn3/authentication/api/v1/exchange/maskinporten")
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)

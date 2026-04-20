@@ -34,7 +34,7 @@ public class Altinn3TokenExchangeConsumer {
 	@Cacheable(ALTINN3_TOKEN_CACHE)
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public String getAltinnToken() {
-		return maskinportenAuthDetailsRestClient.post()
+		return maskinportenAuthDetailsRestClient.get()
 				.uri("/authentication/api/v1/exchange/maskinporten")
 				.accept(APPLICATION_JSON)
 				.exchange((_, res) -> {
