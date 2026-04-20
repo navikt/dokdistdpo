@@ -12,18 +12,18 @@ import static no.nav.dokdistdpo.consumer.dpo.Organisasjonsnummer.asIso6523;
 public record AuthorizationDetail(
 		String type,
 		@JsonProperty("systemuser_org")
-		Consumer consumer,
-		@JsonProperty("system_id")
-		String systemId) {
+		Consumer systemUserOrg,
+		String externalRef) {
 
-	public static List<AuthorizationDetail> authorizationDetails(String systemId) {
+	public static List<AuthorizationDetail> authorizationDetails(String externalRef) {
 		AuthorizationDetail authorizationDetail = new AuthorizationDetail(
 				"urn:altinn:systemuser",
 				Consumer.builder()
 						.authority(ISO6523_ORG_AUTHORITY)
 						.id(asIso6523(NAV_ORGNUMMER))
 						.build(),
-				systemId
+				externalRef
+
 		);
 
 		return List.of(authorizationDetail);

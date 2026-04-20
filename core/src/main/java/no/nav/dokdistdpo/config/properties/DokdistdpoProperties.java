@@ -55,7 +55,7 @@ public record DokdistdpoProperties(
 			@NotBlank
 			String url,
 			@NotBlank
-			String systemId,
+			String externalRef,
 			@NotBlank
 			String apiSubscriptionKey,
 			boolean enabled
