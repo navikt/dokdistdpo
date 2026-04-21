@@ -3,6 +3,7 @@ package no.nav.dokdistdpo.consumer.token.altinn3;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
+import no.nav.dokdistdpo.consumer.token.naistexas.NaisTexasTokenConsumer;
 import no.nav.dokdistdpo.exception.technical.Altinn3BrokerTechnicalException;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,15 +19,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Component
 public class Altinn3TokenExchangeConsumer {
 
-	private final RestClient maskinportenAuthDetailsRestClient;
+	private final RestClient restClient;
 	private final ObjectMapper objectMapper;
+	private final NaisTexasTokenConsumer naisTexasTokenConsumer;
 
-	public Altinn3TokenExchangeConsumer(RestClient maskinportenAuthDetailsRestClient,
+	public Altinn3TokenExchangeConsumer(RestClient.Builder restClientBuilder,
 										ObjectMapper objectMapper,
+										NaisTexasTokenConsumer naisTexasTokenConsumer,
 										DokdistdpoProperties dokdistdpoProperties) {
 		this.objectMapper = objectMapper;
-		this.maskinportenAuthDetailsRestClient = maskinportenAuthDetailsRestClient
-				.mutate()
+		this.naisTexasTokenConsumer = naisTexasTokenConsumer;
+		this.restClient = restClientBuilder
 				.baseUrl(dokdistdpoProperties.altinn3().url())
 				.build();
 	}
@@ -34,9 +37,10 @@ public class Altinn3TokenExchangeConsumer {
 	@Cacheable(ALTINN3_TOKEN_CACHE)
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public String getAltinnToken() {
-		return maskinportenAuthDetailsRestClient.get()
+		return restClient.get()
 				.uri("/authentication/api/v1/exchange/maskinporten")
 				.accept(APPLICATION_JSON)
+				.headers(httpHeaders -> httpHeaders.setBearerAuth(naisTexasTokenConsumer.maskinportenMedAuthorizationDetails()))
 				.exchange((_, res) -> {
 					if (res.getStatusCode().isError()) {
 						ProblemDetail problemDetail = objectMapper.readValue(res.getBody(), ProblemDetail.class);

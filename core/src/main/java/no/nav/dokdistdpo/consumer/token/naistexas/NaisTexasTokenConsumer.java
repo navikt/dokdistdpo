@@ -37,7 +37,7 @@ public class NaisTexasTokenConsumer {
 		this.maskinportenProperties = maskinportenProperties;
 	}
 
-	public String getMaskinportenMedAuthorizationDetails() {
+	public String maskinportenMedAuthorizationDetails() {
 		MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
 		formData.add("identity_provider", "maskinporten");
 		formData.add("target", maskinportenProperties.scopes());

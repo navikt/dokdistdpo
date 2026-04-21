@@ -6,9 +6,6 @@ import no.nav.dokdistdpo.sdist008.altinn3.Sdist008Altinn3Service;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static no.nav.dokdistdpo.utils.MdcUtils.clearMDC;
-import static no.nav.dokdistdpo.utils.MdcUtils.generateNewCallId;
-
 @Component
 public class Sdist008Scheduler {
 
@@ -30,15 +27,10 @@ public class Sdist008Scheduler {
 	@Scheduled(fixedDelayString = "${sdist008.intervall:600000}")
 	public void ekspederDpoForsendelser() {
 		if (lederelectionConsumer.isLeder()) {
-			generateNewCallId();
-			try {
-				if (altinn3Properties.enabled()) {
-					sdist008Altinn3Service.oppdaterForsendelse();
-				} else {
-					sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
-				}
-			} finally {
-				clearMDC();
+			if (altinn3Properties.enabled()) {
+				sdist008Altinn3Service.oppdaterForsendelse();
+			} else {
+				sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
 			}
 		}
 	}
