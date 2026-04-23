@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseEkspedert;
-import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isKonversasjonIdMatch;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.erKlarForBehandling;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.loggIngenHandling;
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.validerForsendelseOgDpoKvitteringStatus;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
@@ -62,17 +62,13 @@ public class Sdist008Service {
 
 	private void behandleForsendelse(Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
 		try {
-			if (!isKonversasjonIdMatch(forsendelse, downloadResponse)) {
-				log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse={}. Ingen handling foretas.",
-						downloadResponse.conversationId(), forsendelse);
-				return;
-			}
-			if (isForsendelseEkspedert(forsendelse)) {
-				log.warn("sdist008 forsendelse={} er allerede ekspedert. Ingen handling foretas.", forsendelse);
+			log.info("Sdist008 behandler forsendelse={}", forsendelse);
+
+			if (!erKlarForBehandling(forsendelse, downloadResponse)) {
+				loggIngenHandling(forsendelse, downloadResponse);
 				return;
 			}
 
-			log.info("Sdist008 behandler forsendelse={}", forsendelse);
 			KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
 
 			if (kvitteringStatus == null) {

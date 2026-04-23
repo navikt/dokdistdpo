@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.sdist008;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse.Forsendelse;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
 import no.nav.dokdistdpo.sdist008.domain.FormidlingFilstatus;
@@ -31,12 +32,16 @@ public class StatusovergangValidator {
 		}
 	}
 
-	public static boolean isKonversasjonIdMatch(Forsendelse forsendelse, DownloadResponse downloadResponse) {
+	public static boolean erKlarForBehandling(Forsendelse forsendelse, DownloadResponse downloadResponse) {
+		return harMatchendeKonversasjonId(forsendelse, downloadResponse) && erIkkeEkspedert(forsendelse);
+	}
+
+	private static boolean harMatchendeKonversasjonId(Forsendelse forsendelse, DownloadResponse downloadResponse) {
 		return downloadResponse.conversationId().equals(forsendelse.konversasjonId());
 	}
 
-	public static boolean isForsendelseEkspedert(Forsendelse forsendelse) {
-		return EKSPEDERT.name().equals(forsendelse.forsendelseStatus());
+	private static boolean erIkkeEkspedert(Forsendelse forsendelse) {
+		return !EKSPEDERT.name().equals(forsendelse.forsendelseStatus());
 	}
 
 	private static boolean isUkjentKvitteringStatus(String forsendelseStatus, String kvitteringStatus) {
@@ -46,6 +51,15 @@ public class StatusovergangValidator {
 
 	private static boolean isUlovligStatusovergang(String forsendelseStatus, String kvitteringStatus) {
 		return BEKREFTET.name().equals(forsendelseStatus) && OPPRETTET.name().equals(kvitteringStatus);
+	}
+
+	public static void loggIngenHandling(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse) {
+		if (erIkkeEkspedert(forsendelse)) {
+			log.warn("sdist008 forsendelse={} er allerede ekspedert. Ingen handling foretas.", forsendelse);
+			return;
+		}
+		log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse.konversasjonsIder={}. Ingen handling foretas.",
+				downloadResponse.conversationId(), forsendelse);
 	}
 
 	private StatusovergangValidator() {

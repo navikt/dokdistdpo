@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseEkspedert;
-import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isKonversasjonIdMatch;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.erKlarForBehandling;
+import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.loggIngenHandling;
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.validerForsendelseOgDpoKvitteringStatus;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
@@ -73,17 +73,18 @@ public class Sdist008Altinn3Service {
 			return;
 		}
 
-		behandleForsendelse(forsendelse, downloadResponse, forsendelseStatusEndringer);
+		behandleForsendelseOgFormidlingStatus(forsendelse, downloadResponse, forsendelseStatusEndringer);
 	}
 
-	private void behandleForsendelse(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
+	private void behandleForsendelseOgFormidlingStatus(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
 		try {
-			if (!erMatchendeKonversasjonIdOgGyldigStatus(forsendelse, downloadResponse)) {
+			log.info("Sdist008 behandler forsendelse={}", forsendelse);
+
+			if (!erKlarForBehandling(forsendelse, downloadResponse)) {
 				loggIngenHandling(forsendelse, downloadResponse);
 				return;
 			}
 
-			log.info("Sdist008 behandler forsendelse={}", forsendelse);
 			Optional<String> kvitteringStatusKode = hentKvitteringStatusKode(downloadResponse);
 			if (kvitteringStatusKode.isEmpty()) {
 				return;
@@ -99,10 +100,6 @@ public class Sdist008Altinn3Service {
 		} catch (Exception e) {
 			log.error(FEIL_VED_BEHANDLING, forsendelse, e.getMessage(), e);
 		}
-	}
-
-	private boolean erMatchendeKonversasjonIdOgGyldigStatus(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse) {
-		return isKonversasjonIdMatch(forsendelse, downloadResponse) || !isForsendelseEkspedert(forsendelse);
 	}
 
 	private Optional<String> hentKvitteringStatusKode(DownloadResponse downloadResponse) {
@@ -156,14 +153,5 @@ public class Sdist008Altinn3Service {
 				forsendelseStatusEndringer.feilet().add(forsendelseId);
 			}
 		}
-	}
-
-	private void loggIngenHandling(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse) {
-		if (isForsendelseEkspedert(forsendelse)) {
-			log.warn("sdist008 forsendelse={} er allerede ekspedert. Ingen handling foretas.", forsendelse);
-			return;
-		}
-		log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse.konversasjonsIder={}. Ingen handling foretas.",
-				downloadResponse.conversationId(), forsendelse);
 	}
 }
