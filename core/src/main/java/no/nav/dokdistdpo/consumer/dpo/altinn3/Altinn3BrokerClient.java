@@ -123,7 +123,7 @@ public class Altinn3BrokerClient {
 				.uri(uriBuilder -> uriBuilder
 						.path("/broker/api/v1/filetransfer/{fileTransferId}/confirmdownload")
 						.build(fileTransferId))
-				.attribute(MASKINPORTEN_TARGET_SCOPES, ALTINN3_BROKER_SCOPE_WRITE)
+				.attribute(MASKINPORTEN_TARGET_SCOPES, ALTINN3_BROKER_SCOPE_READ)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
 						handleError(res, "confirmDownload feilet med feilmelding=%s")
