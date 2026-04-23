@@ -1,7 +1,6 @@
 package no.nav.dokdistdpo.sdist008;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse.Forsendelse;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
 import no.nav.dokdistdpo.sdist008.domain.FormidlingFilstatus;
@@ -27,7 +26,7 @@ public class StatusovergangValidator {
 		}
 
 		if (isUlovligStatusovergang(forsendelseStatus, kvitteringStatus) || isUkjentKvitteringStatus(forsendelseStatus, kvitteringStatus)) {
-			log.warn("Uløvlig statusovergang for forsendelseId={} med forsendelseStatus={} og kvitteringStatus={}", forsendelse.forsendelseId(), forsendelseStatus, kvitteringStatus);
+			log.warn("Ulovlig statusovergang for forsendelseId={} med forsendelseStatus={} og kvitteringStatus={}", forsendelse.forsendelseId(), forsendelseStatus, kvitteringStatus);
 			return;
 		}
 	}
@@ -47,16 +46,6 @@ public class StatusovergangValidator {
 
 	private static boolean isUlovligStatusovergang(String forsendelseStatus, String kvitteringStatus) {
 		return BEKREFTET.name().equals(forsendelseStatus) && OPPRETTET.name().equals(kvitteringStatus);
-	}
-
-
-	public static void loggMelding(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse) {
-		if (isForsendelseEkspedert(forsendelse)) {
-			log.warn("sdist008 forsendelse={} er allerede ekspedert. Ingen handling foretas.", forsendelse);
-		}
-		log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse.konversasjonsIder={}. Ingen handling foretas.",
-				downloadResponse.conversationId(), forsendelse);
-
 	}
 
 	private StatusovergangValidator() {

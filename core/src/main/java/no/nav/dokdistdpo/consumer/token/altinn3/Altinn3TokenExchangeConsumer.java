@@ -40,7 +40,7 @@ public class Altinn3TokenExchangeConsumer {
 		return restClient.get()
 				.uri("/authentication/api/v1/exchange/maskinporten")
 				.accept(APPLICATION_JSON)
-				.headers(httpHeaders -> httpHeaders.setBearerAuth(naisTexasTokenConsumer.maskinportenMedAuthorizationDetails()))
+				.headers(httpHeaders -> httpHeaders.setBearerAuth(naisTexasTokenConsumer.getMaskinportenTokenWithAuthDetails()))
 				.exchange((_, res) -> {
 					if (res.getStatusCode().isError()) {
 						ProblemDetail problemDetail = objectMapper.readValue(res.getBody(), ProblemDetail.class);

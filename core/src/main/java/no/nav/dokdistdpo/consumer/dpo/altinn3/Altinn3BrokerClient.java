@@ -81,13 +81,13 @@ public class Altinn3BrokerClient {
 				.uri(uriBuilder -> uriBuilder
 						.path("/broker/api/v1/filetransfer")
 						.queryParam("resourceId", RESOURCE_ID)
-						.queryParam("status", PUBLISHED)
-						.queryParam("recipientStatus", INITIALIZED)
+						.queryParam("status", PUBLISHED.getValue())
+						.queryParam("recipientStatus", INITIALIZED.getValue())
 						.build())
 				.accept(APPLICATION_JSON)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
-						handleError(res, "hentKvitteringStatus feilet med feilmelding=%s")
+						handleError(res, "getPublishedFileTransferIder feilet med feilmelding=%s")
 				)
 				.body(new ParameterizedTypeReference<>() {
 				});
@@ -102,7 +102,7 @@ public class Altinn3BrokerClient {
 				.accept(APPLICATION_OCTET_STREAM)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
-						handleError(res, "downloadFilTransferStatus feilet med feilmelding=%s")
+						handleError(res, "downloadFilStatus feilet med feilmelding=%s")
 				)
 				.body(byte[].class);
 	}
@@ -115,7 +115,7 @@ public class Altinn3BrokerClient {
 						.build(fileTransferId))
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
-						handleError(res, "bekreftDownload feilet med feilmelding=%s")
+						handleError(res, "confirmDownload feilet med feilmelding=%s")
 				)
 				.toBodilessEntity();
 	}

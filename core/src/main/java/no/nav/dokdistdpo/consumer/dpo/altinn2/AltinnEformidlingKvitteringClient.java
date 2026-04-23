@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.AltinnDokument;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.service.AltinnBrokerServiceExternal;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.service.AltinnBrokerServiceStreamed;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.to.SearchCriteria;
@@ -47,9 +46,9 @@ public class AltinnEformidlingKvitteringClient {
 		log.info("Hentet {} filreferanser fra Altinn, referanser={}", filreferanser.size(), filreferanser);
 
 		log.info("Henter kvitteringsmeldinger fra Altinn");
-		List<MessageFromAltinn> messagesFromAltinn = altinnBrokerServiceStreamed.downloadFilesFromAltinn(filreferanser);
+		List<MessageFromAltinn2> messagesFromAltinn = altinnBrokerServiceStreamed.downloadFilesFromAltinn(filreferanser);
 		log.info("Hentet {} meldinger fra Altinn, referanser={}", messagesFromAltinn.size(), messagesFromAltinn.stream()
-				.map(MessageFromAltinn::filreferanse)
+				.map(MessageFromAltinn2::filreferanse)
 				.toList());
 
 		log.info("Pakkes ut meldinger fra Altinn");
@@ -65,7 +64,7 @@ public class AltinnEformidlingKvitteringClient {
 		hentetKvitteringerLog(altinnDokuments);
 
 		List<DownloadResponse> downloadResponses = getDownloadResponses(altinnDokuments);
-		log.info("Meldinger fra Altinn:  {}", downloadResponses);
+		log.info("Meldinger fra Altinn: {}", downloadResponses);
 
 		return downloadResponses;
 	}

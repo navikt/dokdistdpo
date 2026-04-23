@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.AltinnDokument;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn;
+import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.Altinn3InnsendtFilkvittering;
 import no.nav.dokdistdpo.exception.functional.DokumentUnpackingException;
 import no.nav.dokdistdpo.utils.AutoCloseableTempFile;
 import org.apache.commons.io.FileUtils;
@@ -26,7 +26,7 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.SBD_JSON;
 public class Altinn3MessageUnpacker {
 
 	private static final String TEMPFILE_EXCEPTION = "Feil ved innlesing/kopiering av inputStream til temporær fil";
-	private static final String DESERIALISERE_EXCEPTION = "Kunne ikke deserialisere fil med filreferanse: ";
+	private static final String DESERIALISERE_EXCEPTION = "Kunne ikke deserialisere fil med fileReferenceId: ";
 	private static final String MESSAGE_CHANNEL = "dokdistdpo";
 
 	private final ObjectMapper objectMapper;
@@ -35,26 +35,26 @@ public class Altinn3MessageUnpacker {
 		this.objectMapper = objectMapper;
 	}
 
-	public List<AltinnDokument> unpackMessageFromAltinn(List<MessageFromAltinn> messageFromAltinns) {
-		return messageFromAltinns.stream()
+	public List<AltinnDokument> unpackMessageFromAltinn(List<Altinn3InnsendtFilkvittering> messageFromAltinn2s) {
+		return messageFromAltinn2s.stream()
 				.map(this::unpack)
 				.filter(altinnDokument -> nonNull(altinnDokument.dpoKvitteringMelding()))
 				.filter(altinnDokument -> MESSAGE_CHANNEL.equals(altinnDokument.dpoKvitteringMelding().getMessageChannelName()))
 				.toList();
 	}
 
-	private AltinnDokument unpack(MessageFromAltinn melding) {
-		log.info("Pakker ut zipfil med referanse={}", melding.filreferanse());
+	private AltinnDokument unpack(Altinn3InnsendtFilkvittering melding) {
+		log.info("Pakker ut zipfil med referanse={}", melding.fileReferenceId());
 
 		try (AutoCloseableTempFile tempFile = new AutoCloseableTempFile("altinn", "test")) {
-			FileUtils.copyInputStreamToFile(melding.inputStream(), tempFile.toFile());
+			FileUtils.copyInputStreamToFile(melding.content(), tempFile.toFile());
 
-			return buildAltinnDokumentFromTempFile(tempFile.toFile(), melding.filreferanse());
+			return buildAltinnDokumentFromTempFile(tempFile.toFile(), melding.fileReferenceId());
 		} catch (IOException e) {
 			log.error(TEMPFILE_EXCEPTION, e);
 			throw new DokumentUnpackingException(TEMPFILE_EXCEPTION, e);
 		} finally {
-			log.info("Pakket ut zipfil med referanse={}", melding.filreferanse());
+			log.info("Pakket ut zipfil med referanse={}", melding.fileReferenceId());
 		}
 	}
 

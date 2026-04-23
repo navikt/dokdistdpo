@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isForsendelseEkspedert;
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.isKonversasjonIdMatch;
-import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.loggMelding;
 import static no.nav.dokdistdpo.sdist008.StatusovergangValidator.validerForsendelseOgDpoKvitteringStatus;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.BEKREFTET;
 import static no.nav.dokdistdpo.sdist008.domain.ForsendelseStatus.FEILET;
@@ -79,8 +78,8 @@ public class Sdist008Altinn3Service {
 
 	private void behandleForsendelse(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse, ForsendelseStatusEndringer endringer) {
 		try {
-			if (erMatchendeKonversasjonIdOgGyldigStatus(forsendelse, downloadResponse)) {
-				loggMelding(forsendelse, downloadResponse);
+			if (!erMatchendeKonversasjonIdOgGyldigStatus(forsendelse, downloadResponse)) {
+				loggIngenHandling(forsendelse, downloadResponse);
 				return;
 			}
 
@@ -103,7 +102,7 @@ public class Sdist008Altinn3Service {
 	}
 
 	private boolean erMatchendeKonversasjonIdOgGyldigStatus(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse) {
-		return !isKonversasjonIdMatch(forsendelse, downloadResponse) && isForsendelseEkspedert(forsendelse);
+		return isKonversasjonIdMatch(forsendelse, downloadResponse) || !isForsendelseEkspedert(forsendelse);
 	}
 
 	private Optional<String> hentKvitteringStatusKode(DownloadResponse downloadResponse) {
@@ -159,4 +158,12 @@ public class Sdist008Altinn3Service {
 		}
 	}
 
+	private void loggIngenHandling(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse) {
+		if (isForsendelseEkspedert(forsendelse)) {
+			log.warn("sdist008 forsendelse={} er allerede ekspedert. Ingen handling foretas.", forsendelse);
+			return;
+		}
+		log.warn("sdist008 mottatt kvittering med konversasjonsId={} som ikke samsvarer med forsendelse.konversasjonsIder={}. Ingen handling foretas.",
+				downloadResponse.conversationId(), forsendelse);
+	}
 }

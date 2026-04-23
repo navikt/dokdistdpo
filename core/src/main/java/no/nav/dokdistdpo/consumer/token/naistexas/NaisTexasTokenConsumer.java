@@ -1,10 +1,11 @@
 package no.nav.dokdistdpo.consumer.token.naistexas;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
 import no.nav.dokdistdpo.config.properties.NaisTexasProperties;
-import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
+import no.nav.dokdistdpo.exception.technical.JsonSerializeException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -20,15 +21,16 @@ import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VAL
 public class NaisTexasTokenConsumer {
 
 	private final RestClient restClient;
-	private final JsonMapper jsonMapper;
+	private final ObjectMapper objectMapper;
 	private final MaskinportenProperties maskinportenProperties;
 	private final DokdistdpoProperties.Altinn3Properties altinn3Properties;
 
 	public NaisTexasTokenConsumer(RestClient.Builder restClientBuilder,
+								  ObjectMapper objectMapper,
 								  NaisTexasProperties naistexasProperties,
 								  MaskinportenProperties maskinportenProperties,
 								  DokdistdpoProperties dokdistdpoProperties) {
-		this.jsonMapper = new JsonMapper();
+		this.objectMapper = objectMapper;
 		this.restClient = restClientBuilder
 				.baseUrl(naistexasProperties.tokenEndpoint())
 				.defaultHeader(CONTENT_TYPE, APPLICATION_FORM_URLENCODED_VALUE)
@@ -37,7 +39,7 @@ public class NaisTexasTokenConsumer {
 		this.maskinportenProperties = maskinportenProperties;
 	}
 
-	public String maskinportenMedAuthorizationDetails() {
+	public String getMaskinportenTokenWithAuthDetails() {
 		MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
 		formData.add("identity_provider", "maskinporten");
 		formData.add("target", maskinportenProperties.scopes());
@@ -53,9 +55,9 @@ public class NaisTexasTokenConsumer {
 
 	private String serializeAuthorizationDetails() {
 		try {
-			return jsonMapper.writeValueAsString(authorizationDetails(altinn3Properties.externalRef()));
-		} catch (Exception e) {
-			throw new DokumentpakkingException("Failed to serialize authorization details", e);
+			return objectMapper.writeValueAsString(authorizationDetails(altinn3Properties.externalRef()));
+		} catch (JsonProcessingException e) {
+			throw new JsonSerializeException("Failed to serialize authorization details", e);
 		}
 	}
 }
