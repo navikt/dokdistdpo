@@ -22,7 +22,8 @@ public class NaisTexasInterceptor implements ClientHttpRequestInterceptor {
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 		Map<String, Object> attributes = request.getAttributes();
 		if (attributes.containsKey(MASKINPORTEN_TARGET_SCOPES)) {
-			request.getHeaders().setBearerAuth(naistexasTokenConsumer.getMaskinportenTokenWithAuthDetails());
+			String maskinportenTargetScopes = (String) attributes.get(MASKINPORTEN_TARGET_SCOPES);
+			request.getHeaders().setBearerAuth(naistexasTokenConsumer.getMaskinportenTokenWithAuthDetails(maskinportenTargetScopes));
 		}
 		return execution.execute(request, body);
 	}

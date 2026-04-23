@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClient;
 
 import static java.util.Objects.requireNonNull;
 import static no.nav.dokdistdpo.consumer.token.naistexas.AuthorizationDetail.authorizationDetails;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
@@ -39,10 +40,10 @@ public class NaisTexasTokenConsumer {
 		this.maskinportenProperties = maskinportenProperties;
 	}
 
-	public String getMaskinportenTokenWithAuthDetails() {
+	public String getMaskinportenTokenWithAuthDetails(String targetScopes) {
 		MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
 		formData.add("identity_provider", "maskinporten");
-		formData.add("target", maskinportenProperties.scopes());
+		formData.add("target", isNotBlank(targetScopes) ? targetScopes : maskinportenProperties.scopes());
 
 		formData.add("authorization_details", serializeAuthorizationDetails());
 

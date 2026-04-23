@@ -3,7 +3,6 @@ package no.nav.dokdistdpo.consumer.token.altinn3;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
-import no.nav.dokdistdpo.consumer.token.naistexas.NaisTexasTokenConsumer;
 import no.nav.dokdistdpo.exception.technical.Altinn3BrokerTechnicalException;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,33 +13,32 @@ import org.springframework.web.client.RestClient;
 
 import static java.util.Objects.requireNonNull;
 import static no.nav.dokdistdpo.config.cache.LocalCacheConfig.ALTINN3_TOKEN_CACHE;
+import static no.nav.dokdistdpo.consumer.token.naistexas.NaisTexasInterceptor.MASKINPORTEN_TARGET_SCOPES;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 public class Altinn3TokenExchangeConsumer {
 
-	private final RestClient restClient;
 	private final ObjectMapper objectMapper;
-	private final NaisTexasTokenConsumer naisTexasTokenConsumer;
+	private final RestClient maskinportenAuthDetailsRestClient;
 
-	public Altinn3TokenExchangeConsumer(RestClient.Builder restClientBuilder,
+	public Altinn3TokenExchangeConsumer(RestClient maskinportenAuthDetailsRestClient,
 										ObjectMapper objectMapper,
-										NaisTexasTokenConsumer naisTexasTokenConsumer,
 										DokdistdpoProperties dokdistdpoProperties) {
 		this.objectMapper = objectMapper;
-		this.naisTexasTokenConsumer = naisTexasTokenConsumer;
-		this.restClient = restClientBuilder
+		this.maskinportenAuthDetailsRestClient = maskinportenAuthDetailsRestClient
+				.mutate()
 				.baseUrl(dokdistdpoProperties.altinn3().url())
 				.build();
 	}
 
 	@Cacheable(ALTINN3_TOKEN_CACHE)
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public String getAltinnToken() {
-		return restClient.get()
+	public String getAltinnToken(String maskinportenScopes) {
+		return maskinportenAuthDetailsRestClient.get()
 				.uri("/authentication/api/v1/exchange/maskinporten")
 				.accept(APPLICATION_JSON)
-				.headers(httpHeaders -> httpHeaders.setBearerAuth(naisTexasTokenConsumer.getMaskinportenTokenWithAuthDetails()))
+				.attribute(MASKINPORTEN_TARGET_SCOPES, maskinportenScopes)
 				.exchange((_, res) -> {
 					if (res.getStatusCode().isError()) {
 						ProblemDetail problemDetail = objectMapper.readValue(res.getBody(), ProblemDetail.class);
