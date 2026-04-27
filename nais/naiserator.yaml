@@ -126,7 +126,6 @@ spec:
         - name: altinn:broker.write
         - name: altinn:broker.read
         - name: altinn:serviceowner
-        - name: altinn:events.subscribe
         - name: altinn:authentication/systemregister.write
         - name: altinn:authentication/systemuser.request.write
         - name: altinn:authentication/systemuser.request.read

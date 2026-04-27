@@ -32,7 +32,7 @@ public class Altinn3TokenExchangeConsumer {
 				.build();
 	}
 
-	@Cacheable(ALTINN3_TOKEN_CACHE)
+	@Cacheable(value = ALTINN3_TOKEN_CACHE, key = "#maskinportenScopes")
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public String getAltinnToken(String maskinportenScopes) {
 		return maskinportenAuthDetailsRestClient.get()

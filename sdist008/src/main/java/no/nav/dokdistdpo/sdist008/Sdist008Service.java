@@ -64,20 +64,18 @@ public class Sdist008Service {
 		try {
 			log.info("Sdist008 behandler forsendelse={}", forsendelse);
 
-			if (!erKlarForBehandling(forsendelse, downloadResponse)) {
-				loggIngenHandling(forsendelse, downloadResponse);
-				return;
-			}
-
-			KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
-
-			if (kvitteringStatus == null) {
-				log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
+			if (erKlarForBehandling(forsendelse, downloadResponse)) {
+				KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
+				if (kvitteringStatus == null) {
+					log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
+				} else {
+					validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatus.getStatus());
+					mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.getStatus(), forsendelse, endringer);
+				}
+				eformidling.bekreftMottattKvittering(downloadResponse.fileReference());
 			} else {
-				validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), kvitteringStatus.getStatus());
-				mapFraDpoOgOppdaterForsendelseStatus(kvitteringStatus.getStatus(), forsendelse, endringer);
+				loggIngenHandling(forsendelse, downloadResponse);
 			}
-			eformidling.bekreftMottattKvittering(downloadResponse.fileReference());
 		} catch (Exception e) {
 			log.error("sdist008 avvik har oppstått ved behandling av forsendelse={}. Ingen statusoppdatering er gjort. Feilmelding={}",
 					forsendelse, e.getMessage(), e);

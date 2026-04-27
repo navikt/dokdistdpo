@@ -52,7 +52,7 @@ public class Altinn3FileStatusService {
 	}
 
 	private Altinn3InnsendtFilkvittering mapMessageFromAltinn(String fileTransferId) {
-		byte[] streamstatus = altinn3BrokerClient.downloadFilStatus(fileTransferId);
+		byte[] streamstatus = altinn3BrokerClient.downloadPublishedFile(fileTransferId);
 		return new Altinn3InnsendtFilkvittering(fileTransferId, new ByteArrayInputStream(streamstatus));
 	}
 }

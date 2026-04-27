@@ -80,38 +80,29 @@ public class Sdist008Altinn3Service {
 		try {
 			log.info("Sdist008 behandler forsendelse={}", forsendelse);
 
-			if (!erKlarForBehandling(forsendelse, downloadResponse)) {
+			if (erKlarForBehandling(forsendelse, downloadResponse)) {
+
+				KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
+				if (kvitteringStatus == null) {
+					log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
+					bekreftNedlasting(downloadResponse.fileReference());
+					return;
+				}
+
+				String statusKode = kvitteringStatus.getStatus();
+				validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), statusKode);
+
+				Optional<FormidlingFilstatus> dpoKvitteringStatus = parseKvitteringStatus(statusKode, forsendelse);
+				dpoKvitteringStatus.ifPresent(status -> mapFraDpoOppdaterForsendelseStatus(status, forsendelse, endringer));
+
+				bekreftNedlasting(downloadResponse.fileReference());
+			} else {
 				loggIngenHandling(forsendelse, downloadResponse);
-				return;
 			}
 
-			Optional<String> kvitteringStatusKode = hentKvitteringStatusKode(downloadResponse);
-			if (kvitteringStatusKode.isEmpty()) {
-				return;
-			}
-
-			String statusKode = kvitteringStatusKode.get();
-			validerForsendelseOgDpoKvitteringStatus(forsendelse, forsendelse.forsendelseStatus(), statusKode);
-
-			Optional<FormidlingFilstatus> dpoKvitteringStatus = parseKvitteringStatus(statusKode, forsendelse);
-			dpoKvitteringStatus.ifPresent(status -> mapFraDpoOppdaterForsendelseStatus(status, forsendelse, endringer));
-
-			bekreftNedlasting(downloadResponse.fileReference());
 		} catch (Exception e) {
 			log.error(FEIL_VED_BEHANDLING, forsendelse, e.getMessage(), e);
 		}
-	}
-
-	private Optional<String> hentKvitteringStatusKode(DownloadResponse downloadResponse) {
-		KvitteringStatus kvitteringStatus = downloadResponse.kvitteringStatus();
-
-		if (kvitteringStatus == null) {
-			log.info("dpo kvittering har kvitteringStatus=null. Bekrefter denne likevel. downloadResponse={}", downloadResponse);
-			bekreftNedlasting(downloadResponse.fileReference());
-			return Optional.empty();
-		}
-
-		return Optional.ofNullable(kvitteringStatus.getStatus());
 	}
 
 	private void bekreftNedlasting(String fileReference) {

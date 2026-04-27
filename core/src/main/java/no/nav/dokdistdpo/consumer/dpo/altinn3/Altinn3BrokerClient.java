@@ -65,8 +65,8 @@ public class Altinn3BrokerClient {
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public FileTransferUploadResponseExt uploadFileTransfer(UUID fileTransferId,
-															byte[] sbdZipAsBytes) {
+	public FileTransferUploadResponseExt uploadFile(UUID fileTransferId,
+													byte[] sbdZipAsBytes) {
 		return altinn3AuthorizeRestClient.post()
 				.uri(uriBuilder -> uriBuilder
 						.path("/broker/api/v1/filetransfer/{fileTransferId}/upload")
@@ -77,14 +77,13 @@ public class Altinn3BrokerClient {
 				.body(sbdZipAsBytes)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
-						handleError(res, "uploadFileTransfer feilet med feilmelding=%s")
+						handleError(res, "uploadFile feilet med feilmelding=%s")
 				)
 				.body(FileTransferUploadResponseExt.class);
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
 	public List<String> getPublishedFileTransferIder() {
-		log.info("getPublishedFileTransferIder mottatt kall til å hente publisert fileTransferIder fra Altinn3");
 		return altinn3AuthorizeRestClient.get()
 				.uri(uriBuilder -> uriBuilder
 						.path("/broker/api/v1/filetransfer")
@@ -103,7 +102,7 @@ public class Altinn3BrokerClient {
 	}
 
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public byte[] downloadFilStatus(String fileTransferId) {
+	public byte[] downloadPublishedFile(String fileTransferId) {
 		return altinn3AuthorizeRestClient.get()
 				.uri(uriBuilder -> uriBuilder
 						.path("/broker/api/v1/filetransfer/{fileTransferId}/download")
@@ -112,7 +111,7 @@ public class Altinn3BrokerClient {
 				.attribute(MASKINPORTEN_TARGET_SCOPES, ALTINN3_BROKER_SCOPE_READ)
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
-						handleError(res, "downloadFilStatus feilet med feilmelding=%s")
+						handleError(res, "downloadPublishedFile feilet med feilmelding=%s")
 				)
 				.body(byte[].class);
 	}

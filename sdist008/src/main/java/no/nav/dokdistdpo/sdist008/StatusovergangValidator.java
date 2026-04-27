@@ -33,15 +33,15 @@ public class StatusovergangValidator {
 	}
 
 	public static boolean erKlarForBehandling(Forsendelse forsendelse, DownloadResponse downloadResponse) {
-		return harMatchendeKonversasjonId(forsendelse, downloadResponse) && erIkkeEkspedert(forsendelse);
+		return harMatchendeKonversasjonId(forsendelse, downloadResponse) && !erEkspedert(forsendelse);
 	}
 
 	private static boolean harMatchendeKonversasjonId(Forsendelse forsendelse, DownloadResponse downloadResponse) {
 		return downloadResponse.conversationId().equals(forsendelse.konversasjonId());
 	}
 
-	private static boolean erIkkeEkspedert(Forsendelse forsendelse) {
-		return !EKSPEDERT.name().equals(forsendelse.forsendelseStatus());
+	private static boolean erEkspedert(Forsendelse forsendelse) {
+		return EKSPEDERT.name().equals(forsendelse.forsendelseStatus());
 	}
 
 	private static boolean isUkjentKvitteringStatus(String forsendelseStatus, String kvitteringStatus) {
@@ -54,7 +54,7 @@ public class StatusovergangValidator {
 	}
 
 	public static void loggIngenHandling(HentEformidlingforsendelserResponse.Forsendelse forsendelse, DownloadResponse downloadResponse) {
-		if (erIkkeEkspedert(forsendelse)) {
+		if (erEkspedert(forsendelse)) {
 			log.warn("sdist008 forsendelse={} er allerede ekspedert. Ingen handling foretas.", forsendelse);
 			return;
 		}
