@@ -11,6 +11,7 @@ spec:
       mountPath: /var/run/secrets/nais_secrets
   envFrom:
     - secret: {{ DOKDISTDPO_SECRET }}
+    - configmap: {{ DOKDISTDPO_SECRET }}
   env:
     - name: JAVA_TRUSTSTORE_OPTIONS
       value: "-Djavax.net.ssl.trustStore=$(NAV_TRUSTSTORE_PATH)
