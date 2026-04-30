@@ -44,19 +44,19 @@ public class Sdist008Altinn3Service {
 	public void oppdaterForsendelse() {
 		ForsendelseStatusEndringer forsendelseStatusEndringer = new ForsendelseStatusEndringer();
 
-		List<HentEformidlingforsendelserResponse.Forsendelse> forsendelser = dokdistForsendelseService.hentUekspederteDpoForsendelser();
-		Map<String, HentEformidlingforsendelserResponse.Forsendelse> uekspederteDpoForsendelser = dokdistForsendelseService.mapUekspederteDpoForsendelse(forsendelser);
+		List<HentEformidlingforsendelserResponse.Forsendelse> forsendelser = dokdistForsendelseService.hentGyldigUekspederteForsendelser();
+		Map<String, HentEformidlingforsendelserResponse.Forsendelse> uekspederteDpoForsendelser = dokdistForsendelseService.mapUekspederteForsendelseByKonversasjonId(forsendelser);
 		log.info("Sdist008 hentet antall={} uekspederte DPO forsendelser fra dokdistadmin", uekspederteDpoForsendelser.size());
 
 		if (isEmpty(uekspederteDpoForsendelser)) {
 			log.info("Ingen uekspederte forsendelser funnet for avstemming. Avstemming av DPO forsendelser avsluttes.");
-			return;
+		} else {
+			altinn3FileStatusService.getAltinn3DpoFileStatuses()
+					.forEach(downloadResponse -> {
+						behandleForsendelseOgFormidlingStatus(downloadResponse, uekspederteDpoForsendelser, forsendelseStatusEndringer);
+						log.info("Sdist008 har oppdatert forsendelser med statusEndringer: {}", forsendelseStatusEndringer);
+					});
 		}
-
-		for (DownloadResponse downloadResponse : altinn3FileStatusService.getAltinn3DpoFileStatuses()) {
-			behandleForsendelseOgFormidlingStatus(downloadResponse, uekspederteDpoForsendelser, forsendelseStatusEndringer);
-		}
-		log.info("Sdist008 har oppdatert forsendelser med statusEndringer: {}", forsendelseStatusEndringer);
 	}
 
 	private void behandleForsendelseOgFormidlingStatus(DownloadResponse downloadResponse,

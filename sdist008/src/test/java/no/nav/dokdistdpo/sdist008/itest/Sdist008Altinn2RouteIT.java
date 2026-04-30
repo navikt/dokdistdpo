@@ -1,7 +1,7 @@
 package no.nav.dokdistdpo.sdist008.itest;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.dokdistdpo.sdist008.Sdist008Service;
+import no.nav.dokdistdpo.sdist008.Sdist008Altinn2Service;
 import no.nav.dokdistdpo.sdist008.itest.config.ApplicationTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class Sdist008Altinn2RouteIT {
 	private static final String XPATH_CONFIRM_DOWNLOADED = "//*[local-name()='ConfirmDownloaded']";
 
 	@Autowired
-	private Sdist008Service sdist008Service;
+	private Sdist008Altinn2Service sdist008Altinn2Service;
 
 	@BeforeEach
 	void setUp() {
@@ -66,7 +66,7 @@ class Sdist008Altinn2RouteIT {
 		stubPutAdministrerForsendelseOppdaterForsendelse();
 		stubPostBrokerserviceExternalConfirmDownloaded();
 
-		sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
+		sdist008Altinn2Service.hentKvitteringOgOppdaterForsendelseStatus();
 
 		verify(1, getRequestedFor(urlEqualTo(BASE_DOKDISTADMIN_PATH + "/henteformidlingforsendelser?distribusjonKanal=DPO")));
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")).withRequestBody(matchingXPath(XPATH_GET_AVAILABLE_FILES)));
@@ -87,7 +87,7 @@ class Sdist008Altinn2RouteIT {
 		stubPutAdministrerForsendelseOppdaterForsendelse();
 		stubPostBrokerserviceExternalConfirmDownloaded();
 
-		sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
+		sdist008Altinn2Service.hentKvitteringOgOppdaterForsendelseStatus();
 
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")).withRequestBody(matchingXPath(XPATH_GET_AVAILABLE_FILES)));
 		verify(1, postRequestedFor(urlMatching("/brokerserviceexternalstreamed/download")));
@@ -107,7 +107,7 @@ class Sdist008Altinn2RouteIT {
 		stubPutAdministrerForsendelseOppdaterForsendelse();
 		stubPostBrokerserviceExternalConfirmDownloaded();
 
-		sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
+		sdist008Altinn2Service.hentKvitteringOgOppdaterForsendelseStatus();
 
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")));
 		verify(1, postRequestedFor(urlMatching("/brokerserviceexternalstreamed/download")));

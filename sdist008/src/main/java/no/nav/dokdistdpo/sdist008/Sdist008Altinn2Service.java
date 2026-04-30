@@ -20,7 +20,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @Component
-public class Sdist008Service {
+public class Sdist008Altinn2Service {
 
 	private static final String HENT_KVITTERING = "sdist008 hentet dpo kvittering med kvitteringStatus={}. ";
 	private static final String AVSLUTTET_BEHANDLING = "Sdist008 hentet kvittering med kvitteringStatus={}, jobben avsluttes uten videre handling for forsendelse:{}.";
@@ -28,8 +28,8 @@ public class Sdist008Service {
 	private final AltinnEformidlingKvitteringClient eformidling;
 	private final DokdistForsendelseService dokdistForsendelseService;
 
-	public Sdist008Service(AltinnEformidlingKvitteringClient eformidling,
-						   DokdistForsendelseService dokdistForsendelseService) {
+	public Sdist008Altinn2Service(AltinnEformidlingKvitteringClient eformidling,
+								  DokdistForsendelseService dokdistForsendelseService) {
 		this.eformidling = eformidling;
 		this.dokdistForsendelseService = dokdistForsendelseService;
 	}
@@ -37,8 +37,8 @@ public class Sdist008Service {
 	public void hentKvitteringOgOppdaterForsendelseStatus() {
 		ForsendelseStatusEndringer forsendelseStatusEndringer = new ForsendelseStatusEndringer();
 
-		List<Forsendelse> forsendelser = dokdistForsendelseService.hentUekspederteDpoForsendelser();
-		Map<String, Forsendelse> uekspederteDpoForsendelse = dokdistForsendelseService.mapUekspederteDpoForsendelse(forsendelser);
+		List<Forsendelse> forsendelser = dokdistForsendelseService.hentGyldigUekspederteForsendelser();
+		Map<String, Forsendelse> uekspederteDpoForsendelse = dokdistForsendelseService.mapUekspederteForsendelseByKonversasjonId(forsendelser);
 		log.info("Sdist008 hentet antall={} uekspederte DPO forsendelser fra dokdistadmin", uekspederteDpoForsendelse.size());
 
 		if (isEmpty(uekspederteDpoForsendelse)) {

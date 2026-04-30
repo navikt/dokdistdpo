@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class Sdist008Scheduler {
 
-	private final Sdist008Service sdist008Service;
+	private final Sdist008Altinn2Service sdist008Altinn2Service;
 	private final Sdist008Altinn3Service sdist008Altinn3Service;
 	private final DokdistdpoProperties.Altinn3Properties altinn3Properties;
 	private final LederElectionConsumer lederelectionConsumer;
 
-	public Sdist008Scheduler(Sdist008Service sdist008Service,
+	public Sdist008Scheduler(Sdist008Altinn2Service sdist008Altinn2Service,
 							 Sdist008Altinn3Service sdist008Altinn3Service,
 							 DokdistdpoProperties dokdistdpoProperties,
 							 LederElectionConsumer lederelectionConsumer) {
-		this.sdist008Service = sdist008Service;
+		this.sdist008Altinn2Service = sdist008Altinn2Service;
 		this.sdist008Altinn3Service = sdist008Altinn3Service;
 		this.altinn3Properties = dokdistdpoProperties.altinn3();
 		this.lederelectionConsumer = lederelectionConsumer;
@@ -30,7 +30,7 @@ public class Sdist008Scheduler {
 			if (altinn3Properties.enabled()) {
 				sdist008Altinn3Service.oppdaterForsendelse();
 			} else {
-				sdist008Service.hentKvitteringOgOppdaterForsendelseStatus();
+				sdist008Altinn2Service.hentKvitteringOgOppdaterForsendelseStatus();
 			}
 		}
 	}

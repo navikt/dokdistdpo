@@ -1,7 +1,7 @@
 package no.nav.dokdistdpo.sdist008;
 
 import no.nav.dokdistdpo.consumer.dokdistadmin.DokdistAdminConsumer;
-import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse;
+import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentEformidlingforsendelserResponse.Forsendelse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.OppdaterForsendelseRequest;
 import org.springframework.stereotype.Component;
@@ -30,16 +30,20 @@ public class DokdistForsendelseService {
 		this.juridiskLoggService = juridiskLoggService;
 	}
 
-	public Map<String, HentEformidlingforsendelserResponse.Forsendelse> mapUekspederteDpoForsendelse(List<HentEformidlingforsendelserResponse.Forsendelse> ukspederteDpoForsendelser) {
+	public Map<String, Forsendelse> mapUekspederteForsendelseByKonversasjonId(List<Forsendelse> ukspederteDpoForsendelser) {
 		return ukspederteDpoForsendelser.stream()
-				.collect(toMap(HentEformidlingforsendelserResponse.Forsendelse::konversasjonId, forsendelse -> forsendelse));
+				.collect(toMap(Forsendelse::konversasjonId, forsendelse -> forsendelse));
 	}
 
-	public List<HentEformidlingforsendelserResponse.Forsendelse> hentUekspederteDpoForsendelser() {
+	public List<Forsendelse> hentGyldigUekspederteForsendelser() {
 		return dokdistAdminConsumer.hentEformidlingForsendelser().forsendelser()
 				.stream()
-				.filter(forsendelse -> !UGYLDIG_FORSENDELSE_STATUS.contains(forsendelse.forsendelseStatus()) && forsendelse.konversasjonId() != null)
+				.filter(this::isValidForsendelse)
 				.toList();
+	}
+
+	private boolean isValidForsendelse(Forsendelse forsendelse) {
+		return !UGYLDIG_FORSENDELSE_STATUS.contains(forsendelse.forsendelseStatus()) && forsendelse.konversasjonId() != null;
 	}
 
 	public void oppdatereForsendelseTilEkspedert(Long forsendelseId, String kvitteringStatus) {
