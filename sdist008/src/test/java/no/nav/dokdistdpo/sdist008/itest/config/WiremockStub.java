@@ -40,7 +40,7 @@ public class WiremockStub {
 	}
 
 	public static void stubGetHentEformidlingForsendelser() {
-		stubFor(get("/administrerforsendelse/henteformidlingforsendelser?distribusjonKanal=DPO")
+		stubFor(get("/administrerforsendelse/eformidlingforsendelser?distribusjonKanaler=DPO,TRYGDERETTEN")
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)

@@ -68,7 +68,7 @@ class Sdist008Altinn2RouteIT {
 
 		sdist008Altinn2Service.hentKvitteringOgOppdaterForsendelseStatus();
 
-		verify(1, getRequestedFor(urlEqualTo(BASE_DOKDISTADMIN_PATH + "/henteformidlingforsendelser?distribusjonKanal=DPO")));
+		verify(1, getRequestedFor(urlEqualTo(BASE_DOKDISTADMIN_PATH + "/eformidlingforsendelser?distribusjonKanaler=DPO,TRYGDERETTEN")));
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")).withRequestBody(matchingXPath(XPATH_GET_AVAILABLE_FILES)));
 		verify(1, postRequestedFor(urlMatching("/brokerserviceexternalstreamed/download")));
 		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse"))
@@ -111,7 +111,7 @@ class Sdist008Altinn2RouteIT {
 
 		verify(1, postRequestedFor(urlEqualTo("/brokerserviceexternal")));
 		verify(1, postRequestedFor(urlMatching("/brokerserviceexternalstreamed/download")));
-		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/henteformidlingforsendelser?distribusjonKanal=DPO")));
+		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/eformidlingforsendelser?distribusjonKanaler=DPO,TRYGDERETTEN")));
 	}
 
 
@@ -154,7 +154,7 @@ class Sdist008Altinn2RouteIT {
 	}
 
 	private void stubGetHentEformidlingForsendelser() {
-		stubFor(get("/administrerforsendelse/henteformidlingforsendelser?distribusjonKanal=DPO")
+		stubFor(get("/administrerforsendelse/eformidlingforsendelser?distribusjonKanaler=DPO,TRYGDERETTEN")
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)

@@ -36,7 +36,7 @@ public class DokdistForsendelseService {
 	}
 
 	public List<Forsendelse> hentGyldigUekspederteForsendelser() {
-		return dokdistAdminConsumer.hentEformidlingForsendelser().forsendelser()
+		return dokdistAdminConsumer.hentAlleEformidlingForsendelser().forsendelser()
 				.stream()
 				.filter(this::isValidForsendelse)
 				.toList();

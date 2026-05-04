@@ -59,7 +59,7 @@ class Sdist008Altinn3RouteIT {
 
 		sdist008Service.oppdaterForsendelse();
 
-		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/henteformidlingforsendelser?distribusjonKanal=DPO")));
+		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/eformidlingforsendelser?distribusjonKanaler=DPO,TRYGDERETTEN")));
 		verify(1, getRequestedFor(urlMatching("/altinn3/broker/api/v1/filetransfer\\?.*")));
 		verify(1, getRequestedFor(urlMatching("/altinn3/broker/api/v1/filetransfer/.*/download")));
 		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse")));
@@ -78,7 +78,7 @@ class Sdist008Altinn3RouteIT {
 
 		sdist008Service.oppdaterForsendelse();
 
-		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/henteformidlingforsendelser?distribusjonKanal=DPO")));
+		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/eformidlingforsendelser?distribusjonKanaler=DPO,TRYGDERETTEN")));
 		verify(1, getRequestedFor(urlMatching("/altinn3/broker/api/v1/filetransfer\\?.*")));
 		verify(1, getRequestedFor(urlMatching("/altinn3/broker/api/v1/filetransfer/.*/download")));
 		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse")));
@@ -97,7 +97,7 @@ class Sdist008Altinn3RouteIT {
 
 		sdist008Service.oppdaterForsendelse();
 
-		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/henteformidlingforsendelser?distribusjonKanal=DPO")));
+		verify(1, getRequestedFor(urlEqualTo("/administrerforsendelse/eformidlingforsendelser?distribusjonKanaler=DPO,TRYGDERETTEN")));
 		verify(1, getRequestedFor(urlMatching("/altinn3/broker/api/v1/filetransfer\\?.*")));
 		verify(1, getRequestedFor(urlMatching("/altinn3/broker/api/v1/filetransfer/.*/download")));
 		verify(1, putRequestedFor(urlMatching("/administrerforsendelse/oppdaterforsendelse")));
