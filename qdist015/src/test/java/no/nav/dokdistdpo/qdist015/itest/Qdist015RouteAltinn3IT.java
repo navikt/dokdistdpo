@@ -17,6 +17,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -128,7 +130,6 @@ class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 		verifyGetForsendelse();
 		verifyPostMaskinporten();
 		verifyServiceRegistry();
-		verifyPostNaisToken();
 		verifyPostAltinnToken();
 		verifyPostAltinn3InitiateFileTransfer();
 		verifyPostAltinn3Upload();
@@ -141,15 +142,11 @@ class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 	}
 
 	void verifyPostAltinnToken() {
-		verify(postRequestedFor(urlEqualTo("/altinn3/authentication/api/v1/exchange/maskinporten")));
+		verify(getRequestedFor(urlEqualTo("/altinn3/authentication/api/v1/exchange/maskinporten")));
 	}
 
 	void verifyPostMaskinporten() {
 		verify(postRequestedFor(urlEqualTo("/maskinporten")));
-	}
-
-	void verifyPostNaisToken() {
-		verify(postRequestedFor(urlEqualTo("/nais")));
 	}
 
 	void verifyPostAltinn3InitiateFileTransfer() {
@@ -182,7 +179,7 @@ class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 	}
 
 	void altinnToken() {
-		stubFor(post(urlMatching("/altinn3/authentication/api/v1/exchange/maskinporten"))
+		stubFor(get(urlMatching("/altinn3/authentication/api/v1/exchange/maskinporten"))
 				.willReturn(aResponse()
 						.withStatus(OK.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)

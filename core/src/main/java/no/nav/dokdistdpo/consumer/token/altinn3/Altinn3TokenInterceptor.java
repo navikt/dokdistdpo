@@ -6,6 +6,9 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
+import java.util.Map;
+
+import static no.nav.dokdistdpo.consumer.token.naistexas.NaisTexasInterceptor.MASKINPORTEN_TARGET_SCOPES;
 
 public class Altinn3TokenInterceptor implements ClientHttpRequestInterceptor {
 
@@ -17,7 +20,12 @@ public class Altinn3TokenInterceptor implements ClientHttpRequestInterceptor {
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-		request.getHeaders().setBearerAuth(altinn3TokenExchangeConsumer.getAltinnToken());
+		Map<String, Object> attributes = request.getAttributes();
+
+		if (attributes.containsKey(MASKINPORTEN_TARGET_SCOPES)) {
+			String maskinportenTargetScopes = (String) attributes.get(MASKINPORTEN_TARGET_SCOPES);
+			request.getHeaders().setBearerAuth(altinn3TokenExchangeConsumer.getAltinnToken(maskinportenTargetScopes));
+		}
 		return execution.execute(request, body);
 	}
 }

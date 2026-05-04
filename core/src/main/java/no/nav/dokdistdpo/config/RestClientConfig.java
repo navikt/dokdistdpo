@@ -24,14 +24,14 @@ public class RestClientConfig {
 	}
 
 	@Bean
-	public RestClient texasAuthorizeRestClient(NaisTexasTokenConsumer naisTexasTokenConsumer) {
+	public RestClient maskinportenAuthDetailsRestClient(NaisTexasTokenConsumer naisTexasTokenConsumer) {
 		return RestClient.builder()
 				.requestFactory(jdkClientHttpRequestFactory())
 				.requestInterceptor(new NaisTexasInterceptor(naisTexasTokenConsumer))
 				.build();
 	}
 
-	public static JdkClientHttpRequestFactory jdkClientHttpRequestFactory() {
+	private static JdkClientHttpRequestFactory jdkClientHttpRequestFactory() {
 		HttpClient httpClient = HttpClient.newBuilder()
 				.connectTimeout(Duration.ofSeconds(10))
 				.build();

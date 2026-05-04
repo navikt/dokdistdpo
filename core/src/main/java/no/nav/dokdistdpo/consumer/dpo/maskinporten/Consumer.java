@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class Consumer {
-	@JsonProperty("Authority")
+	@JsonProperty("authority")
 	private String authority;
 	@JsonProperty("ID")
 	private String id;

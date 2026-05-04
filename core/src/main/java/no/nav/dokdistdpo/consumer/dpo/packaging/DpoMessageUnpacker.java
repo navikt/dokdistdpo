@@ -7,7 +7,7 @@ import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.AltinnDokument;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.xml.BrokerServiceManifest;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn2;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.MessageFromAltinn2;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
 import no.nav.dokdistdpo.exception.functional.DokumentUnpackingException;
 import no.nav.dokdistdpo.utils.AutoCloseableTempFile;
@@ -40,8 +40,8 @@ public class DpoMessageUnpacker {
 		this.objectMapper = objectMapper;
 	}
 
-	public List<AltinnDokument> unpackMessageFromAltinn(List<MessageFromAltinn2> messageFromAltinn2s) {
-		return messageFromAltinn2s.stream()
+	public List<AltinnDokument> unpackMessageFromAltinn(List<MessageFromAltinn2> messageFromAltinn2) {
+		return messageFromAltinn2.stream()
 				.map(this::unpack)
 				.filter(altinnDokument -> nonNull(altinnDokument.dpoKvitteringMelding()))
 				.filter(altinnDokument -> MESSAGE_CHANNEL.equals(altinnDokument.dpoKvitteringMelding().getMessageChannelName()))

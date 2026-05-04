@@ -1,6 +1,7 @@
-package no.nav.dokdistdpo.sdist008.itest.config;
+package no.nav.dokdistdpo.sdist008.itest.config.altinn2;
 
-import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamed;
+import no.altinn.brokerserviceexternal.BrokerServiceExternalSF;
+import no.altinn.brokerserviceexternal.IBrokerServiceExternal;
 import no.nav.dokdistdpo.config.altinn2.cxf.AbstractCxfEndpointConfig;
 import no.nav.dokdistdpo.config.altinn2.cxf.ClientCallbackHandler;
 import no.nav.dokdistdpo.config.altinn2.cxf.interceptor.CookiesInInterceptor;
@@ -14,34 +15,33 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import static no.altinn.brokerserviceexternalstreamed.BrokerServiceExternalStreamedSF.CustomBindingIBrokerServiceExternalStreamed;
-import static no.altinn.brokerserviceexternalstreamed.BrokerServiceExternalStreamedSF.SERVICE;
-
 @Profile("itest")
 @Configuration
-public class BrokerServiceExternalStreamedConfigTest extends AbstractCxfEndpointConfig {
+public class BrokerServiceExternalTestConfig extends AbstractCxfEndpointConfig {
 
-	public BrokerServiceExternalStreamedConfigTest(Bus bus, DokdistdpoProperties dokdistdpoProperties) {
+	public BrokerServiceExternalTestConfig(Bus bus, DokdistdpoProperties dokdistdpoProperties) {
 		super(bus, dokdistdpoProperties);
 	}
 
 	@Bean
-	public IBrokerServiceExternalStreamed iBrokerServiceExternalStreamed(DokdistdpoProperties dokdistdpoProperties) {
-		setAddress("wsdl/BrokerServiceExternalStreamedTest.wsdl");
-		setServiceName(SERVICE);
-		setEndpointName(CustomBindingIBrokerServiceExternalStreamed);
-		setAddress(dokdistdpoProperties.altinn2().brokerserviceexternalstreamed().endpointurl());
+	public IBrokerServiceExternal iBrokerServiceExternal(DokdistdpoProperties dokdistdpoProperties) {
+		setAddress("wsdl/BrokerServiceExternalTest.wsdl");
+		setServiceName(BrokerServiceExternalSF.SERVICE);
+		setEndpointName(BrokerServiceExternalSF.CustomBindingIBrokerServiceExternal);
+		setAddress(dokdistdpoProperties.altinn2().brokerserviceexternal().endpointurl());
 
+		// Bruker kun http 1.1 for å unngå problemer med WireMock og streams
 		addFeature(new Http11OnlyFeature());
 
 		addInInterceptor(new CookiesInInterceptor());
 		addOutInterceptor(new HeaderOutInterceptor());
 		addOutInterceptor(new CookiesOutInterceptor());
 
-		IBrokerServiceExternalStreamed iBrokerServiceExternalStreamed = createPort(IBrokerServiceExternalStreamed.class, true);
-		final Client client = ClientProxy.getClient(iBrokerServiceExternalStreamed);
+		IBrokerServiceExternal iBrokerServiceExternal = createPort(IBrokerServiceExternal.class, false);
+		final Client client = ClientProxy.getClient(iBrokerServiceExternal);
 		setRequestContext(client, dokdistdpoProperties.dpo());
-		return iBrokerServiceExternalStreamed;
+
+		return iBrokerServiceExternal;
 	}
 
 	private void setRequestContext(final Client client, DokdistdpoProperties.DpoUserProperties dpoUserProperties) {
