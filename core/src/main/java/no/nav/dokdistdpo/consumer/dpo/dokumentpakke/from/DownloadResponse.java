@@ -21,7 +21,7 @@ public record DownloadResponse(String processIdentifier,
 				.documentType(dpoKvitteringMelding.getStandardBusinessDocumentHeader().getDocumentType())
 				.conversationId(dpoKvitteringMelding.getConversationId())
 				.fileReference(altinnDokument.fileReference())
-				.sendersReference(altinnDokument.manifest().getSendersReference())
+				.sendersReference(altinnDokument.manifest() == null ? null : altinnDokument.manifest().getSendersReference())
 				.messageChannel(altinnDokument.dpoKvitteringMelding().getMessageChannelName())
 				.kvitteringStatus(dpoKvitteringMelding.getStatus())
 				.build();

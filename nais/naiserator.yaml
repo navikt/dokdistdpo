@@ -11,6 +11,7 @@ spec:
       mountPath: /var/run/secrets/nais_secrets
   envFrom:
     - secret: {{ DOKDISTDPO_SECRET }}
+    - configmap: {{ DOKDISTDPO_SECRET }}
   env:
     - name: JAVA_TRUSTSTORE_OPTIONS
       value: "-Djavax.net.ssl.trustStore=$(NAV_TRUSTSTORE_PATH)
@@ -67,10 +68,6 @@ spec:
       value: {{ DOKDISTSENTRALPRINT_QDIST009_DIST_S_PRINT_QUEUENAME }}
     - name: GOOGLE_APPLICATION_CREDENTIALS
       value: "/var/run/secrets/nais_secrets/gcloud_serviceaccount.json"
-    - name: MASKINPORTEN_TOKEN_ENDPOINT
-      value: {{ MASKINPORTEN_TOKEN_ENDPOINT }}
-    - name: MASKINPORTEN_ISSUER
-      value: {{ MASKINPORTEN_ISSUER }}
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
@@ -128,5 +125,8 @@ spec:
     scopes:
       consumes:
         - name: altinn:broker.write
+        - name: altinn:broker.read
         - name: altinn:serviceowner
         - name: altinn:authentication/systemregister.write
+        - name: altinn:authentication/systemuser.request.write
+        - name: altinn:authentication/systemuser.request.read

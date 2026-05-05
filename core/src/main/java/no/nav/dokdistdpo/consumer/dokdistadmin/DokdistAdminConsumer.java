@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
+import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
@@ -34,7 +35,7 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 @Component
 public class DokdistAdminConsumer {
 
-	private static final String DISTRIBUSJONSKANAL_DPO = "DPO";
+	private static final List<String> DISTRIBUSJONSKANAL_DPO = List.of("DPO", "TRYGDERETTEN");
 
 	private final RestClient dokdistadminRestClient;
 	private final ObjectMapper objectMapper;
@@ -109,11 +110,11 @@ public class DokdistAdminConsumer {
 		log.info("oppdaterForsendelse har oppdatert forsendelse med forsendelseId={} og forsendelseStatus={}", oppdaterForsendelse.forsendelseId(), oppdaterForsendelse.forsendelseStatus());
 	}
 
-	public HentEformidlingforsendelserResponse hentEformidlingForsendelser() {
+	public HentEformidlingforsendelserResponse hentAlleEformidlingForsendelser() {
 		return dokdistadminRestClient.get()
 				.uri(uriBuilder -> uriBuilder
-						.path("/henteformidlingforsendelser")
-						.queryParam("distribusjonKanal", DISTRIBUSJONSKANAL_DPO)
+						.path("/eformidlingforsendelser")
+						.queryParam("distribusjonKanaler", String.join(",", DISTRIBUSJONSKANAL_DPO))
 						.build())
 				.attributes(clientRegistrationId(CLIENT_REGISTRATION_DOKDISTADMIN))
 				.retrieve()

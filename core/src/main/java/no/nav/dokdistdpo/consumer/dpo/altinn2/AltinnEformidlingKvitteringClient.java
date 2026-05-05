@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.AltinnDokument;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.DownloadResponse;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn2;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.service.AltinnBrokerServiceExternal;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.service.AltinnBrokerServiceStreamed;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.to.SearchCriteria;
@@ -65,7 +64,7 @@ public class AltinnEformidlingKvitteringClient {
 		hentetKvitteringerLog(altinnDokuments);
 
 		List<DownloadResponse> downloadResponses = getDownloadResponses(altinnDokuments);
-		log.info("Meldinger fra Altinn:  {}", downloadResponses);
+		log.info("Meldinger fra Altinn: {}", downloadResponses);
 
 		return downloadResponses;
 	}

@@ -46,7 +46,7 @@ public class Altinn3BrokerService {
 		FileTransferInitializeResponseExt fileTransferInitializeResponse = altinn3BrokerClient.intiateFileTransfer(fileTransferInitalizeExt);
 		log.info("Altinn3 broker initialisert OK. fileTransferId={}", fileTransferInitializeResponse.getFileTransferId());
 
-		FileTransferUploadResponseExt fileTransferUploadResponse = altinn3BrokerClient.uploadFileTransfer(
+		FileTransferUploadResponseExt fileTransferUploadResponse = altinn3BrokerClient.uploadFile(
 				fileTransferInitializeResponse.getFileTransferId(),
 				sbdZip);
 		log.info("Lastet opp attachment til Altinn3 med fileTransferId={}", fileTransferUploadResponse.getFileTransferId());

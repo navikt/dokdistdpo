@@ -11,7 +11,7 @@ import no.altinn.brokerserviceexternalstreamed.IBrokerServiceExternalStreamedUpl
 import no.altinn.brokerserviceexternalstreamed.ObjectFactory;
 import no.altinn.brokerserviceexternalstreamed.ReceiptExternalStreamedBE;
 import no.altinn.brokerserviceexternalstreamed.StreamedPayloadExternalBE;
-import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.MessageFromAltinn2;
+import no.nav.dokdistdpo.consumer.dpo.altinn2.MessageFromAltinn2;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.to.AltinnReasonFactory;
 import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.to.ReceiptTo;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;

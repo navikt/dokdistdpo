@@ -10,6 +10,8 @@ import no.nav.dokdistdpo.config.properties.DokdistmellomlagerProperties;
 import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
 import no.nav.dokdistdpo.config.properties.NaisTexasProperties;
 import no.nav.dokdistdpo.consumer.gcloudstorage.EncryptedBucketStorage;
+import no.nav.dokdistdpo.sdist008.itest.config.altinn2.BrokerServiceExternalStreamedConfigTest;
+import no.nav.dokdistdpo.sdist008.itest.config.altinn2.BrokerServiceExternalTestConfig;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

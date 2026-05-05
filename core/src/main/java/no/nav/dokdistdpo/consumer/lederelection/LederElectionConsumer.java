@@ -18,10 +18,10 @@ public class LederElectionConsumer {
 
 	public LederElectionConsumer(RestClient.Builder restClientBuilder,
 								 ObjectMapper objectMapper,
-								 @Value("${elector.path}") String electorPath) {
+								 @Value("${elector.get.url}") String electorPath) {
 		this.objectMapper = objectMapper;
 		this.restClient = restClientBuilder
-				.baseUrl(electorPath.startsWith("http") ? electorPath : "http://" + electorPath)
+				.baseUrl(electorPath)
 				.build();
 	}
 

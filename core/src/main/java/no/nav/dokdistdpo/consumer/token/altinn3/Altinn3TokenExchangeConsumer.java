@@ -3,7 +3,6 @@ package no.nav.dokdistdpo.consumer.token.altinn3;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
-import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
 import no.nav.dokdistdpo.exception.technical.Altinn3BrokerTechnicalException;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,28 +19,26 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Component
 public class Altinn3TokenExchangeConsumer {
 
-	private final RestClient texasAuthorizeRestClient;
 	private final ObjectMapper objectMapper;
-	private final MaskinportenProperties maskinportenProperties;
+	private final RestClient maskinportenAuthDetailsRestClient;
 
-	public Altinn3TokenExchangeConsumer(RestClient texasAuthorizeRestClient,
-										MaskinportenProperties maskinportenProperties,
+	public Altinn3TokenExchangeConsumer(RestClient maskinportenAuthDetailsRestClient,
 										ObjectMapper objectMapper,
 										DokdistdpoProperties dokdistdpoProperties) {
-		this.maskinportenProperties = maskinportenProperties;
 		this.objectMapper = objectMapper;
-		this.texasAuthorizeRestClient = texasAuthorizeRestClient.mutate()
+		this.maskinportenAuthDetailsRestClient = maskinportenAuthDetailsRestClient
+				.mutate()
 				.baseUrl(dokdistdpoProperties.altinn3().url())
 				.build();
 	}
 
-	@Cacheable(ALTINN3_TOKEN_CACHE)
+	@Cacheable(value = ALTINN3_TOKEN_CACHE, key = "#maskinportenScopes")
 	@Retryable(retryFor = DokdistdpoTechnicalException.class)
-	public String getAltinnToken() {
-		return texasAuthorizeRestClient.post()
+	public String getAltinnToken(String maskinportenScopes) {
+		return maskinportenAuthDetailsRestClient.get()
 				.uri("/authentication/api/v1/exchange/maskinporten")
-				.attribute(MASKINPORTEN_TARGET_SCOPES, maskinportenProperties.scopes())
 				.accept(APPLICATION_JSON)
+				.attribute(MASKINPORTEN_TARGET_SCOPES, maskinportenScopes)
 				.exchange((_, res) -> {
 					if (res.getStatusCode().isError()) {
 						ProblemDetail problemDetail = objectMapper.readValue(res.getBody(), ProblemDetail.class);
