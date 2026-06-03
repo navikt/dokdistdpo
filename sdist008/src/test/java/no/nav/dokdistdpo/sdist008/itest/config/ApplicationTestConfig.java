@@ -10,8 +10,6 @@ import no.nav.dokdistdpo.config.properties.DokdistmellomlagerProperties;
 import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
 import no.nav.dokdistdpo.config.properties.NaisTexasProperties;
 import no.nav.dokdistdpo.consumer.gcloudstorage.EncryptedBucketStorage;
-import no.nav.dokdistdpo.sdist008.itest.config.altinn2.BrokerServiceExternalStreamedConfigTest;
-import no.nav.dokdistdpo.sdist008.itest.config.altinn2.BrokerServiceExternalTestConfig;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,8 +34,6 @@ import static org.mockito.Mockito.mock;
 		CoreConfig.class,
 		OAuthEnabledRestClientConfig.class,
 		AppCertificateConfig.class,
-		BrokerServiceExternalTestConfig.class,
-		BrokerServiceExternalStreamedConfigTest.class,
 		CacheTestConfig.class
 })
 public class ApplicationTestConfig {

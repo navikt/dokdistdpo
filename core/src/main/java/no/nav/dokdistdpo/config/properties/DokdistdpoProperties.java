@@ -1,7 +1,6 @@
 package no.nav.dokdistdpo.config.properties;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,8 +15,6 @@ public record DokdistdpoProperties(
 		Endpoints endpoints,
 		@Valid
 		ServiceRegistryConfig serviceRegistry,
-		@Valid
-		Altinn2Properties altinn2,
 		@Valid
 		Altinn3Properties altinn3,
 		@Valid
@@ -43,14 +40,6 @@ public record DokdistdpoProperties(
 								@NotBlank String scope) {
 	}
 
-	public record Altinn2Properties(
-			Altinn2BrokerProperties brokerserviceexternal,
-			Altinn2BrokerProperties brokerserviceexternalstreamed,
-			@NotBlank String serviceCode,
-			@NotBlank String serviceEditionCode
-	) {
-	}
-
 	public record Altinn3Properties(
 			@NotBlank
 			String url,
@@ -62,22 +51,7 @@ public record DokdistdpoProperties(
 	) {
 	}
 
-	public record Altinn2BrokerProperties(
-			@NotBlank
-			String endpointurl,
-			@Min(1)
-			int readtimeoutms,
-			@Min(1)
-			int connecttimeoutms
-	) {
-	}
-
 	public record DpoUserProperties(
-			@NotBlank
-			String username,
-			@NotBlank
-			String password,
-			@NotBlank
 			String clientid,
 			@NotBlank
 			String scope) {

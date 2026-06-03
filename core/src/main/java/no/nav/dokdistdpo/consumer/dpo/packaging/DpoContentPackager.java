@@ -1,7 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.packaging;
 
 import no.nav.dokdistdpo.certificate.AppCertificate;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.packaging.asice.AsiceCreator;
 import no.nav.dokdistdpo.consumer.dpo.packaging.asice.CmsUtil;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;

@@ -1,12 +1,10 @@
 package no.nav.dokdistdpo.qdist015;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.Altinn2EformidlingClient;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.altinn3.Altinn3BrokerService;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.StandardBusinessDocument;
 import no.nav.dokdistdpo.consumer.dpo.serviceregistry.DpoMottakerInfo;
@@ -38,31 +36,25 @@ public class Qdist015Service {
 	private final SendTilPrintService sendTilPrintService;
 	private final AltinnRequestMapper altinnRequestMapper;
 	private final DokdistadminService dokdistadminService;
-	private final Altinn2EformidlingClient eformidling;
 	private final OppdaterForsendelseService oppdaterForsendelseService;
 	private final JuridiskloggService juridiskloggService;
 	private final Altinn3BrokerService altinn3BrokerService;
-	private final DokdistdpoProperties.Altinn3Properties altinn3Properties;
 
 
 	public Qdist015Service(GStorageDokumentService gStorageDokumentService,
 						   SendTilPrintService sendTilPrintService,
 						   AltinnRequestMapper altinnRequestMapper,
 						   DokdistadminService dokdistadminService,
-						   Altinn2EformidlingClient eformidling,
 						   JuridiskloggService juridiskloggService,
 						   OppdaterForsendelseService oppdaterForsendelseService,
-						   DokdistdpoProperties dokdistdpoProperties,
 						   Altinn3BrokerService altinn3BrokerService) {
 		this.gStorageDokumentService = gStorageDokumentService;
 		this.sendTilPrintService = sendTilPrintService;
 		this.altinnRequestMapper = altinnRequestMapper;
 		this.dokdistadminService = dokdistadminService;
-		this.eformidling = eformidling;
 		this.juridiskloggService = juridiskloggService;
 		this.oppdaterForsendelseService = oppdaterForsendelseService;
 		this.altinn3BrokerService = altinn3BrokerService;
-		this.altinn3Properties = dokdistdpoProperties.altinn3();
 	}
 
 	@Handler
@@ -94,11 +86,8 @@ public class Qdist015Service {
 				.navDokumentpakke(mapToNavDokumentpakke(hentForsendelseResponse))
 				.build();
 
-		if (altinn3Properties.enabled()) {
 			altinn3BrokerService.sendAltinn3(altinnDpoRequest);
-		} else {
-			eformidling.send(altinnDpoRequest);
-		}
+
 
 		oppdaterForsendelseService.oppdaterForsendelse(forsendelseId);
 		juridiskloggService.lagreJuridisklogg(altinnDpoRequest);

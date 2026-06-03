@@ -15,7 +15,6 @@ public class LederElectionConsumer {
 	private final RestClient restClient;
 	private final ObjectMapper objectMapper;
 
-
 	public LederElectionConsumer(RestClient.Builder restClientBuilder,
 								 ObjectMapper objectMapper,
 								 @Value("${elector.get.url}") String electorPath) {
