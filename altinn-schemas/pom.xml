@@ -14,15 +14,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>jakarta.xml.ws</groupId>
-			<artifactId>jakarta.xml.ws-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.ws</groupId>
-			<artifactId>jaxws-ri</artifactId>
-			<type>pom</type>
-		</dependency>
-		<dependency>
 			<groupId>jakarta.annotation</groupId>
 			<artifactId>jakarta.annotation-api</artifactId>
 		</dependency>
@@ -60,42 +51,6 @@
 								<dateLibrary>java8</dateLibrary>
 								<library>native</library>
 							</configOptions>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>${cxf-bom.version}</version>
-				<executions>
-					<execution>
-						<id>wsdl2java-generate</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>wsdl2java</goal>
-						</goals>
-						<configuration>
-							<wsdlOptions>
-								<wsdlOption>
-									<wsdl>${basedir}/src/main/resources/wsdl/BrokerServiceExternal.wsdl</wsdl>
-									<extraargs>
-										<extraarg>-autoNameResolution</extraarg>
-										<extraarg>-p</extraarg>
-										<extraarg>no.altinn.brokerserviceexternal</extraarg>
-									</extraargs>
-									<wsdlLocation>classpath:wsdl/BrokerServiceExternal.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<wsdl>${basedir}/src/main/resources/wsdl/BrokerServiceExternalStreamed.wsdl</wsdl>
-									<extraargs>
-										<extraarg>-autoNameResolution</extraarg>
-										<extraarg>-p</extraarg>
-										<extraarg>no.altinn.brokerserviceexternalstreamed</extraarg>
-									</extraargs>
-									<wsdlLocation>classpath:wsdl/BrokerServiceExternalStreamed.wsdl</wsdlLocation>
-								</wsdlOption>
-							</wsdlOptions>
 						</configuration>
 					</execution>
 				</executions>

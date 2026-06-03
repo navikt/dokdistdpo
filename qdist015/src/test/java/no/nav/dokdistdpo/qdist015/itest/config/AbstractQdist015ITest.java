@@ -4,7 +4,6 @@ import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
 import jakarta.xml.bind.JAXBElement;
 import lombok.SneakyThrows;
-import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.gcloudstorage.EncryptedBucketStorage;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.MDC;
@@ -56,9 +55,6 @@ public abstract class AbstractQdist015ITest {
 	public static final String TRYGDERETTEN_ORGNUMMER = "974761084";
 
 	protected static String callId = UUID.randomUUID().toString();
-
-	@Autowired
-	protected DokdistdpoProperties dokdistdpoProperties;
 
 	@Autowired
 	protected EncryptedBucketStorage encryptedBucketStorage;
@@ -177,22 +173,6 @@ public abstract class AbstractQdist015ITest {
 		});
 	}
 
-	protected void verifyAltinnUploadWithPostProcessing() {
-		verifyGetForsendelse();
-		verifyServiceRegistry();
-		verifyPostIntiateBrokerService();
-		verifyPostUploadBrokerServiceStreamed();
-		verifyPostJuridiskLoggLagre();
-		verifyPutAdministrerforsendelse();
-	}
-
-	protected void verifyPostIntiateBrokerService() {
-		verify(postRequestedFor(urlMatching("/brokerserviceexternal")));
-	}
-
-	protected void verifyPostUploadBrokerServiceStreamed() {
-		verify(postRequestedFor(urlEqualTo("/brokerserviceexternalstreamed/upload")));
-	}
 
 	protected void verifyPostJuridiskLoggLagre() {
 		verify(postRequestedFor(urlEqualTo("/juridisklogg/api/rest/logg")));
@@ -216,7 +196,6 @@ public abstract class AbstractQdist015ITest {
 		assertNotNull(message);
 		assertEquals(message, classpathToString("__files/qdist015/qdist015-happy.xml"));
 	}
-
 
 	@SuppressWarnings("unchecked")
 	private <T> T receive(Queue queue) {

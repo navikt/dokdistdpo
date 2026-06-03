@@ -3,7 +3,7 @@ package no.nav.dokdistdpo.consumer.dpo.testutils;
 import lombok.Data;
 import lombok.SneakyThrows;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.ForsendelseMetadataType;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 

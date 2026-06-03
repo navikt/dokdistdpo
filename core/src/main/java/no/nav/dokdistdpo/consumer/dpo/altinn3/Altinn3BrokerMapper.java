@@ -1,7 +1,6 @@
 package no.nav.dokdistdpo.consumer.dpo.altinn3;
 
 import no.altinn.services.altinn3.domain.FileTransferInitalizeExt;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
 
 import java.util.HashMap;
 import java.util.List;

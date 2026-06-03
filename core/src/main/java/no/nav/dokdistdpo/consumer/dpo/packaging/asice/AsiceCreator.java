@@ -7,7 +7,7 @@ import no.difi.asic.SignatureHelper;
 import no.nav.dokdistdpo.certificate.AppCertificate;
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.XmlManifestCreator;
 import no.nav.dokdistdpo.exception.functional.DokumentpakkingException;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice;
+package no.nav.dokdistdpo.consumer.dpo.altinn3;
 
 import lombok.Builder;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;

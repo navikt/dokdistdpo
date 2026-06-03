@@ -35,8 +35,6 @@ import static org.mockito.Mockito.mock;
 		JmsItestConfig.class,
 		OAuthEnabledRestClientConfig.class,
 		AppCertificateConfig.class,
-		BrokerServiceExternalTestConfig.class,
-		BrokerServiceExternalStreamedConfigTest.class,
 		CacheTestConfig.class
 })
 public class ApplicationTestConfig {

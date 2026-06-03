@@ -5,7 +5,6 @@ import no.altinn.services.altinn3.domain.FileTransferInitalizeExt;
 import no.altinn.services.altinn3.domain.FileTransferInitializeResponseExt;
 import no.altinn.services.altinn3.domain.FileTransferUploadResponseExt;
 import no.nav.dokdistdpo.certificate.AppCertificate;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.packaging.DpoMessagePackager;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.retry.annotation.Retryable;
