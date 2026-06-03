@@ -6,8 +6,6 @@
   "DOKDISTDPO_SERVICEREGISTRY_URL": "https://eformidling.no/adressetjeneste",
   "DOKDISTDPO_JURIDISKLOGG_URL": "https://app.adeo.no/juridisklogg",
   "DOKDISTDPO_ALTINN3_URL": "https://platform.altinn.no",
-  "DOKDISTDPO_ALTINN2_BROKERSERVICEEXTERNAL_ENDPOINTURL": "https://www.altinn.no/ServiceEngineExternal/BrokerServiceExternal.svc",
-  "DOKDISTDPO_ALTINN2_BROKERSERVICEEXTERNALSTREAMED_ENDPOINTURL": "https://www.altinn.no/ServiceEngineExternal/BrokerServiceExternalStreamed.svc",
   "DOKDISTDPO_MQ_GATEWAY_MANAGER_NAME": "MPLS01",
   "DOKDISTDPO_MQ_GATEWAY_HOSTNAME": "mpls01.adeo.no",
   "DOKDISTDPO_MQ_GATEWAY_PORT": "1414",

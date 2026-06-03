@@ -4,8 +4,4 @@ public class Altinn3BrokerTechnicalException extends DokdistdpoTechnicalExceptio
 	public Altinn3BrokerTechnicalException(String message) {
 		super(message);
 	}
-
-	public Altinn3BrokerTechnicalException(String message, Throwable cause) {
-		super(message, cause);
-	}
 }

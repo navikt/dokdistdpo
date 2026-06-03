@@ -1,6 +1,5 @@
 package no.nav.dokdistdpo.sdist008;
 
-import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.consumer.lederelection.LederElectionConsumer;
 import no.nav.dokdistdpo.sdist008.altinn3.Sdist008Altinn3Service;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,29 +8,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class Sdist008Scheduler {
 
-	private final Sdist008Altinn2Service sdist008Altinn2Service;
 	private final Sdist008Altinn3Service sdist008Altinn3Service;
-	private final DokdistdpoProperties.Altinn3Properties altinn3Properties;
 	private final LederElectionConsumer lederelectionConsumer;
 
-	public Sdist008Scheduler(Sdist008Altinn2Service sdist008Altinn2Service,
-							 Sdist008Altinn3Service sdist008Altinn3Service,
-							 DokdistdpoProperties dokdistdpoProperties,
+	public Sdist008Scheduler(Sdist008Altinn3Service sdist008Altinn3Service,
 							 LederElectionConsumer lederelectionConsumer) {
-		this.sdist008Altinn2Service = sdist008Altinn2Service;
 		this.sdist008Altinn3Service = sdist008Altinn3Service;
-		this.altinn3Properties = dokdistdpoProperties.altinn3();
 		this.lederelectionConsumer = lederelectionConsumer;
 	}
 
 	@Scheduled(fixedDelayString = "${sdist008.intervall:600000}")
 	public void ekspederDpoForsendelser() {
 		if (lederelectionConsumer.isLeder()) {
-			if (altinn3Properties.enabled()) {
-				sdist008Altinn3Service.oppdaterForsendelse();
-			} else {
-				sdist008Altinn2Service.hentKvitteringOgOppdaterForsendelseStatus();
-			}
+			sdist008Altinn3Service.oppdaterForsendelse();
 		}
 	}
 }

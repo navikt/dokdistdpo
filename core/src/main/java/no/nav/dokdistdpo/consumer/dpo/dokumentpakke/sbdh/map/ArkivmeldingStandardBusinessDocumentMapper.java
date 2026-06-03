@@ -1,6 +1,6 @@
 package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.map;
 
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.avtaltmelding.Arkivmelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.BusinessScope;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.CorrelationInformation;

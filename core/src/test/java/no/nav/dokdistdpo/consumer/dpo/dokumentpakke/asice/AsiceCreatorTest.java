@@ -2,7 +2,7 @@ package no.nav.dokdistdpo.consumer.dpo.dokumentpakke.asice;
 
 import no.nav.dokdistdpo.consumer.dpo.NavDokument;
 import no.nav.dokdistdpo.consumer.dpo.NavDokumentpakke;
-import no.nav.dokdistdpo.consumer.dpo.altinn2.altinn2brokerservice.AltinnDpoRequest;
+import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.packaging.asice.AsiceCreator;
 import no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils;
 import no.nav.dokdistdpo.consumer.dpo.testutils.TestUtils.ZipFile;
