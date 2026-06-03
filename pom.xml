@@ -29,8 +29,8 @@
 		<nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
 		<com.ibm.mq.jakarta.client.version>9.4.5.0</com.ibm.mq.jakarta.client.version>
 		<camel-spring-boot-bom.version>4.18.0</camel-spring-boot-bom.version>
-		<cxf-bom.version>4.2.0</cxf-bom.version>
 		<commons-lang3.version>3.20.0</commons-lang3.version>
+		<cxf-rt-features-logging.version>4.2.1</cxf-rt-features-logging.version>
 		<commons-io.version>2.21.0</commons-io.version>
 		<bouncycastle.version>1.82</bouncycastle.version>
 		<dok-common-util.version>1.6.0</dok-common-util.version>
@@ -100,6 +100,11 @@
 				<version>${commons-lang3.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-features-logging</artifactId>
+				<version>${cxf-rt-features-logging.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>${commons-io.version}</version>
@@ -122,15 +127,6 @@
 				<groupId>com.ibm.mq</groupId>
 				<artifactId>com.ibm.mq.jakarta.client</artifactId>
 				<version>${com.ibm.mq.jakarta.client.version}</version>
-			</dependency>
-
-			<!-- cxf -->
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-bom</artifactId>
-				<version>${cxf-bom.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
 			</dependency>
 
 			<!--Apache Camel-->

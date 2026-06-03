@@ -1,7 +1,6 @@
 package no.nav.dokdistdpo.config.properties;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -49,16 +48,6 @@ public record DokdistdpoProperties(
 			@NotBlank
 			String apiSubscriptionKey,
 			boolean enabled
-	) {
-	}
-
-	public record Altinn2BrokerProperties(
-			@NotBlank
-			String endpointurl,
-			@Min(1)
-			int readtimeoutms,
-			@Min(1)
-			int connecttimeoutms
 	) {
 	}
 
