@@ -1,6 +1,6 @@
 package no.nav.dokdistdpo.consumer.dokdistadmin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.FeilregistrerForsendelseRequest;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.Forsendelse;
@@ -15,7 +15,7 @@ import org.slf4j.MDC;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -38,15 +38,15 @@ public class DokdistAdminConsumer {
 	private static final List<String> DISTRIBUSJONSKANAL_DPO = List.of("DPO", "TRYGDERETTEN");
 
 	private final RestClient dokdistadminRestClient;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 
 	public DokdistAdminConsumer(RestClient dokdistadminRestClient,
-								ObjectMapper objectMapper) {
+								JsonMapper jsonMapper) {
 		this.dokdistadminRestClient = dokdistadminRestClient;
-		this.objectMapper = objectMapper;
+		this.jsonMapper = jsonMapper;
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public HentForsendelseResponse hentForsendelse(Long forsendelseId) {
 		log.info("hentForsendelse henter forsendelse med forsendelseId={}", forsendelseId);
 
@@ -60,7 +60,7 @@ public class DokdistAdminConsumer {
 				.body(HentForsendelseResponse.class);
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public Forsendelse opprettForsendelse(OpprettForsendelseRequest opprettForsendelseRequest) {
 		return dokdistadminRestClient.post()
 				.contentType(APPLICATION_JSON)
@@ -73,7 +73,7 @@ public class DokdistAdminConsumer {
 				.body(Forsendelse.class);
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public void feilregistrerForsendelse(FeilregistrerForsendelseRequest feilregistrerForsendelse) {
 
 		log.info("feilregistrerForsendelse feilregistrerer forsendelse med forsendelseId={}", feilregistrerForsendelse.forsendelseId());
@@ -92,7 +92,7 @@ public class DokdistAdminConsumer {
 		log.info("feilregistrerForsendelse har feilregistrert forsendelse med forsendelseId={}", feilregistrerForsendelse.forsendelseId());
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public void oppdaterForsendelse(OppdaterForsendelseRequest oppdaterForsendelse) {
 		log.info("oppdaterForsendelse oppdaterer forsendelse med forsendelseId={}", oppdaterForsendelse.forsendelseId());
 
@@ -125,7 +125,7 @@ public class DokdistAdminConsumer {
 	}
 
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste, String feltnavn, String feltVerdi) throws IOException {
-		ProblemDetail problemDetail = objectMapper.readValue(response.getBody(), ProblemDetail.class);
+		ProblemDetail problemDetail = jsonMapper.readValue(response.getBody(), ProblemDetail.class);
 		if (response.getStatusCode().is4xxClientError()) {
 			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt med %s=%s. Feilmelding=%s",
 					tjeneste, feltnavn, feltVerdi, problemDetail.getDetail()), problemDetail);
@@ -135,7 +135,7 @@ public class DokdistAdminConsumer {
 	}
 
 	private void dokdistadminHandleError(ClientHttpResponse response, String tjeneste) throws IOException {
-		ProblemDetail problemDetail = objectMapper.readValue(response.getBody(), ProblemDetail.class);
+		ProblemDetail problemDetail = jsonMapper.readValue(response.getBody(), ProblemDetail.class);
 		if (response.getStatusCode().is4xxClientError()) {
 			throw new DokdistadminFunctionalException(format("%s feilet funksjonelt. Feilmelding=%s",
 					tjeneste, problemDetail.getDetail()), problemDetail);

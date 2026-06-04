@@ -1,7 +1,7 @@
 package no.nav.dokdistdpo.consumer.token.naistexas;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import no.nav.dokdistdpo.config.properties.DokdistdpoProperties;
 import no.nav.dokdistdpo.config.properties.MaskinportenProperties;
 import no.nav.dokdistdpo.config.properties.NaisTexasProperties;
@@ -22,16 +22,16 @@ import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VAL
 public class NaisTexasTokenConsumer {
 
 	private final RestClient restClient;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 	private final MaskinportenProperties maskinportenProperties;
 	private final DokdistdpoProperties.Altinn3Properties altinn3Properties;
 
 	public NaisTexasTokenConsumer(RestClient.Builder restClientBuilder,
-								  ObjectMapper objectMapper,
+								  JsonMapper jsonMapper,
 								  NaisTexasProperties naistexasProperties,
 								  MaskinportenProperties maskinportenProperties,
 								  DokdistdpoProperties dokdistdpoProperties) {
-		this.objectMapper = objectMapper;
+		this.jsonMapper = jsonMapper;
 		this.restClient = restClientBuilder
 				.baseUrl(naistexasProperties.tokenEndpoint())
 				.defaultHeader(CONTENT_TYPE, APPLICATION_FORM_URLENCODED_VALUE)
@@ -56,8 +56,8 @@ public class NaisTexasTokenConsumer {
 
 	private String serializeAuthorizationDetails() {
 		try {
-			return objectMapper.writeValueAsString(authorizationDetails(altinn3Properties.externalRef()));
-		} catch (JsonProcessingException e) {
+			return jsonMapper.writeValueAsString(authorizationDetails(altinn3Properties.externalRef()));
+		} catch (JacksonException e) {
 			throw new JsonSerializeException("Failed to serialize authorization details", e);
 		}
 	}

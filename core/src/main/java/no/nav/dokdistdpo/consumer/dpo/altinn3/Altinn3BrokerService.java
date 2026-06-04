@@ -7,7 +7,7 @@ import no.altinn.services.altinn3.domain.FileTransferUploadResponseExt;
 import no.nav.dokdistdpo.certificate.AppCertificate;
 import no.nav.dokdistdpo.consumer.dpo.packaging.DpoMessagePackager;
 import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class Altinn3BrokerService {
 		this.dpoMessagePackager = dpoMessagePackager;
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public void sendAltinn3(AltinnDpoRequest altinnDpoRequest) {
 		AltinnDpoRequest.Forsendelse forsendelse = altinnDpoRequest.forsendelse();
 

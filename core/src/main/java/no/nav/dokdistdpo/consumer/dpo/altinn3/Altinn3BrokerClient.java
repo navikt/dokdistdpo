@@ -1,6 +1,6 @@
 package no.nav.dokdistdpo.consumer.dpo.altinn3;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.altinn.services.altinn3.domain.FileTransferInitalizeExt;
 import no.altinn.services.altinn3.domain.FileTransferInitializeResponseExt;
@@ -13,7 +13,7 @@ import no.nav.dokdistdpo.exception.technical.DokdistdpoTechnicalException;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -37,19 +37,19 @@ public class Altinn3BrokerClient {
 	private static final String ALTINN3_BROKER_SCOPE_READ = "altinn:serviceowner altinn:broker.read";
 
 	private final RestClient altinn3AuthorizeRestClient;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 
 	public Altinn3BrokerClient(RestClient altinn3AuthorizeRestClient,
 							   DokdistdpoProperties dokdistdpoProperties,
-							   ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
+							   JsonMapper jsonMapper) {
+		this.jsonMapper = jsonMapper;
 		this.altinn3AuthorizeRestClient = altinn3AuthorizeRestClient.mutate()
 				.baseUrl(dokdistdpoProperties.altinn3().url())
 				.defaultHeader(ALTINN3_SUBSCRIPTION_KEY_HEADER, dokdistdpoProperties.altinn3().apiSubscriptionKey())
 				.build();
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public FileTransferInitializeResponseExt intiateFileTransfer(FileTransferInitalizeExt fileTransferInitalizeExt) {
 		return altinn3AuthorizeRestClient.post()
 				.uri("/broker/api/v1/filetransfer")
@@ -64,7 +64,7 @@ public class Altinn3BrokerClient {
 				.body(FileTransferInitializeResponseExt.class);
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public FileTransferUploadResponseExt uploadFile(UUID fileTransferId,
 													byte[] sbdZipAsBytes) {
 		return altinn3AuthorizeRestClient.post()
@@ -82,7 +82,7 @@ public class Altinn3BrokerClient {
 				.body(FileTransferUploadResponseExt.class);
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public List<String> getPublishedFileTransferIder() {
 		return altinn3AuthorizeRestClient.get()
 				.uri(uriBuilder -> uriBuilder
@@ -101,7 +101,7 @@ public class Altinn3BrokerClient {
 				});
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public byte[] downloadPublishedFile(String fileTransferId) {
 		return altinn3AuthorizeRestClient.get()
 				.uri(uriBuilder -> uriBuilder
@@ -116,7 +116,7 @@ public class Altinn3BrokerClient {
 				.body(byte[].class);
 	}
 
-	@Retryable(retryFor = DokdistdpoTechnicalException.class)
+	@Retryable(includes = DokdistdpoTechnicalException.class)
 	public void confirmDownload(String fileTransferId) {
 		altinn3AuthorizeRestClient.post()
 				.uri(uriBuilder -> uriBuilder
@@ -131,7 +131,7 @@ public class Altinn3BrokerClient {
 	}
 
 	private void handleError(ClientHttpResponse response, String feilmelding) throws IOException {
-		ProblemDetails problemDetails = objectMapper.readValue(response.getBody(), ProblemDetails.class);
+		ProblemDetails problemDetails = jsonMapper.readValue(response.getBody(), ProblemDetails.class);
 		String message = (problemDetails != null ? feilmelding.formatted(problemDetails) : feilmelding.formatted("Ingen feilmelding i responsbody"));
 		if (response.getStatusCode().is4xxClientError()) {
 			throw new Altinn3BrokerFunctionalException(message);

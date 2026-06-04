@@ -5,7 +5,7 @@ import no.nav.dokdistdpo.exception.functional.LagreJuridiskLoggFunctionalExcepti
 import no.nav.dokdistdpo.exception.technical.LagreJuridiskLoggTechnicalException;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
@@ -31,7 +31,7 @@ public class JuridiskLoggConsumer {
 				.build();
 	}
 
-	@Retryable(retryFor = LagreJuridiskLoggTechnicalException.class)
+	@Retryable(includes = LagreJuridiskLoggTechnicalException.class)
 	public LoggmeldingResponse lagreJuridisklogg(final LoggmeldingRequest loggmeldingRequest) {
 		try {
 			return restClient.post()

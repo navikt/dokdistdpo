@@ -1,10 +1,10 @@
 package no.nav.dokdistdpo.certificate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,10 +22,10 @@ public class AppCertificateConfig {
 		if (!Files.exists(credentialsJsonPath)) {
 			throw new IllegalArgumentException("credentials med path=" + credentials + " finnes ikke");
 		}
-		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			return objectMapper.readValue(credentialsJsonPath.toFile(), KeyStoreCredentials.class);
-		} catch (IOException e) {
+			JsonMapper jsonMapper = JsonMapper.builder().build();
+			return jsonMapper.readValue(credentialsJsonPath.toFile(), KeyStoreCredentials.class);
+		} catch (JacksonException _) {
 			// Rethrower ikke exception for å ikke risikere at innhold dumpes til loggen
 			throw new IllegalArgumentException("Klarte ikke lese credentials json");
 		}

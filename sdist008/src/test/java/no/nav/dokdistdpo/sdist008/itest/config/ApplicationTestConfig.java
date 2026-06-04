@@ -15,13 +15,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.resilience.annotation.EnableResilientMethods;
+import org.springframework.web.client.RestClient;
 
 import static org.mockito.Mockito.mock;
 
-@EnableRetry
-@Profile("itest")
-@Configuration
 @EnableConfigurationProperties({
 		DokdistdpoProperties.class,
 		DokdistmellomlagerProperties.class,
@@ -36,9 +34,17 @@ import static org.mockito.Mockito.mock;
 		AppCertificateConfig.class,
 		CacheTestConfig.class
 })
+@Profile("itest")
+@Configuration
+@EnableResilientMethods
 public class ApplicationTestConfig {
 	@Bean
 	public EncryptedBucketStorage encryptedBucketStorage() {
 		return mock(EncryptedBucketStorage.class);
+	}
+
+	@Bean
+	public RestClient.Builder restClientBuilder() {
+		return RestClient.builder();
 	}
 }

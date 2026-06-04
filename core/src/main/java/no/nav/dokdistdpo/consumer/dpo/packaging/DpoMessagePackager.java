@@ -1,7 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.packaging;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.certificate.AppCertificate;
 import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
@@ -33,14 +33,13 @@ public class DpoMessagePackager {
 	private static final Logger secureLog = LoggerFactory.getLogger("secureLog");
 
 
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 	private final DpoContentPackager dpoContentPackager;
 
-	public DpoMessagePackager(ObjectMapper dpoObjectMapper,
+	public DpoMessagePackager(JsonMapper jsonMapper,
 							  DpoContentPackager dpoContentPackager) {
-		this.objectMapper = dpoObjectMapper;
+		this.jsonMapper = jsonMapper;
 		this.dpoContentPackager = dpoContentPackager;
-		objectMapper.registerModule(new JavaTimeModule());
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class DpoMessagePackager {
 						// Noop — for å forhindre at datastrømmen avsluttes for tidlig
 					}
 				};
-				String sdbd = objectMapper.writeValueAsString(konvolutt);
+				String sdbd = jsonMapper.writeValueAsString(konvolutt);
 				secureLog.info("SBD payload: {}", sdbd);
 				nonClosingStream.write(sdbd.getBytes());
 				zipOutputStream.closeEntry();
@@ -82,7 +81,7 @@ public class DpoMessagePackager {
 			IOUtils.copy(innhold, zipOutputStream);
 			zipOutputStream.closeEntry();
 			zipOutputStream.finish();
-		} catch (IOException e) {
+		} catch (IOException | JacksonException e) {
 			throw new DokumentpakkingException("Klarte ikke lage sbd.zip", e);
 		}
 	}

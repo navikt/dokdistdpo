@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,7 +43,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 		classes = {ApplicationTestConfig.class},
 		webEnvironment = RANDOM_PORT
 )
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock
 @ActiveProfiles({"itest", "altinn3"})
 class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 
@@ -108,7 +108,7 @@ class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 
 		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));
 
-		await().atMost(10, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
+		await().atMost(20, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ class Qdist015RouteAltinn3IT extends AbstractQdist015ITest {
 
 		sendStringMessage(qdist015, classpathToString("__files/qdist015/qdist015-happy.xml"));
 
-		await().atMost(10, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
+		await().atMost(20, SECONDS).untilAsserted(() -> assertMessageOnQueue(backoutQueue));
 	}
 
 	protected void verifyAltinn3UploadWithPostProcessing() {
