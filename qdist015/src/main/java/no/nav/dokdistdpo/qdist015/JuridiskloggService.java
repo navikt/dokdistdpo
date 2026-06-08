@@ -1,8 +1,8 @@
 package no.nav.dokdistdpo.qdist015;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dpo.altinn3.AltinnDpoRequest;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.sbdh.domain.StandardBusinessDocument;
@@ -22,11 +22,13 @@ import static no.nav.dokdistdpo.constant.DokdistdpoConstant.NAV_ORGNUMMER;
 public class JuridiskloggService {
 
 	private final JuridiskLoggConsumer juridiskLoggConsumer;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 
 	public JuridiskloggService(JuridiskLoggConsumer juridiskLoggConsumer) {
 		this.juridiskLoggConsumer = juridiskLoggConsumer;
-		this.objectMapper = new ObjectMapper();
+		this.jsonMapper = JsonMapper.builder()
+				.disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+				.build();
 	}
 
 	public void lagreJuridisklogg(AltinnDpoRequest altinnDpoRequest) {
@@ -47,11 +49,9 @@ public class JuridiskloggService {
 
 	private byte[] sbdToByteArray(StandardBusinessDocument standardBusinessDocument) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			objectMapper.registerModule(new JavaTimeModule());
-			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-			objectMapper.writeValue(baos, standardBusinessDocument);
+			jsonMapper.writeValue(baos, standardBusinessDocument);
 			return baos.toByteArray();
-		} catch (IOException e) {
+		} catch (IOException | JacksonException e) {
 			throw new LagreJuridiskLoggFunctionalException(e.getMessage(), e);
 		}
 	}

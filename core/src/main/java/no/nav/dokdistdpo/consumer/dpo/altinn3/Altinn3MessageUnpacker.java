@@ -1,6 +1,7 @@
 package no.nav.dokdistdpo.consumer.dpo.altinn3;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.dpokvittering.json.DpoKvitteringMelding;
 import no.nav.dokdistdpo.consumer.dpo.dokumentpakke.from.AltinnDokument;
@@ -29,10 +30,10 @@ public class Altinn3MessageUnpacker {
 	private static final String DESERIALISERE_EXCEPTION = "Kunne ikke deserialisere fil med fileReferenceId: ";
 	private static final String MESSAGE_CHANNEL = "dokdistdpo";
 
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 
-	public Altinn3MessageUnpacker(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
+	public Altinn3MessageUnpacker(JsonMapper jsonMapper) {
+		this.jsonMapper = jsonMapper;
 	}
 
 	public List<AltinnDokument> unpackMessageFromAltinn(List<Altinn3InnsendtFilkvittering> messageFromAltinn2s) {
@@ -66,7 +67,7 @@ public class Altinn3MessageUnpacker {
 				ZipEntry zipEntry = entries.nextElement();
 				try (InputStream inputStream = zipFile.getInputStream(zipEntry)) {
 					if (SBD_JSON.equals(zipEntry.getName())) {
-						dpoKvitteringMelding = objectMapper.readValue(inputStream, DpoKvitteringMelding.class);
+						dpoKvitteringMelding = jsonMapper.readValue(inputStream, DpoKvitteringMelding.class);
 					} else {
 						log.info("Hopper over fil: {}", zipFile.getName());
 					}
@@ -76,7 +77,7 @@ public class Altinn3MessageUnpacker {
 					.fileReference(fileReference)
 					.dpoKvitteringMelding(dpoKvitteringMelding)
 					.build();
-		} catch (IOException e) {
+		} catch (IOException | JacksonException e) {
 			log.error(DESERIALISERE_EXCEPTION + "{}", fileReference, e);
 			throw new DokumentUnpackingException(DESERIALISERE_EXCEPTION + fileReference, e);
 		}

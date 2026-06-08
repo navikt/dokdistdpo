@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
 import org.springframework.test.context.ActiveProfiles;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -34,7 +34,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		classes = ApplicationTestConfig.class,
 		webEnvironment = RANDOM_PORT)
 @EnableAutoConfiguration
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock
 class Sdist008Altinn3RouteIT {
 
 

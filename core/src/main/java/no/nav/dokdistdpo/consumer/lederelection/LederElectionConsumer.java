@@ -1,6 +1,6 @@
 package no.nav.dokdistdpo.consumer.lederelection;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,12 +13,12 @@ import java.net.InetAddress;
 public class LederElectionConsumer {
 
 	private final RestClient restClient;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 
 	public LederElectionConsumer(RestClient.Builder restClientBuilder,
-								 ObjectMapper objectMapper,
+								 JsonMapper jsonMapper,
 								 @Value("${elector.get.url}") String electorPath) {
-		this.objectMapper = objectMapper;
+		this.jsonMapper = jsonMapper;
 		this.restClient = restClientBuilder
 				.baseUrl(electorPath)
 				.build();
@@ -29,7 +29,7 @@ public class LederElectionConsumer {
 			String response = restClient.get()
 					.retrieve()
 					.body(String.class);
-			String leder = objectMapper.readTree(response).get("name").asText();
+			String leder = jsonMapper.readTree(response).get("name").asString();
 			String hostName = InetAddress.getLocalHost().getHostName();
 			return hostName.equals(leder);
 		} catch (Exception e) {

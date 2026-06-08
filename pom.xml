@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.7</version>
+		<version>4.0.6</version>
 	</parent>
 
 	<groupId>no.nav.dokdistdpo</groupId>
@@ -28,13 +28,12 @@
 
 		<nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
 		<com.ibm.mq.jakarta.client.version>9.4.5.0</com.ibm.mq.jakarta.client.version>
-		<camel-spring-boot-bom.version>4.18.0</camel-spring-boot-bom.version>
+		<camel.version>4.20.0</camel.version>
 		<commons-lang3.version>3.20.0</commons-lang3.version>
-		<cxf-rt-features-logging.version>4.2.1</cxf-rt-features-logging.version>
 		<commons-io.version>2.21.0</commons-io.version>
 		<bouncycastle.version>1.82</bouncycastle.version>
 		<dok-common-util.version>1.6.0</dok-common-util.version>
-		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
+		<logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
 		<libraries-bom.version>26.78.0</libraries-bom.version>
 		<tink.version>1.20.0</tink.version>
 		<tink-gcpkms.version>1.10.0</tink-gcpkms.version>
@@ -44,7 +43,7 @@
 		<dok-legacy-tjenestespesifikasjoner.version>41-d282678</dok-legacy-tjenestespesifikasjoner.version>
 
 		<!-- Test -->
-		<spring-cloud-contract-wiremock.version>4.3.0</spring-cloud-contract-wiremock.version>
+		<wiremock-spring-boot.version>4.2.1</wiremock-spring-boot.version>
 
 		<!-- Plugins -->
 		<openapi-generator-maven-plugin.version>7.19.0</openapi-generator-maven-plugin.version>
@@ -100,11 +99,6 @@
 				<version>${commons-lang3.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-features-logging</artifactId>
-				<version>${cxf-rt-features-logging.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>${commons-io.version}</version>
@@ -133,7 +127,14 @@
 			<dependency>
 				<groupId>org.apache.camel.springboot</groupId>
 				<artifactId>camel-spring-boot-bom</artifactId>
-				<version>${camel-spring-boot-bom.version}</version>
+				<version>${camel.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel.springboot</groupId>
+				<artifactId>camel-spring-boot-dependencies</artifactId>
+				<version>${camel.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -176,9 +177,9 @@
 
 			<!-- test -->
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-wiremock</artifactId>
-				<version>${spring-cloud-contract-wiremock.version}</version>
+				<groupId>org.wiremock.integrations</groupId>
+				<artifactId>wiremock-spring-boot</artifactId>
+				<version>${wiremock-spring-boot.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>

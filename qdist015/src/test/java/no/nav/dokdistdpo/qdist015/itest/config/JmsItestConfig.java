@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jms.core.JmsTemplate;
 
 @Profile("itest")
 @Configuration
@@ -53,5 +54,10 @@ public class JmsItestConfig {
 		poolConnectionFactory.setConnectionFactory(activeMQConnectionFactory);
 		poolConnectionFactory.setMaxConnections(1);
 		return poolConnectionFactory;
+	}
+
+	@Bean
+	public JmsTemplate jmsTemplate(ConnectionFactory activeMQConnectionFactory) {
+		return new JmsTemplate(activeMQConnectionFactory);
 	}
 }

@@ -12,14 +12,15 @@ import no.nav.dokdistdpo.config.properties.NaisTexasProperties;
 import no.nav.dokdistdpo.consumer.gcloudstorage.EncryptedBucketStorage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.resilience.annotation.EnableResilientMethods;
 
 import static org.mockito.Mockito.mock;
 
-@EnableRetry
+@EnableResilientMethods
 @Profile("itest")
 @Configuration
 @EnableConfigurationProperties({
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.mock;
 		AppCertificateConfig.class,
 		CacheTestConfig.class
 })
+@ComponentScan(basePackages = "no.nav.dokdistdpo")
 public class ApplicationTestConfig {
 
 	@Bean

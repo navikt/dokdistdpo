@@ -1,7 +1,7 @@
 package no.nav.dokdistdpo.sdist008;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dokdistdpo.consumer.dokdistadmin.domain.HentForsendelseResponse;
 import no.nav.dokdistdpo.consumer.juridisk.JuridiskLoggConsumer;
@@ -21,23 +21,23 @@ public class JuridiskLoggService {
 	private static final Integer ANTALL_AAR_LAGRES = 10;
 
 	private final JuridiskLoggConsumer juridiskLoggConsumer;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 
 	public JuridiskLoggService(JuridiskLoggConsumer juridiskLoggConsumer,
-							   ObjectMapper objectMapper) {
+							   JsonMapper jsonMapper) {
 		this.juridiskLoggConsumer = juridiskLoggConsumer;
-		this.objectMapper = objectMapper;
+		this.jsonMapper = jsonMapper;
 	}
 
 	public void lagreJuridisklogg(HentForsendelseResponse hentForsendelseResponse, String dpoKvitteringStatus) {
 		try {
 			DpoStatusOppdatering dpoStatusOppdatering = new DpoStatusOppdatering(hentForsendelseResponse.konversasjonId(), dpoKvitteringStatus, now());
-			byte[] meldingsInnhold = objectMapper.writeValueAsBytes(dpoStatusOppdatering);
+			byte[] meldingsInnhold = jsonMapper.writeValueAsBytes(dpoStatusOppdatering);
 			LoggmeldingRequest loggmeldingRequest = mapDpoKvitteringToLoggmeldingRequest(hentForsendelseResponse, meldingsInnhold);
 			LoggmeldingResponse loggmeldingResponse = juridiskLoggConsumer.lagreJuridisklogg(loggmeldingRequest);
 			log.info("Hendelse med konversasjonsId={} logget til juridisk logg med id={}.",
 					hentForsendelseResponse.konversasjonId(), loggmeldingResponse.id());
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new LagreJuridiskLoggFunctionalException("Kunne ikke serialisere DPO statusoppdatering til JSON", e);
 		}
 	}
