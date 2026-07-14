@@ -35,7 +35,7 @@
 		<dok-common-util.version>1.6.0</dok-common-util.version>
 		<logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
 		<libraries-bom.version>26.78.0</libraries-bom.version>
-		<tink.version>1.20.0</tink.version>
+		<tink.version>1.22.0</tink.version>
 		<tink-gcpkms.version>1.11.0</tink-gcpkms.version>
 		<jackson-databind-nullable.version>0.2.9</jackson-databind-nullable.version>
 
