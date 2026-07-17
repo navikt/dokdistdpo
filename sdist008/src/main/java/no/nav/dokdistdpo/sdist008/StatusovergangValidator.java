@@ -28,7 +28,6 @@ public class StatusovergangValidator {
 
 		if (isUlovligStatusovergang(forsendelseStatus, kvitteringStatus) || isUkjentKvitteringStatus(forsendelseStatus, kvitteringStatus)) {
 			log.warn("Ulovlig statusovergang for forsendelseId={} med forsendelseStatus={} og kvitteringStatus={}", forsendelse.forsendelseId(), forsendelseStatus, kvitteringStatus);
-			return;
 		}
 	}
 
