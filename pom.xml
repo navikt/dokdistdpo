@@ -46,7 +46,7 @@
 		<wiremock-spring-boot.version>4.2.2</wiremock-spring-boot.version>
 
 		<!-- Plugins -->
-		<openapi-generator-maven-plugin.version>7.23.0</openapi-generator-maven-plugin.version>
+		<openapi-generator-maven-plugin.version>7.24.0</openapi-generator-maven-plugin.version>
 		<maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
 	</properties>
 
