@@ -36,7 +36,7 @@
 		<libraries-bom.version>26.85.1</libraries-bom.version>
 		<tink.version>1.23.0</tink.version>
 		<tink-gcpkms.version>1.11.0</tink-gcpkms.version>
-		<jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
+		<jackson-databind-nullable.version>0.2.11</jackson-databind-nullable.version>
 
 		<commons-asic.version>1.1.0</commons-asic.version>
 		<dok-legacy-tjenestespesifikasjoner.version>41-d282678</dok-legacy-tjenestespesifikasjoner.version>
