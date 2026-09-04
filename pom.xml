@@ -31,7 +31,7 @@
 		<camel.version>4.22.0</camel.version>
 		<commons-lang3.version>3.20.0</commons-lang3.version>
 		<commons-io.version>2.22.0</commons-io.version>
-		<bouncycastle.version>1.84</bouncycastle.version>
+		<bouncycastle.version>1.85</bouncycastle.version>
 		<logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
 		<libraries-bom.version>26.86.0</libraries-bom.version>
 		<tink.version>1.23.0</tink.version>
