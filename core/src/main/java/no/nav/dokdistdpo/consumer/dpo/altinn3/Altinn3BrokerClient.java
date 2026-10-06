@@ -17,6 +17,7 @@ import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -74,7 +75,8 @@ public class Altinn3BrokerClient {
 				.accept(APPLICATION_JSON)
 				.contentType(APPLICATION_OCTET_STREAM)
 				.attribute(MASKINPORTEN_TARGET_SCOPES, ALTINN3_BROKER_SCOPE_WRITE)
-				.body(sbdZipAsBytes)
+				.contentLength(sbdZipAsBytes.length)
+				.body(outputStream -> new ByteArrayInputStream(sbdZipAsBytes).transferTo(outputStream))
 				.retrieve()
 				.onStatus(HttpStatusCode::isError, (reg, res) ->
 						handleError(res, "uploadFile feilet med feilmelding=%s")
