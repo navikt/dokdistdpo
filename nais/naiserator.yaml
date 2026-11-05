@@ -26,6 +26,7 @@ spec:
               -XX:MaxRAMPercentage=75
               -XX:MaxHeapFreeRatio=55
               -XX:HeapDumpPath=/tmp
+              -Djdk.tls.namedGroups=secp256r1,secp384r1,x25519
               $(JAVA_PROXY_OPTIONS) $(JAVA_TRUSTSTORE_OPTIONS)"
     - name: DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL
       value: {{ DOKDISTDPO_ENDPOINTS_DOKDISTADMIN_URL }}
